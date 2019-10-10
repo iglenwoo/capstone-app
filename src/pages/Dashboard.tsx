@@ -1,9 +1,7 @@
 import React from 'react'
-import Container from '@material-ui/core/Container'
-import Typography from '@material-ui/core/Typography'
-import Box from '@material-ui/core/Box'
-import ProTip from '../ProTip'
-import Copyright from '../Copyright'
+import { Container, Typography, Box } from '@material-ui/core'
+import ProTip from '../components/ProTip'
+import Copyright from '../components/Copyright'
 
 export default function Dashboard() {
   return (
