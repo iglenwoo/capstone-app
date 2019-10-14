@@ -41,7 +41,7 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-export default function SignIn() {
+function SignInMatieral() {
   const classes = useStyles()
   return (
     <Container component="main" maxWidth="xs">
