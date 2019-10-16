@@ -18,6 +18,7 @@ import {
 } from '@material-ui/core'
 import LockOutlinedIcon from '@material-ui/core/SvgIcon/SvgIcon'
 import Copyright from '../../components/Copyright'
+import { AlertDialog } from '../../components/Dialog/AlertDialog'
 
 const useStyles = makeStyles(theme => ({
   '@global': {
@@ -53,24 +54,24 @@ export const SignInForm: FC<{
 
   const classes = useStyles()
 
-  // private static propKey(propertyName: string, value: any): object {
-  //   return { [propertyName]: value }
-  // }
-
+  // TODO: sign-in
   const onSubmit = (event: any) => {
-    // const { email, password } = this.state
-    //
-    // const { history } = this.props
-    //
-    // auth
-    //   .doSignInWithEmailAndPassword(email, password)
-    //   .then(() => {
-    //     this.setState(() => ({ ...SignInForm.INITIAL_STATE }))
-    //     history.push(routes.HOME)
-    //   })
-    //   .catch(error => {
-    //     this.setState(SignInForm.propKey('error', error))
-    //   })
+    console.log('start')
+    auth
+      .doSignInWithEmailAndPassword(email, password)
+      .then((credential: firebase.auth.UserCredential) => {
+        console.log(credential)
+        setEmail('')
+        setPassword('')
+        props.history.push(routes.HOME)
+      })
+      .catch(error => {
+        // TODO: handle error
+        console.error(error)
+        if (error.message) {
+          setError(error.message)
+        }
+      })
 
     event.preventDefault()
   }
@@ -97,6 +98,7 @@ export const SignInForm: FC<{
             autoComplete="email"
             autoFocus
             value={email}
+            onChange={e => setEmail(e.currentTarget.value)}
           />
           <TextField
             variant="outlined"
@@ -109,6 +111,7 @@ export const SignInForm: FC<{
             id="password"
             autoComplete="current-password"
             value={password}
+            onChange={e => setPassword(e.currentTarget.value)}
           />
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
@@ -151,6 +154,8 @@ export const SignInForm: FC<{
       <Box mt={8}>
         <Copyright />
       </Box>
+
+      <AlertDialog message={error} />
     </Container>
   )
 }
