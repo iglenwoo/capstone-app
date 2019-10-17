@@ -1,28 +1,21 @@
 import * as React from 'react'
+import { FC } from 'react'
 
-interface InterfaceProps {
+export const UserList: FC<{
   users?: any
-}
+}> = props => {
+  const { users }: any = props
 
-export class UserList extends React.Component<InterfaceProps, {}> {
-  constructor(props: any) {
-    super(props)
-  }
+  return (
+    <div>
+      <h2>List of User name</h2>
+      <p>(Saved on Sign Up in Firebase Database)</p>
 
-  public render() {
-    const { users }: any = this.props
-
-    return (
-      <div>
-        <h2>List of User name</h2>
-        <p>(Saved on Sign Up in Firebase Database)</p>
-
-        <ul>
-          {Object.keys(users).map(key => {
-            return <li key={key}>{users[key].username}</li>
-          })}
-        </ul>
-      </div>
-    )
-  }
+      <ul>
+        {Object.keys(users).map(key => {
+          return <li key={key}>{users[key].username}</li>
+        })}
+      </ul>
+    </div>
+  )
 }
