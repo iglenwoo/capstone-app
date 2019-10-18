@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { auth } from '../../firebase'
 
 interface InterfaceProps {
   error?: any
@@ -36,14 +35,14 @@ export class PasswordChangeForm extends React.Component<
   public onSubmit = (event: any) => {
     const { passwordOne }: any = this.state
 
-    auth
-      .doPasswordUpdate(passwordOne)
-      .then(() => {
-        this.setState(() => ({ ...PasswordChangeForm.INITIAL_STATE }))
-      })
-      .catch(error => {
-        this.setState(PasswordChangeForm.propKey('error', error))
-      })
+    // auth
+    //   .doPasswordUpdate(passwordOne)
+    //   .then(() => {
+    //     this.setState(() => ({ ...PasswordChangeForm.INITIAL_STATE }))
+    //   })
+    //   .catch(error => {
+    //     this.setState(PasswordChangeForm.propKey('error', error))
+    //   })
 
     event.preventDefault()
   }

@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { auth } from '../../firebase'
 
 export class PasswordForgetForm extends React.Component {
   private static INITIAL_STATE = {
@@ -20,14 +19,14 @@ export class PasswordForgetForm extends React.Component {
   public onSubmit = (event: any) => {
     const { email }: any = this.state
 
-    auth
-      .doPasswordReset(email)
-      .then(() => {
-        this.setState(() => ({ ...PasswordForgetForm.INITIAL_STATE }))
-      })
-      .catch(error => {
-        this.setState(PasswordForgetForm.propKey('error', error))
-      })
+    // auth
+    //   .doPasswordReset(email)
+    //   .then(() => {
+    //     this.setState(() => ({ ...PasswordForgetForm.INITIAL_STATE }))
+    //   })
+    //   .catch(error => {
+    //     this.setState(PasswordForgetForm.propKey('error', error))
+    //   })
 
     event.preventDefault()
   }

@@ -1,9 +1,9 @@
 import * as React from 'react'
-import { Link, withRouter } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import * as routes from '../../constants/routes'
 import { SignUpForm } from './SingUpForm'
 
-const SignUpComponent = () => (
+export const SignUp = () => (
   <div>
     <h1>SignUp</h1>
     <SignUpForm />
@@ -15,5 +15,3 @@ export const SignUpLink = () => (
     Don't have an account? <Link to={routes.SIGN_UP}>Sign Up</Link>
   </p>
 )
-
-export const SignUp = withRouter(SignUpComponent)

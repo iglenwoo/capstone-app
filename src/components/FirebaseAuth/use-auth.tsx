@@ -13,9 +13,9 @@ import { config } from './config'
 // Add your Firebase credentials
 firebase.initializeApp(config)
 
-interface Auth {
+export interface Auth {
   user: firebase.User | null
-  signin: (email: string, password: string) => void
+  signin: (email: string, password: string) => Promise<firebase.User | null>
   signup: (email: string, password: string) => void
   signout: () => void
   sendPasswordResetEmail: (email: string) => Promise<boolean>
@@ -24,7 +24,7 @@ interface Auth {
 
 const authContext = createContext<Auth>({
   user: null,
-  signin: (email: string, password: string) => undefined,
+  signin: (email: string, password: string) => Promise.resolve(null),
   signup: (email: string, password: string) => undefined,
   signout: () => undefined,
   sendPasswordResetEmail: (email: string) => Promise.resolve(false),

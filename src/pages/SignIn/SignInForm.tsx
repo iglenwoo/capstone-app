@@ -1,7 +1,6 @@
-import React, { FC, useState } from 'react'
+import React, { FC, SyntheticEvent, useState } from 'react'
 import * as routes from '../../constants/routes'
-import { auth } from '../../firebase'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import {
   Avatar,
   Box,
@@ -19,6 +18,7 @@ import {
 import LockOutlinedIcon from '@material-ui/core/SvgIcon/SvgIcon'
 import Copyright from '../../components/Copyright'
 import { AlertDialog } from '../../components/Dialog/AlertDialog'
+import { Auth, useAuth } from '../../components/FirebaseAuth/use-auth'
 
 const useStyles = makeStyles(theme => ({
   '@global': {
@@ -48,32 +48,40 @@ const useStyles = makeStyles(theme => ({
 export const SignInForm: FC<{
   history?: any
 }> = props => {
+  const auth: Auth = useAuth()
+  const history = useHistory()
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
   const [error, setError] = useState<string>()
+  const [showDialog, setShowDialog] = useState<boolean>(false)
 
   const classes = useStyles()
 
   // TODO: sign-in
-  const onSubmit = (event: any) => {
+  const onSubmit = (event: SyntheticEvent) => {
     console.log('start')
-    auth
-      .doSignInWithEmailAndPassword(email, password)
-      .then((credential: firebase.auth.UserCredential) => {
-        console.log(credential)
+
+    const user = auth.signin(email, password)
+    console.info(user)
+    user
+      .then(u => {
+        console.log(u)
         setEmail('')
         setPassword('')
-        props.history.push(routes.HOME)
+        history.push(routes.HOME)
       })
       .catch(error => {
-        // TODO: handle error
-        console.error(error)
-        if (error.message) {
-          setError(error.message)
-        }
+        console.log(error)
+        setError(error.message)
+        setShowDialog(true)
       })
 
     event.preventDefault()
+  }
+
+  const onDialogClose = () => {
+    setError('')
+    setShowDialog(false)
   }
 
   return (
@@ -86,7 +94,11 @@ export const SignInForm: FC<{
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        <form className={classes.form} noValidate>
+        <form
+          className={classes.form}
+          noValidate
+          onSubmit={event => onSubmit(event)}
+        >
           <TextField
             variant="outlined"
             margin="normal"
@@ -123,7 +135,6 @@ export const SignInForm: FC<{
             variant="contained"
             color="primary"
             className={classes.submit}
-            onSubmit={event => onSubmit(event)}
           >
             Sign In
           </Button>
@@ -155,7 +166,7 @@ export const SignInForm: FC<{
         <Copyright />
       </Box>
 
-      <AlertDialog message={error} />
+      <AlertDialog open={showDialog} message={error} onClose={onDialogClose} />
     </Container>
   )
 }

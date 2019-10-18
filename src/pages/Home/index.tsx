@@ -1,48 +1,21 @@
 import * as React from 'react'
-import { db } from '../../firebase'
-import { withAuthorization } from '../../firebase/withAuthorization'
 import { UserList } from './UserList'
+import { Auth, useAuth } from '../../components/FirebaseAuth/use-auth'
 
 interface User {
   email: string
   username: string
 }
 
-class HomeComponent extends React.Component {
-  constructor(props: any) {
-    super(props)
+export const Home = () => {
+  const { user }: Auth = useAuth()
 
-    this.state = {
-      users: null,
-    }
-  }
+  return (
+    <div>
+      <h2>Home Page</h2>
+      <p>The Home Page is accessible by every signed in user.</p>
 
-  public componentDidMount() {
-    db.onceGetUsers().then(snapshot => {
-      console.log(snapshot)
-      const newUsers: User[] = []
-      snapshot.forEach(doc => {
-        console.log(doc.data())
-        newUsers.push(doc.data() as User)
-      })
-      this.setState(() => ({ users: newUsers }))
-    })
-  }
-
-  public render() {
-    const { users }: any = this.state
-
-    return (
-      <div>
-        <h2>Home Page</h2>
-        <p>The Home Page is accessible by every signed in user.</p>
-
-        {!!users && <UserList users={users} />}
-      </div>
-    )
-  }
+      {/*{!!users && <UserList users={users} />}*/}
+    </div>
+  )
 }
-
-const authCondition = (authUser: any) => !!authUser
-
-export const Home = withAuthorization(authCondition)(HomeComponent)

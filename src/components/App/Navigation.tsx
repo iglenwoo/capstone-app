@@ -1,7 +1,6 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
 import * as routes from '../../constants/routes'
-import { SignOutButton } from './SignOutButton'
 import { useAuth } from '../FirebaseAuth/use-auth'
 
 export const Navigation = () => {
@@ -20,9 +19,6 @@ const NavigationAuth = () => (
     </li>
     <li>
       <Link to={routes.ACCOUNT}>Account</Link>
-    </li>
-    <li>
-      <SignOutButton />
     </li>
   </ul>
 )
