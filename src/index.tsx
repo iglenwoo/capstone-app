@@ -6,11 +6,14 @@ import './index.css'
 import { App } from './components/App'
 import theme from './theme'
 import * as serviceWorker from './serviceWorker'
+import { ProvideAuth } from './components/FirebaseAuth/use-auth'
 
 ReactDOM.render(
   <ThemeProvider theme={theme}>
     <CssBaseline />
-    <App />
+    <ProvideAuth>
+      <App />
+    </ProvideAuth>
   </ThemeProvider>,
   document.getElementById('root')
 )

@@ -1,14 +1,14 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
 import * as routes from '../../constants/routes'
-import { AuthUserContext } from '../../firebase/AuthUserContext'
 import { SignOutButton } from './SignOutButton'
+import { useAuth } from '../FirebaseAuth/use-auth'
 
-export const Navigation = () => (
-  <AuthUserContext.Consumer>
-    {authUser => (authUser ? <NavigationAuth /> : <NavigationNonAuth />)}
-  </AuthUserContext.Consumer>
-)
+export const Navigation = () => {
+  const auth = useAuth()
+
+  return <>{auth.user ? <NavigationAuth /> : <NavigationNonAuth />}</>
+}
 
 const NavigationAuth = () => (
   <ul>
