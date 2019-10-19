@@ -1,5 +1,11 @@
 import React from 'react'
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  RouteProps,
+  Redirect,
+} from 'react-router-dom'
 import * as routes from '../../constants/routes'
 import { Navigation } from './Navigation'
 import { Landing } from '../../pages/Landing'
@@ -8,6 +14,34 @@ import { SignIn } from '../../pages/SignIn'
 import { PasswordForget } from '../../pages/PasswordForget'
 import { Home } from '../../pages/Home'
 import { Account } from '../../pages/Account'
+import { Auth, useAuth } from '../FirebaseAuth/use-auth'
+
+interface PrivateRouteProps extends RouteProps {
+  component: any
+}
+
+const PrivateRoute = (props: PrivateRouteProps) => {
+  const { component: Component, ...rest } = props
+  const auth: Auth = useAuth()
+
+  return (
+    <Route
+      {...rest}
+      render={routeProps =>
+        auth.user ? (
+          <Component {...routeProps} />
+        ) : (
+          <Redirect
+            to={{
+              pathname: routes.SIGN_IN,
+              state: { from: routeProps.location },
+            }}
+          />
+        )
+      }
+    />
+  )
+}
 
 export function App() {
   return (
@@ -24,8 +58,12 @@ export function App() {
             path={routes.PASSWORD_FORGET}
             component={PasswordForget}
           />
-          <Route exact={true} path={routes.HOME} component={Home} />
-          <Route exact={true} path={routes.ACCOUNT} component={Account} />
+          <PrivateRoute exact={true} path={routes.HOME} component={Home} />
+          <PrivateRoute
+            exact={true}
+            path={routes.ACCOUNT}
+            component={Account}
+          />
         </Switch>
       </div>
     </Router>
