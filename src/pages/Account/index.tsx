@@ -8,7 +8,7 @@ export const Account = () => {
 
   return (
     <div>
-      <h1>Account: {auth.user}</h1>
+      {auth.user && <h1>email: {auth.user.email}</h1>}
       <PasswordForgetForm />
       <PasswordChangeForm />
     </div>
