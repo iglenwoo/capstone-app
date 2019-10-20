@@ -4,7 +4,6 @@ import { PasswordForgetForm } from './PasswordForgetForm'
 
 export const PasswordForget = () => (
   <div>
-    <h1>PasswordForget</h1>
     <PasswordForgetForm />
   </div>
 )
