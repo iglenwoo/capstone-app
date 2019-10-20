@@ -57,19 +57,14 @@ export const SignInForm: FC = props => {
 
   // TODO: sign-in
   const onSubmit = (event: SyntheticEvent) => {
-    console.log('start')
-
     const user = auth.signin(email, password)
-    console.info(user)
     user
       .then(u => {
-        console.log(u)
         setEmail('')
         setPassword('')
         history.push(routes.HOME)
       })
       .catch(error => {
-        console.log(error)
         setError(error.message)
         setShowDialog(true)
       })
