@@ -15,7 +15,7 @@ import {
   TextField,
   Typography,
 } from '@material-ui/core'
-import LockOutlinedIcon from '@material-ui/core/SvgIcon/SvgIcon'
+import { LockOutlined as LockOutlinedIcon } from '@material-ui/icons'
 import Copyright from '../../components/Copyright'
 import { AlertDialog } from '../../components/Dialog/AlertDialog'
 import { Auth, useAuth } from '../../components/FirebaseAuth/use-auth'
@@ -45,9 +45,7 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-export const SignInForm: FC<{
-  history?: any
-}> = props => {
+export const SignInForm: FC = props => {
   const auth: Auth = useAuth()
   const history = useHistory()
   const [email, setEmail] = useState<string>('')

@@ -5,7 +5,6 @@ import { SignUpForm } from './SingUpForm'
 
 export const SignUp = () => (
   <div>
-    <h1>SignUp</h1>
     <SignUpForm />
   </div>
 )

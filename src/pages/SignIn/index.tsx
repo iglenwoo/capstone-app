@@ -3,10 +3,9 @@ import { PasswordForgetLink } from '../PasswordForget'
 import { SignUpLink } from '../SignUp'
 import { SignInForm } from './SignInForm'
 
-export const SignIn = ({ history }: { [key: string]: any }) => (
+export const SignIn = () => (
   <div>
-    <h1>SignIn</h1>
-    <SignInForm history={history} />
+    <SignInForm />
     <SignUpLink />
     <PasswordForgetLink />
   </div>
