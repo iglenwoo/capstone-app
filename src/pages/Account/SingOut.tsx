@@ -16,7 +16,7 @@ export const SignOut = () => {
         type="submit"
         fullWidth
         variant="contained"
-        color="primary"
+        color="secondary"
         onClick={onClick}
       >
         Sign Out
