@@ -7,7 +7,6 @@ import {
   Redirect,
 } from 'react-router-dom'
 import * as routes from '../../constants/routes'
-import { Navigation } from './Navigation'
 import { Landing } from '../../pages/Landing'
 import { SignUp } from '../../pages/SignUp'
 import { SignIn } from '../../pages/SignIn'
@@ -15,6 +14,7 @@ import { PasswordForget } from '../../pages/PasswordForget'
 import { Home } from '../../pages/Home'
 import { Account } from '../../pages/Account'
 import { Auth, useAuth } from '../FirebaseAuth/use-auth'
+import { TopBar } from './TopBar'
 
 interface PrivateRouteProps extends RouteProps {
   component: any
@@ -47,8 +47,7 @@ export function App() {
   return (
     <Router>
       <div>
-        <Navigation />
-        <hr />
+        <TopBar />
         <Switch>
           <Route exact={true} path={routes.LANDING} component={Landing} />
           <Route exact={true} path={routes.SIGN_UP} component={SignUp} />
