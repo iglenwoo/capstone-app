@@ -22,12 +22,64 @@ const useStyles = makeStyles(theme => ({
 
 export const TopBar = () => {
   const auth: Auth = useAuth()
+
+  const classes = useStyles()
+
+  return (
+    <div className={classes.root}>
+      <AppBar position="static">
+        <Toolbar>{auth.user ? <AuthedButtons /> : <UnAuthedButtons />}</Toolbar>
+      </AppBar>
+    </div>
+  )
+}
+
+const AuthedButtons = () => {
+  const auth: Auth = useAuth()
   const history = useHistory()
 
+  const handleProfile = (event: SyntheticEvent) => {
+    event.preventDefault()
+    history.push(routes.PROFILE)
+  }
+  const handleProjects = (event: SyntheticEvent) => {
+    event.preventDefault()
+    history.push(routes.PROJECTS)
+  }
+  const handleMyProjects = (event: SyntheticEvent) => {
+    event.preventDefault()
+    history.push(routes.MY_PROJECTS)
+  }
   const handleSingOut = (event: SyntheticEvent) => {
     event.preventDefault()
     auth.signout()
   }
+
+  const classes = useStyles()
+
+  return (
+    <>
+      <div className={classes.title}>
+        <Button color="inherit" onClick={handleProfile}>
+          Profile
+        </Button>
+        <Button color="inherit" onClick={handleProjects}>
+          Projects
+        </Button>
+        <Button color="inherit" onClick={handleMyProjects}>
+          My Projects
+        </Button>
+      </div>
+      <Button color="inherit" onClick={handleSingOut}>
+        Sign Out
+      </Button>
+    </>
+  )
+}
+
+const UnAuthedButtons = () => {
+  const history = useHistory()
+
   const handleSignUp = (event: SyntheticEvent) => {
     event.preventDefault()
     history.push(routes.SIGN_UP)
@@ -40,35 +92,16 @@ export const TopBar = () => {
   const classes = useStyles()
 
   return (
-    <div className={classes.root}>
-      <AppBar position="static">
-        <Toolbar>
-          {auth.user ? (
-            <>
-              <div className={classes.title}>
-                <Button color="inherit">Profile</Button>
-                <Button color="inherit">Projects</Button>
-                <Button color="inherit">My Projects</Button>
-              </div>
-              <Button color="inherit" onClick={handleSingOut}>
-                Sign Out
-              </Button>
-            </>
-          ) : (
-            <>
-              <Typography variant="h6" className={classes.title}>
-                TeamUpShare
-              </Typography>
-              <Button color="inherit" onClick={handleSignUp}>
-                Sign Up
-              </Button>
-              <Button color="inherit" onClick={handleSignIn}>
-                Sign In
-              </Button>
-            </>
-          )}
-        </Toolbar>
-      </AppBar>
-    </div>
+    <>
+      <Typography variant="h6" className={classes.title}>
+        TeamUpShare
+      </Typography>
+      <Button color="inherit" onClick={handleSignUp}>
+        Sign Up
+      </Button>
+      <Button color="inherit" onClick={handleSignIn}>
+        Sign In
+      </Button>
+    </>
   )
 }

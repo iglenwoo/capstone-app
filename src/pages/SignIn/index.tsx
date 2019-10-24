@@ -41,7 +41,7 @@ export const SignIn: FC = () => {
       .then(u => {
         setEmail('')
         setPassword('')
-        history.push(routes.HOME)
+        history.push(routes.LANDING)
       })
       .catch(error => {
         setError(error.message)

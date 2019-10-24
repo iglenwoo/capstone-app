@@ -7,17 +7,47 @@ import {
   Redirect,
 } from 'react-router-dom'
 import * as routes from '../../constants/routes'
-import { Landing } from '../../pages/Landing'
+import { Auth, useAuth } from '../FirebaseAuth/use-auth'
+import { TopBar } from './TopBar'
 import { SignUp } from '../../pages/SignUp'
 import { SignIn } from '../../pages/SignIn'
 import { PasswordForget } from '../../pages/PasswordForget'
-import { Home } from '../../pages/Home'
+import { Landing } from '../../pages/Landing'
+import { Profile } from '../../pages/Profile'
+import { Projects } from '../../pages/Projects'
+import { MyProjects } from '../../pages/MyProjects'
 import { Account } from '../../pages/Account'
-import { Auth, useAuth } from '../FirebaseAuth/use-auth'
-import { TopBar } from './TopBar'
 
 interface PrivateRouteProps extends RouteProps {
   component: any
+}
+
+export function App() {
+  return (
+    <Router>
+      <div>
+        <TopBar />
+        <Switch>
+          <Route exact path={routes.SIGN_UP} component={SignUp} />
+          <Route exact path={routes.SIGN_IN} component={SignIn} />
+          <Route
+            exact
+            path={routes.PASSWORD_FORGET}
+            component={PasswordForget}
+          />
+          <PrivateRoute exact path={routes.LANDING} component={Landing} />
+          <PrivateRoute exact path={routes.PROFILE} component={Profile} />
+          <PrivateRoute exact path={routes.PROJECTS} component={Projects} />
+          <PrivateRoute
+            exact
+            path={routes.MY_PROJECTS}
+            component={MyProjects}
+          />
+          <PrivateRoute exact path={routes.ACCOUNT} component={Account} />
+        </Switch>
+      </div>
+    </Router>
+  )
 }
 
 const PrivateRoute = (props: PrivateRouteProps) => {
@@ -40,31 +70,5 @@ const PrivateRoute = (props: PrivateRouteProps) => {
         )
       }
     />
-  )
-}
-
-export function App() {
-  return (
-    <Router>
-      <div>
-        <TopBar />
-        <Switch>
-          <Route exact={true} path={routes.LANDING} component={Landing} />
-          <Route exact={true} path={routes.SIGN_UP} component={SignUp} />
-          <Route exact={true} path={routes.SIGN_IN} component={SignIn} />
-          <Route
-            exact={true}
-            path={routes.PASSWORD_FORGET}
-            component={PasswordForget}
-          />
-          <PrivateRoute exact={true} path={routes.HOME} component={Home} />
-          <PrivateRoute
-            exact={true}
-            path={routes.ACCOUNT}
-            component={Account}
-          />
-        </Switch>
-      </div>
-    </Router>
   )
 }
