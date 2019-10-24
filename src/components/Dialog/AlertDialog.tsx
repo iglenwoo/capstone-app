@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import React, { FC, useEffect } from 'react'
 import Button from '@material-ui/core/Button'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
@@ -8,11 +8,18 @@ import DialogTitle from '@material-ui/core/DialogTitle'
 
 export const AlertDialog: FC<{
   message?: string
+  open: boolean
+  onClose: () => void
 }> = props => {
-  const [open, setOpen] = React.useState(false)
+  const [open, setOpen] = React.useState(props.open)
+
+  useEffect(() => {
+    setOpen(props.open)
+  }, [props.open])
 
   const handleClose = () => {
     setOpen(false)
+    props.onClose()
   }
 
   return (

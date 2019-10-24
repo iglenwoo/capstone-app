@@ -1,56 +1,70 @@
 import React from 'react'
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  RouteProps,
+  Redirect,
+} from 'react-router-dom'
 import * as routes from '../../constants/routes'
-import { firebase } from '../../firebase'
-// import SignIn from '../../pages/SignIn'
-import { Navigation } from './Navigation'
 import { Landing } from '../../pages/Landing'
 import { SignUp } from '../../pages/SignUp'
 import { SignIn } from '../../pages/SignIn'
 import { PasswordForget } from '../../pages/PasswordForget'
 import { Home } from '../../pages/Home'
 import { Account } from '../../pages/Account'
-import { withAuthentication } from '../../firebase/withAuthentication'
+import { Auth, useAuth } from '../FirebaseAuth/use-auth'
+import { TopBar } from './TopBar'
 
-class AppComponent extends React.Component {
-  constructor(props: any) {
-    super(props)
-
-    this.state = {
-      authUser: null,
-    }
-  }
-
-  public componentDidMount() {
-    firebase.auth.onAuthStateChanged(authUser => {
-      authUser
-        ? this.setState(() => ({ authUser }))
-        : this.setState(() => ({ authUser: null }))
-    })
-  }
-
-  public render() {
-    return (
-      <Router>
-        <div>
-          <Navigation />
-          <hr />
-          <Switch>
-            <Route exact={true} path={routes.LANDING} component={Landing} />
-            <Route exact={true} path={routes.SIGN_UP} component={SignUp} />
-            <Route exact={true} path={routes.SIGN_IN} component={SignIn} />
-            <Route
-              exact={true}
-              path={routes.PASSWORD_FORGET}
-              component={PasswordForget}
-            />
-            <Route exact={true} path={routes.HOME} component={Home} />
-            <Route exact={true} path={routes.ACCOUNT} component={Account} />
-          </Switch>
-        </div>
-      </Router>
-    )
-  }
+interface PrivateRouteProps extends RouteProps {
+  component: any
 }
 
-export const App = withAuthentication(AppComponent)
+const PrivateRoute = (props: PrivateRouteProps) => {
+  const { component: Component, ...rest } = props
+  const auth: Auth = useAuth()
+
+  return (
+    <Route
+      {...rest}
+      render={routeProps =>
+        auth.user ? (
+          <Component {...routeProps} />
+        ) : (
+          <Redirect
+            to={{
+              pathname: routes.SIGN_IN,
+              state: { from: routeProps.location },
+            }}
+          />
+        )
+      }
+    />
+  )
+}
+
+export function App() {
+  return (
+    <Router>
+      <div>
+        <TopBar />
+        <Switch>
+          <Route exact={true} path={routes.LANDING} component={Landing} />
+          <Route exact={true} path={routes.SIGN_UP} component={SignUp} />
+          <Route exact={true} path={routes.SIGN_IN} component={SignIn} />
+          <Route
+            exact={true}
+            path={routes.PASSWORD_FORGET}
+            component={PasswordForget}
+          />
+          <PrivateRoute exact={true} path={routes.HOME} component={Home} />
+          <PrivateRoute
+            exact={true}
+            path={routes.ACCOUNT}
+            component={Account}
+          />
+        </Switch>
+      </div>
+    </Router>
+  )
+}
