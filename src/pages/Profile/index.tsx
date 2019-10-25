@@ -9,6 +9,7 @@ import {
   Theme,
   Typography,
 } from '@material-ui/core'
+import { PersonalInfo } from './PersonalInfo'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -24,6 +25,10 @@ export const Profile: FC = () => {
 
   const classes = useStyles()
 
+  if (!user) {
+    return <>Please sign in</>
+  }
+
   return (
     <Container component="main" maxWidth="lg">
       <Paper className={classes.root}>
@@ -31,13 +36,10 @@ export const Profile: FC = () => {
           Profile
         </Typography>
         <Typography gutterBottom variant="h5" component="h5">
-          Profile
-        </Typography>
-        <Typography gutterBottom component="p">
-          Paper can be used to build surface or other elements for your
-          application.
+          Email: {user.email}
         </Typography>
       </Paper>
+      <PersonalInfo />
     </Container>
   )
 }
