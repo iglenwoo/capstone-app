@@ -1,6 +1,6 @@
-import React, { SyntheticEvent, useEffect } from 'react'
+import React, { SyntheticEvent } from 'react'
 import { useHistory } from 'react-router-dom'
-import { makeStyles } from '@material-ui/core/styles'
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
@@ -8,17 +8,19 @@ import Button from '@material-ui/core/Button'
 import { Auth, useAuth } from '../FirebaseAuth/use-auth'
 import * as routes from '../../constants/routes'
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    flexGrow: 1,
-  },
-  menuButton: {
-    marginRight: theme.spacing(2),
-  },
-  title: {
-    flexGrow: 1,
-  },
-}))
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      flexGrow: 1,
+    },
+    menuButton: {
+      marginRight: theme.spacing(2),
+    },
+    title: {
+      flexGrow: 1,
+    },
+  })
+)
 
 export const TopBar = () => {
   const auth: Auth = useAuth()
