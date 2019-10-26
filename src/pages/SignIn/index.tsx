@@ -19,7 +19,7 @@ import {
   Typography,
 } from '@material-ui/core'
 import { LockOutlined as LockOutlinedIcon } from '@material-ui/icons'
-import { Link } from 'react-router-dom'
+import { Link, Redirect } from 'react-router-dom'
 import Copyright from '../../components/Copyright'
 import { AlertDialog } from '../../components/Dialog/AlertDialog'
 import { useStyles } from '../../theme'
@@ -54,6 +54,10 @@ export const SignIn: FC = () => {
   const onDialogClose = () => {
     setError('')
     setShowDialog(false)
+  }
+
+  if (auth.user) {
+    return <Redirect to={routes.PROFILE} />
   }
 
   return (
