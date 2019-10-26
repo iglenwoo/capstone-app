@@ -4,10 +4,15 @@ import {
   CardActions,
   CardContent,
   createStyles,
+  Divider,
   Fab,
-  Grid,
+  IconButton,
+  List,
+  ListItem,
+  ListItemSecondaryAction,
+  ListItemText,
   makeStyles,
-  Paper,
+  TextField,
   Theme,
   Typography,
 } from '@material-ui/core'
@@ -15,6 +20,8 @@ import {
   Edit as EditIcon,
   Cancel as CancelIcon,
   Save as SaveIcon,
+  DeleteForever as DeleteForeverIcon,
+  Add as AddIcon,
 } from '@material-ui/icons'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -22,14 +29,11 @@ const useStyles = makeStyles((theme: Theme) =>
     card: {
       minWidth: 275,
     },
-    title: {
-      fontSize: 14,
-    },
     fab: {
       margin: theme.spacing(1),
     },
     paper: {
-      padding: theme.spacing(2),
+      padding: theme.spacing(1),
       textAlign: 'center',
       color: theme.palette.text.secondary,
     },
@@ -74,20 +78,62 @@ export const PersonalInfo: FC = () => {
           IDs
         </Typography>
         {ids.length ? (
-          <Grid container spacing={3}>
+          <List>
             {ids.map(id => (
               <>
-                <Grid item xs={12} sm={6}>
-                  <Paper className={classes.paper}>{id.service}</Paper>
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <Paper className={classes.paper}>{id.value}</Paper>
-                </Grid>
+                <Divider />
+                <ListItem key={id.service}>
+                  {onEdit ? (
+                    <>
+                      <ListItemText primary={id.service} />
+                      <ListItemText primary={id.value} />
+                      <ListItemSecondaryAction>
+                        <IconButton edge="end" aria-label="delete">
+                          <DeleteForeverIcon color="secondary" />
+                        </IconButton>
+                      </ListItemSecondaryAction>
+                    </>
+                  ) : (
+                    <>
+                      <ListItemText primary={id.service} />
+                      <ListItemText primary={id.value} />
+                    </>
+                  )}
+                </ListItem>
               </>
             ))}
-          </Grid>
+          </List>
         ) : (
           <p>Please add your IDs.</p>
+        )}
+        {onEdit && (
+          <form noValidate autoComplete="off">
+            <Divider />
+            <TextField
+              required
+              id="standard-required"
+              label="Required"
+              placeholder="Service name e.g. Github"
+              margin="normal"
+              variant="filled"
+            />
+            <TextField
+              required
+              id="standard-required"
+              label="Required"
+              placeholder="id"
+              margin="normal"
+              variant="filled"
+            />
+            <Fab
+              color="primary"
+              aria-label="add"
+              size="small"
+              className={classes.fab}
+            >
+              <AddIcon />
+            </Fab>
+          </form>
         )}
       </CardContent>
       <CardActions>
