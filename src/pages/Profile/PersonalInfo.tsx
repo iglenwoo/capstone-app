@@ -21,7 +21,7 @@ import {
   Cancel as CancelIcon,
   Save as SaveIcon,
   RemoveCircle as RemoveCircleIcon,
-  Add as AddIcon,
+  AddCircle as AddCircleIcon,
 } from '@material-ui/icons'
 import { Id } from './index'
 
@@ -51,10 +51,6 @@ export const PersonalInfo: FC<{
 
   //TODO: fetch ids
 
-  //TODO: edit ids
-
-  //TODO: add new ids
-
   const handleCancel = (event: SyntheticEvent) => {
     event.preventDefault()
     setIds(props.ids)
@@ -73,13 +69,32 @@ export const PersonalInfo: FC<{
   const handleAddId = (e: SyntheticEvent) => {
     e.preventDefault()
 
-    // TODO: chk if service exists
+    if (!newService) {
+      alert('Please type a service')
+      return
+    }
+    if (!newId) {
+      alert('Please type an account value')
+      return
+    }
+    if (ids.some(id => id.service.toLowerCase() === newService.toLowerCase())) {
+      alert(`Service [${newService}] already exists`)
+      return
+    }
+
     const newIds = [...props.ids]
     newIds.push({
       service: newService,
       value: newId,
     })
     setIds(newIds)
+    setNewService('')
+    setNewId('')
+  }
+
+  //TODO: Save (1. convert to json, 2. store to Firestore)
+  const handleSave = (e: SyntheticEvent) => {
+    e.preventDefault()
   }
 
   const classes = useStyles()
@@ -129,39 +144,44 @@ export const PersonalInfo: FC<{
               </ListItem>
             </>
           )}
+          <Divider />
+          {onEdit && (
+            <ListItem>
+              <ListItemText>
+                <TextField
+                  required
+                  id="standard-required"
+                  label="Service"
+                  placeholder="Service name"
+                  fullWidth
+                  value={newService}
+                  onChange={e => setNewService(e.currentTarget.value)}
+                />
+              </ListItemText>
+              <ListItemText>
+                <TextField
+                  required
+                  id="standard-required"
+                  label="Id"
+                  placeholder="account"
+                  fullWidth
+                  value={newId}
+                  onChange={e => setNewId(e.currentTarget.value)}
+                />
+              </ListItemText>
+              <ListItemSecondaryAction>
+                <IconButton
+                  edge="end"
+                  aria-label="add"
+                  color="primary"
+                  onClick={handleAddId}
+                >
+                  <AddCircleIcon />
+                </IconButton>
+              </ListItemSecondaryAction>
+            </ListItem>
+          )}
         </List>
-        {onEdit && (
-          <form noValidate autoComplete="off">
-            <Divider />
-            <TextField
-              required
-              id="standard-required"
-              label="Service"
-              placeholder="Service name"
-              margin="normal"
-              value={newService}
-              onChange={e => setNewService(e.currentTarget.value)}
-            />
-            <TextField
-              required
-              id="standard-required"
-              label="Id"
-              placeholder="account"
-              margin="normal"
-              value={newId}
-              onChange={e => setNewId(e.currentTarget.value)}
-            />
-            <Fab
-              color="primary"
-              aria-label="add"
-              size="small"
-              className={classes.fab}
-              onClick={handleAddId}
-            >
-              <AddIcon />
-            </Fab>
-          </form>
-        )}
       </CardContent>
       <CardActions>
         {onEdit ? (
@@ -180,6 +200,7 @@ export const PersonalInfo: FC<{
               size="small"
               aria-label="save"
               className={classes.fab}
+              onClick={handleSave}
             >
               <SaveIcon />
             </Fab>
