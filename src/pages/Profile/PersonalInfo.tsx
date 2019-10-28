@@ -46,6 +46,8 @@ export const PersonalInfo: FC<{
 }> = props => {
   const [ids, setIds] = useState<Id[]>(props.ids)
   const [onEdit, setOnEdit] = useState(false)
+  const [newService, setNewService] = useState('')
+  const [newId, setNewId] = useState('')
 
   //TODO: fetch ids
 
@@ -65,6 +67,18 @@ export const PersonalInfo: FC<{
 
   const handleRemoveItem = (index: number) => {
     const newIds = ids.filter(id => id.value !== ids[index].value)
+    setIds(newIds)
+  }
+
+  const handleAddId = (e: SyntheticEvent) => {
+    e.preventDefault()
+
+    // TODO: chk if service exists
+    const newIds = [...props.ids]
+    newIds.push({
+      service: newService,
+      value: newId,
+    })
     setIds(newIds)
   }
 
@@ -125,6 +139,8 @@ export const PersonalInfo: FC<{
               label="Service"
               placeholder="Service name"
               margin="normal"
+              value={newService}
+              onChange={e => setNewService(e.currentTarget.value)}
             />
             <TextField
               required
@@ -132,12 +148,15 @@ export const PersonalInfo: FC<{
               label="Id"
               placeholder="account"
               margin="normal"
+              value={newId}
+              onChange={e => setNewId(e.currentTarget.value)}
             />
             <Fab
               color="primary"
               aria-label="add"
               size="small"
               className={classes.fab}
+              onClick={handleAddId}
             >
               <AddIcon />
             </Fab>
