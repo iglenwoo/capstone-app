@@ -1,4 +1,4 @@
-import { FC, default as React, useState, SyntheticEvent } from 'react'
+import { FC, default as React, useState, SyntheticEvent, Fragment } from 'react'
 import {
   Card,
   CardActions,
@@ -20,9 +20,10 @@ import {
   Edit as EditIcon,
   Cancel as CancelIcon,
   Save as SaveIcon,
-  DeleteForever as DeleteForeverIcon,
+  RemoveCircle as RemoveCircleIcon,
   Add as AddIcon,
 } from '@material-ui/icons'
+import { Id } from './index'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -40,18 +41,10 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-interface Id {
-  service: string
-  value: string
-}
-
-export const PersonalInfo: FC = () => {
-  const mockIds: Id[] = [
-    { service: 'Github', value: 'github-id' },
-    { service: 'Trello', value: 'trello-id' },
-    { service: 'WhatsApp', value: 'whatsapp-id' },
-  ]
-  const [ids, setIds] = useState<Id[]>(mockIds)
+export const PersonalInfo: FC<{
+  ids: Id[]
+}> = props => {
+  const [ids, setIds] = useState<Id[]>(props.ids)
   const [onEdit, setOnEdit] = useState(false)
 
   //TODO: fetch ids
@@ -62,11 +55,17 @@ export const PersonalInfo: FC = () => {
 
   const handleCancel = (event: SyntheticEvent) => {
     event.preventDefault()
+    setIds(props.ids)
     setOnEdit(false)
   }
   const handleEdit = (event: SyntheticEvent) => {
     event.preventDefault()
     setOnEdit(!onEdit)
+  }
+
+  const handleRemoveItem = (index: number) => {
+    const newIds = ids.filter(id => id.value !== ids[index].value)
+    setIds(newIds)
   }
 
   const classes = useStyles()
@@ -77,19 +76,25 @@ export const PersonalInfo: FC = () => {
         <Typography variant="h5" component="h2" gutterBottom>
           IDs
         </Typography>
-        {ids.length ? (
-          <List>
-            {ids.map(id => (
-              <>
+        <List>
+          {ids.length ? (
+            ids.map((id, index) => (
+              <Fragment key={`${id.service}.${index}`}>
                 <Divider />
-                <ListItem key={id.service}>
+                <ListItem>
                   {onEdit ? (
                     <>
                       <ListItemText primary={id.service} />
                       <ListItemText primary={id.value} />
                       <ListItemSecondaryAction>
-                        <IconButton edge="end" aria-label="delete">
-                          <DeleteForeverIcon color="secondary" />
+                        <IconButton
+                          edge="end"
+                          aria-label="delete"
+                          onClick={() => {
+                            handleRemoveItem(index)
+                          }}
+                        >
+                          <RemoveCircleIcon color="secondary" />
                         </IconButton>
                       </ListItemSecondaryAction>
                     </>
@@ -100,30 +105,33 @@ export const PersonalInfo: FC = () => {
                     </>
                   )}
                 </ListItem>
-              </>
-            ))}
-          </List>
-        ) : (
-          <p>Please add your IDs.</p>
-        )}
+              </Fragment>
+            ))
+          ) : (
+            <>
+              <Divider />
+              <ListItem>
+                <ListItemText primary="Please add your IDs." />
+              </ListItem>
+            </>
+          )}
+        </List>
         {onEdit && (
           <form noValidate autoComplete="off">
             <Divider />
             <TextField
               required
               id="standard-required"
-              label="Required"
-              placeholder="Service name e.g. Github"
+              label="Service"
+              placeholder="Service name"
               margin="normal"
-              variant="filled"
             />
             <TextField
               required
               id="standard-required"
-              label="Required"
-              placeholder="id"
+              label="Id"
+              placeholder="account"
               margin="normal"
-              variant="filled"
             />
             <Fab
               color="primary"
