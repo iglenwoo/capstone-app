@@ -9,7 +9,7 @@ import {
   Theme,
   Typography,
 } from '@material-ui/core'
-import { PersonalInfo } from './PersonalInfo'
+import { Ids } from './Ids'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -50,7 +50,7 @@ export const Profile: FC = () => {
           Email: {user.email}
         </Typography>
       </Paper>
-      <PersonalInfo ids={mockIds} />
+      <Ids ids={mockIds} />
     </Container>
   )
 }
