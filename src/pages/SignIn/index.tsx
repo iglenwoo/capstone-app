@@ -34,7 +34,6 @@ export const SignIn: FC = () => {
 
   const classes = useStyles()
 
-  // TODO: sign-in
   const onSubmit = (event: SyntheticEvent) => {
     const user = auth.signin(email, password)
     user
