@@ -106,6 +106,10 @@ export const PersonalInfo: FC<{
           IDs
         </Typography>
         <List>
+          <ListItem>
+            <ListItemText secondary="Service" />
+            <ListItemText secondary="Account" />
+          </ListItem>
           {ids.length ? (
             ids.map((id, index) => (
               <Fragment key={`${id.service}.${index}`}>
@@ -113,8 +117,12 @@ export const PersonalInfo: FC<{
                 <ListItem>
                   {onEdit ? (
                     <>
-                      <ListItemText primary={id.service} />
-                      <ListItemText primary={id.value} />
+                      <ListItemText>
+                        <TextField required fullWidth value={id.service} />
+                      </ListItemText>
+                      <ListItemText>
+                        <TextField required fullWidth value={id.value} />
+                      </ListItemText>
                       <ListItemSecondaryAction>
                         <IconButton
                           edge="end"
