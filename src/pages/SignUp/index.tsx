@@ -9,7 +9,6 @@ import {
   FormControlLabel,
   Grid,
   Link,
-  makeStyles,
   TextField,
   Typography,
 } from '@material-ui/core'
@@ -19,18 +18,30 @@ import { FC } from 'react'
 import { useState } from 'react'
 import { SyntheticEvent } from 'react'
 import { useStyles } from '../../theme'
+import { useAuth } from '../../components/FirebaseAuth/use-auth'
 
 export const SignUp: FC = () => {
-  const classes = useStyles()
-
+  const { firestore, signup } = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [isInvalid, setIsInvalid] = useState(true)
-  const [error, setError] = useState()
 
-  const onSubmit = (event: SyntheticEvent) => {
+  const onSubmit = async (event: SyntheticEvent) => {
     event.preventDefault()
+    const newUser: firebase.User | null = await signup(email, password)
+    if (!newUser) {
+      alert('Sorry, something went wrong. Please try to signup again.')
+      return
+    }
+
+    firestore
+      .collection('users')
+      .doc(newUser.uid)
+      .set({
+        email: newUser.email,
+      })
   }
+
+  const classes = useStyles()
 
   return (
     <Container component="main" maxWidth="xs">

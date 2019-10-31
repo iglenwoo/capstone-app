@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { FC } from 'react'
+import { Redirect } from 'react-router-dom'
 import { Auth, useAuth } from '../../components/FirebaseAuth/use-auth'
 import {
   Container,
@@ -10,6 +11,7 @@ import {
   Typography,
 } from '@material-ui/core'
 import { Ids } from './Ids'
+import { SIGN_IN } from '../../constants/routes'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -36,8 +38,8 @@ export const Profile: FC = () => {
 
   const classes = useStyles()
 
-  if (!user) {
-    return <>Please sign in</>
+  if (user === null) {
+    return <Redirect to={SIGN_IN} />
   }
 
   return (
