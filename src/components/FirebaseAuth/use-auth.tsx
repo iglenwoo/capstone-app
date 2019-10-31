@@ -17,7 +17,11 @@ const firestore: firebase.firestore.Firestore = firebase.firestore()
 export interface Auth {
   firestore: firebase.firestore.Firestore
   user: firebase.User | null
-  signin: (email: string, password: string) => Promise<firebase.User | null>
+  signin: (
+    email: string,
+    password: string,
+    shouldPersist: boolean
+  ) => Promise<firebase.User | null>
   signup: (email: string, password: string) => Promise<firebase.User | null>
   signout: () => void
   sendPasswordResetEmail: (email: string) => Promise<boolean>
@@ -27,7 +31,8 @@ export interface Auth {
 const authContext = createContext<Auth>({
   firestore,
   user: null,
-  signin: (email: string, password: string) => Promise.resolve(null),
+  signin: (email: string, password: string, shouldPersist: boolean) =>
+    Promise.resolve(null),
   signup: (email: string, password: string) => Promise.resolve(null),
   signout: () => undefined,
   sendPasswordResetEmail: (email: string) => Promise.resolve(false),
@@ -56,11 +61,18 @@ function useProvideAuth(): Auth {
   // ... to save the user to state.
   const signin = (
     email: string,
-    password: string
+    password: string,
+    shouldPersist: boolean
   ): Promise<firebase.User | null> => {
+    const persistence = shouldPersist
+      ? firebase.auth.Auth.Persistence.LOCAL
+      : firebase.auth.Auth.Persistence.SESSION
     return firebase
       .auth()
-      .signInWithEmailAndPassword(email, password)
+      .setPersistence(persistence)
+      .then(() => {
+        return firebase.auth().signInWithEmailAndPassword(email, password)
+      })
       .then(response => {
         setUser(response.user)
         return response.user

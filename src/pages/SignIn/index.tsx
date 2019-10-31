@@ -29,13 +29,14 @@ export const SignIn: FC = () => {
   const history = useHistory()
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
+  const [shouldPersist, setShouldPersist] = useState<boolean>(false)
   const [error, setError] = useState<string>()
   const [showDialog, setShowDialog] = useState<boolean>(false)
 
   const classes = useStyles()
 
   const onSubmit = (event: SyntheticEvent) => {
-    const user = auth.signin(email, password)
+    const user = auth.signin(email, password, shouldPersist)
     user
       .then(u => {
         setEmail('')
@@ -101,7 +102,16 @@ export const SignIn: FC = () => {
             onChange={e => setPassword(e.currentTarget.value)}
           />
           <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
+            control={
+              <Checkbox
+                value="remember"
+                color="primary"
+                checked={shouldPersist}
+                onChange={e => {
+                  setShouldPersist(!shouldPersist)
+                }}
+              />
+            }
             label="Remember me"
           />
           <Button
