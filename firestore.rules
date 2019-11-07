@@ -1,8 +1,41 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /users/{document=**} {
-      allow read, write: if true;
+
+    match /users/{userId} {
+      allow create: if isSignedIn();
+      allow update, delete: if isOwnerOf(userId);
+      allow read: if isOwnerOf(userId);
+    }
+
+    match /projects/{projectId} {
+      allow create: if isSignedIn() && isValidProject();
+      allow update, delete: if currentUser().uid in existingData().owners;
+      allow read: if existingData().show;
+
+      function isValidProject() {
+        return
+          incomingData().code != null &&
+          incomingData().title != null &&
+          incomingData().show != null;
+      }
+    }
+
+    function currentUser() {
+      return request.auth;
+    }
+    function isSignedIn() {
+      return currentUser() != null;
+    }
+    function isOwnerOf(userId) {
+      return currentUser().uid == userId;
+    }
+
+    function existingData() {
+      return resource.data;
+    }
+    function incomingData() {
+      return request.resource.data;
     }
   }
 }
