@@ -19,6 +19,7 @@ import { useState } from 'react'
 import { SyntheticEvent } from 'react'
 import { useStyles } from '../../theme'
 import { useAuth } from '../../components/FirebaseAuth/use-auth'
+import firebase from 'firebase'
 
 export const SignUp: FC = () => {
   const { firestore, signup } = useAuth()
