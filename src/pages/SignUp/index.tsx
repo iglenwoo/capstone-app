@@ -1,14 +1,13 @@
 import * as React from 'react'
+import { Link } from 'react-router-dom'
 import {
   Avatar,
   Box,
   Button,
-  Checkbox,
   Container,
   CssBaseline,
-  FormControlLabel,
   Grid,
-  Link,
+  Link as LinkUI,
   TextField,
   Typography,
 } from '@material-ui/core'
@@ -20,6 +19,7 @@ import { SyntheticEvent } from 'react'
 import { useStyles } from '../../theme'
 import { useAuth } from '../../components/FirebaseAuth/use-auth'
 import firebase from 'firebase'
+import * as routes from '../../constants/routes'
 
 export const SignUp: FC = () => {
   const { firestore, signup } = useAuth()
@@ -84,12 +84,6 @@ export const SignUp: FC = () => {
                 onChange={e => setPassword(e.currentTarget.value)}
               />
             </Grid>
-            <Grid item xs={12}>
-              <FormControlLabel
-                control={<Checkbox value="allowExtraEmails" color="primary" />}
-                label="I want to receive inspiration, marketing promotions and updates via email."
-              />
-            </Grid>
           </Grid>
           <Button
             type="submit"
@@ -102,9 +96,14 @@ export const SignUp: FC = () => {
           </Button>
           <Grid container justify="flex-end">
             <Grid item>
-              <Link href="#" variant="body2">
+              <LinkUI
+                href="#"
+                variant="body2"
+                component={Link}
+                to={routes.SIGN_IN}
+              >
                 Already have an account? Sign in
-              </Link>
+              </LinkUI>
             </Grid>
           </Grid>
         </form>
