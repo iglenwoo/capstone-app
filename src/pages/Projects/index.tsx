@@ -22,6 +22,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       justifyContext: 'center',
       alignItems: 'center',
+      flexWrap: 'wrap',
     },
   })
 )
@@ -35,22 +36,33 @@ export const Projects = () => {
     <Container component="main" maxWidth="lg">
       <Card className={classes.card}>
         <CardContent>
-          <Box className={classes.fieldContainer}>
-            <Box flexGrow={2} mx={1}>
+          <Box className={classes.fieldContainer} mb={2}>
+            <Box flexGrow={1} mx={1}>
               <TextField
                 id="project-title"
                 label="Project Title"
+                placeholder="Capstone Project"
+                helperText="Project full name"
                 margin="dense"
                 variant="outlined"
                 fullWidth
               />
             </Box>
             <Box flexGrow={1} mx={1}>
-              <Button variant="contained" color="primary" fullWidth>
-                Create Project
-              </Button>
+              <TextField
+                id="project-code"
+                label="Project Code"
+                placeholder="Capstone-Project"
+                helperText="Project Unique code (no white spaces)"
+                margin="dense"
+                variant="outlined"
+                fullWidth
+              />
             </Box>
           </Box>
+          <Button variant="contained" color="primary" fullWidth>
+            Create Project
+          </Button>
         </CardContent>
       </Card>
     </Container>
