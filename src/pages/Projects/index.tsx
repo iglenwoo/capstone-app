@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme: Theme) =>
     fieldContainer: {
       display: 'flex',
       justifyContext: 'center',
-      alignItems: 'center',
+      alignItems: 'top',
       flexWrap: 'wrap',
     },
   })
@@ -37,18 +37,7 @@ export const Projects = () => {
       <Card className={classes.card}>
         <CardContent>
           <Box className={classes.fieldContainer} mb={2}>
-            <Box flexGrow={1} mx={1}>
-              <TextField
-                id="project-title"
-                label="Project Title"
-                placeholder="Capstone Project"
-                helperText="Project full name"
-                margin="dense"
-                variant="outlined"
-                fullWidth
-              />
-            </Box>
-            <Box flexGrow={1} mx={1}>
+            <Box flexGrow={7} mx={1}>
               <TextField
                 id="project-code"
                 label="Project Code"
@@ -59,10 +48,45 @@ export const Projects = () => {
                 fullWidth
               />
             </Box>
+            <Box flexGrow={1} mx={1} pt={1}>
+              <Button variant="contained" color="secondary" fullWidth>
+                Create
+              </Button>
+            </Box>
           </Box>
-          <Button variant="contained" color="primary" fullWidth>
-            Create Project
-          </Button>
+        </CardContent>
+      </Card>
+      <Card className={classes.card}>
+        <CardContent>
+          <Box className={classes.fieldContainer} mb={2}>
+            <Box flexGrow={2} mx={1}>
+              <TextField
+                id="project-code"
+                label="Project Code"
+                placeholder="Capstone-Project"
+                helperText="Project Unique code (no white spaces)"
+                margin="dense"
+                variant="outlined"
+                fullWidth
+              />
+            </Box>
+            <Box flexGrow={2} mx={1}>
+              <TextField
+                id="project-password"
+                label="Password"
+                type="password"
+                helperText="Password (no white spaces, at least 8 characters)"
+                margin="dense"
+                variant="outlined"
+                fullWidth
+              />
+            </Box>
+            <Box flexGrow={1} mx={1} pt={1}>
+              <Button variant="contained" color="primary" fullWidth>
+                Join
+              </Button>
+            </Box>
+          </Box>
         </CardContent>
       </Card>
     </Container>
