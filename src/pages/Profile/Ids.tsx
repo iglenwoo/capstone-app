@@ -81,6 +81,7 @@ export const Ids: FC<{}> = props => {
   }, [])
 
   const handleRemoveId = (index: number) => {
+    //TODO: remove from Firebase
     const newIds = ids.filter(id => id.value !== ids[index].value)
     setIds(newIds)
   }
