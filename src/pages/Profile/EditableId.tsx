@@ -18,7 +18,7 @@ import {
   Cancel as CancelIcon,
   Save as SaveIcon,
 } from '@material-ui/icons'
-import { Id } from './index'
+import { Id } from './Ids'
 import { IdContext } from './Ids'
 
 export const EditableId: FC<{

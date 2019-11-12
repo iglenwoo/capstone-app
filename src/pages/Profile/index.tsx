@@ -22,17 +22,6 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export interface Id {
-  service: string
-  value: string
-}
-
-const mockIds: Id[] = [
-  { service: 'Github', value: 'github-id' },
-  { service: 'Trello', value: 'trello-id' },
-  { service: 'WhatsApp', value: 'whatsapp-id' },
-]
-
 export const Profile: FC = () => {
   const { user }: Auth = useAuth()
 
@@ -52,7 +41,7 @@ export const Profile: FC = () => {
           Email: {user.email}
         </Typography>
       </Paper>
-      <Ids ids={mockIds} />
+      <Ids />
     </Container>
   )
 }

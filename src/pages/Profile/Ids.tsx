@@ -4,6 +4,7 @@ import {
   useState,
   SyntheticEvent,
   createContext,
+  useEffect,
 } from 'react'
 import {
   Card,
@@ -21,8 +22,8 @@ import {
   Typography,
 } from '@material-ui/core'
 import { AddCircle as AddCircleIcon } from '@material-ui/icons'
-import { Id } from './index'
 import { EditableId } from './EditableId'
+import { Auth, useAuth } from '../../components/FirebaseAuth/use-auth'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -46,18 +47,38 @@ export const IdContext = createContext<{
   handleRemoveId: () => {},
 })
 
+export interface Id {
+  service: string
+  value: string
+}
+
 const INIT_ID: Id = {
   service: '',
   value: '',
 }
 
-export const Ids: FC<{
-  ids: Id[]
-}> = props => {
-  const [ids, setIds] = useState<Id[]>(props.ids)
+export const Ids: FC<{}> = props => {
+  const { user, firestore }: Auth = useAuth()
+  const [ids, setIds] = useState<Id[]>([])
   const [newId, setNewId] = useState<Id>({ ...INIT_ID })
 
-  //TODO: fetch ids
+  useEffect(() => {
+    if (user === null) return
+
+    firestore
+      .collection('ids')
+      .doc(user.uid)
+      .get()
+      .then(doc => {
+        const data = doc.data()
+        if (data && data.ids) {
+          setIds(data.ids)
+        }
+      })
+      .catch(error => {
+        console.log('Error getting cached document:', error)
+      })
+  }, [])
 
   const handleRemoveId = (index: number) => {
     const newIds = ids.filter(id => id.value !== ids[index].value)
@@ -82,7 +103,7 @@ export const Ids: FC<{
       return
     }
 
-    setIds([...props.ids, newId])
+    setIds([...ids, newId])
     //TODO: Save (1. convert to json, 2. store to Firestore)
 
     setNewId({ ...INIT_ID })
