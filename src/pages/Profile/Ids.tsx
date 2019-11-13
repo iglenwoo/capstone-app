@@ -76,9 +76,9 @@ export const Ids: FC<{}> = props => {
         }
       })
       .catch(error => {
-        console.log('Error getting cached document:', error)
+        console.log('Error getting document:', error)
       })
-  }, [])
+  }, [user, firestore])
 
   const handleRemoveId = (index: number) => {
     //TODO: remove from Firebase
@@ -104,10 +104,22 @@ export const Ids: FC<{}> = props => {
       return
     }
 
-    setIds([...ids, newId])
-    //TODO: Save (1. convert to json, 2. store to Firestore)
-
-    setNewId({ ...INIT_ID })
+    if (user === null) return
+    const newIds = [...ids, newId]
+    const objs = newIds.map(obj => {
+      return Object.assign({}, obj)
+    })
+    firestore
+      .collection('ids')
+      .doc(user.uid)
+      .set({ ids: objs }, { merge: true })
+      .then(doc => {
+        setIds(newIds)
+        setNewId({ ...INIT_ID })
+      })
+      .catch(error => {
+        console.log('Error updating document:', error)
+      })
   }
 
   const classes = useStyles()
