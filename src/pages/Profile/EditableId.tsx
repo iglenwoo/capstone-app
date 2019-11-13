@@ -25,7 +25,7 @@ export const EditableId: FC<{
   id: Id
   index: number
 }> = props => {
-  const { handleRemoveId } = useContext(IdContext)
+  const { handleRemoveId, handleSaveId } = useContext(IdContext)
   const [onEdit, setOnEdit] = useState(false)
   const [id, setId] = useState<Id>(props.id)
 
@@ -36,7 +36,7 @@ export const EditableId: FC<{
   }
   const handleSaveClick = (e: SyntheticEvent) => {
     e.preventDefault()
-    //TODO: save
+    handleSaveId(props.index, id)
     setOnEdit(false)
   }
   const handleEditClick = (e: SyntheticEvent) => {
@@ -45,7 +45,6 @@ export const EditableId: FC<{
   }
   const handleDeleteClick = (e: SyntheticEvent) => {
     e.preventDefault()
-    //TODO: delete
     handleRemoveId(props.index)
   }
 

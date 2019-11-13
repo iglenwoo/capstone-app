@@ -42,8 +42,10 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 export const IdContext = createContext<{
+  handleSaveId: (index: number, newId: Id) => void
   handleRemoveId: (index: number) => void
 }>({
+  handleSaveId: () => {},
   handleRemoveId: () => {},
 })
 
@@ -81,9 +83,16 @@ export const Ids: FC<{}> = props => {
   }, [user, firestore])
 
   const handleRemoveId = (index: number) => {
-    //TODO: remove from Firebase
     const newIds = ids.filter(id => id.value !== ids[index].value)
-    setIds(newIds)
+    setNewIds(newIds, () => {
+      setIds(newIds)
+    })
+  }
+  const handleSaveId = (index: number, newId: Id) => {
+    const newIds = ids.map((id, i) => (index === i ? newId : id))
+    setNewIds(newIds, () => {
+      setIds(newIds)
+    })
   }
 
   const handleAddId = (e: SyntheticEvent) => {
@@ -104,8 +113,15 @@ export const Ids: FC<{}> = props => {
       return
     }
 
-    if (user === null) return
     const newIds = [...ids, newId]
+    setNewIds(newIds, () => {
+      setIds(newIds)
+      setNewId({ ...INIT_ID })
+    })
+  }
+
+  const setNewIds = (newIds: Id[], cb: () => void) => {
+    if (user === null) return
     const objs = newIds.map(obj => {
       return Object.assign({}, obj)
     })
@@ -115,6 +131,7 @@ export const Ids: FC<{}> = props => {
       .set({ ids: objs }, { merge: true })
       .then(doc => {
         setIds(newIds)
+        cb()
         setNewId({ ...INIT_ID })
       })
       .catch(error => {
@@ -125,7 +142,7 @@ export const Ids: FC<{}> = props => {
   const classes = useStyles()
 
   return (
-    <IdContext.Provider value={{ handleRemoveId }}>
+    <IdContext.Provider value={{ handleRemoveId, handleSaveId }}>
       <Card className={classes.card}>
         <CardContent>
           <Typography variant="h5" component="h2" gutterBottom>
