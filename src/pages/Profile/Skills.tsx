@@ -1,4 +1,10 @@
-import { default as React, FC, useEffect, useState } from 'react'
+import {
+  default as React,
+  FC,
+  SyntheticEvent,
+  useEffect,
+  useState,
+} from 'react'
 import {
   createStyles,
   makeStyles,
@@ -8,6 +14,7 @@ import {
   CardContent,
   Box,
   Chip,
+  Button,
 } from '@material-ui/core'
 import { Auth, useAuth } from '../../components/FirebaseAuth/use-auth'
 
@@ -16,12 +23,16 @@ const useStyles = makeStyles((theme: Theme) =>
     card: {
       padding: theme.spacing(1),
     },
+    button: {
+      minWidth: 100,
+    },
   })
 )
 
 export const Skills: FC = props => {
   const { user, firestore }: Auth = useAuth()
   const [skills, setSkills] = useState<String[]>([])
+  const [onEdit, setOnEdit] = useState(false)
 
   useEffect(() => {
     if (user === null) return
@@ -43,17 +54,62 @@ export const Skills: FC = props => {
 
   const classes = useStyles()
 
+  const handleCancelClick = (e: SyntheticEvent) => {
+    e.preventDefault()
+    setOnEdit(false)
+  }
+  const handleEditClick = (e: SyntheticEvent) => {
+    e.preventDefault()
+    setOnEdit(true)
+  }
+
   return (
     <Card className={classes.card}>
       <CardContent>
         <Typography variant="h5" component="h2" gutterBottom>
           Skills
         </Typography>
-        <Box>
+        <Box display="flex" flexWrap="wrap">
           {skills.length ? (
-            skills.map((s, i) => <Chip label={s} key={`${s}-${i}`} />)
+            skills.map((s, i) => (
+              <Box display="inline" mt={1} ml={1}>
+                <Chip label={s} key={`${s}-${i}`} />
+              </Box>
+            ))
           ) : (
             <Typography>None</Typography>
+          )}
+        </Box>
+        <Box mt={1} mx={1} textAlign="right">
+          {onEdit ? (
+            <>
+              <Button
+                variant="contained"
+                color="secondary"
+                className={classes.button}
+              >
+                Save
+              </Button>
+              <Box display="inline" ml={1}>
+                <Button
+                  variant="contained"
+                  color="default"
+                  className={classes.button}
+                  onClick={handleCancelClick}
+                >
+                  Cancel
+                </Button>
+              </Box>
+            </>
+          ) : (
+            <Button
+              variant="contained"
+              color="primary"
+              className={classes.button}
+              onClick={handleEditClick}
+            >
+              Edit
+            </Button>
           )}
         </Box>
       </CardContent>
