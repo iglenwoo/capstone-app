@@ -31,7 +31,8 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export const Skills: FC = props => {
   const { user, firestore }: Auth = useAuth()
-  const [skills, setSkills] = useState<String[]>([])
+  const [skills, setSkills] = useState<string[]>([])
+  const [editingSkills, setEditingSkills] = useState<string[]>([])
   const [onEdit, setOnEdit] = useState(false)
 
   useEffect(() => {
@@ -45,6 +46,7 @@ export const Skills: FC = props => {
         const data = doc.data()
         if (data && data.skills) {
           setSkills(data.skills)
+          setEditingSkills(data.skills)
         }
       })
       .catch(error => {
@@ -52,8 +54,20 @@ export const Skills: FC = props => {
       })
   }, [user, firestore])
 
+  useEffect(() => {
+    if (onEdit) {
+      setEditingSkills(skills)
+    }
+  }, [onEdit])
+
   const classes = useStyles()
 
+  const handleSaveClick = (e: SyntheticEvent) => {
+    e.preventDefault()
+    //TODO: update skills
+    setSkills(editingSkills)
+    setOnEdit(false)
+  }
   const handleCancelClick = (e: SyntheticEvent) => {
     e.preventDefault()
     setOnEdit(false)
@@ -63,6 +77,12 @@ export const Skills: FC = props => {
     setOnEdit(true)
   }
 
+  const handleDeleteClick = (e: SyntheticEvent, skillToDelete: string) => {
+    e.preventDefault()
+    const newSkills = editingSkills.filter(s => s !== skillToDelete)
+    setEditingSkills(newSkills)
+  }
+
   return (
     <Card className={classes.card}>
       <CardContent>
@@ -70,15 +90,31 @@ export const Skills: FC = props => {
           Skills
         </Typography>
         <Box display="flex" flexWrap="wrap">
-          {skills.length ? (
-            skills.map((s, i) => (
-              <Box display="inline" mt={1} ml={1}>
-                <Chip label={s} key={`${s}-${i}`} />
-              </Box>
-            ))
-          ) : (
-            <Typography>None</Typography>
-          )}
+          {onEdit
+            ? editingSkills.map((s, i) => (
+                <Box display="inline" mt={1} ml={1} key={`${s}-${i}`}>
+                  <Chip
+                    label={s}
+                    onDelete={e => {
+                      handleDeleteClick(e, s)
+                    }}
+                  />
+                </Box>
+              ))
+            : skills.map((s, i) => (
+                <Box display="inline" mt={1} ml={1} key={`${s}-${i}`}>
+                  {onEdit ? (
+                    <Chip
+                      label={s}
+                      onDelete={e => {
+                        handleDeleteClick(e, s)
+                      }}
+                    />
+                  ) : (
+                    <Chip key={`${s}-${i}`} label={s} />
+                  )}
+                </Box>
+              ))}
         </Box>
         <Box mt={1} mx={1} textAlign="right">
           {onEdit ? (
@@ -87,6 +123,7 @@ export const Skills: FC = props => {
                 variant="contained"
                 color="secondary"
                 className={classes.button}
+                onClick={handleSaveClick}
               >
                 Save
               </Button>
