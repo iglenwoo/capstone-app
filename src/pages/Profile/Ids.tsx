@@ -30,14 +30,6 @@ const useStyles = makeStyles((theme: Theme) =>
     card: {
       minWidth: 275,
     },
-    fab: {
-      margin: theme.spacing(1),
-    },
-    paper: {
-      padding: theme.spacing(1),
-      textAlign: 'center',
-      color: theme.palette.text.secondary,
-    },
   })
 )
 

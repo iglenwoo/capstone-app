@@ -11,6 +11,7 @@ import {
   Typography,
 } from '@material-ui/core'
 import { Ids } from './Ids'
+import { Skills } from './Skills'
 import { SIGN_IN } from '../../constants/routes'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -42,6 +43,7 @@ export const Profile: FC = () => {
         </Typography>
       </Paper>
       <Ids />
+      <Skills />
     </Container>
   )
 }
