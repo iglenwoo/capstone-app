@@ -3,6 +3,7 @@ import { FC } from 'react'
 import { Redirect } from 'react-router-dom'
 import { Auth, useAuth } from '../../components/FirebaseAuth/use-auth'
 import {
+  Box,
   Container,
   createStyles,
   makeStyles,
@@ -13,12 +14,13 @@ import {
 import { Ids } from './Ids'
 import { Skills } from './Skills'
 import { SIGN_IN } from '../../constants/routes'
+import { Interests } from './Interests'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      marginTop: theme.spacing(5),
-      padding: theme.spacing(3, 2),
+      marginTop: theme.spacing(2),
+      padding: theme.spacing(2),
     },
   })
 )
@@ -35,15 +37,18 @@ export const Profile: FC = () => {
   return (
     <Container component="main" maxWidth="lg">
       <Paper className={classes.root}>
-        <Typography gutterBottom variant="h5" component="h3">
+        <Typography gutterBottom variant="h6">
           Profile
         </Typography>
-        <Typography gutterBottom variant="h5" component="h5">
-          Email: {user.email}
-        </Typography>
+        <Box ml={1}>
+          <Typography gutterBottom variant="body1">
+            Email: {user.email}
+          </Typography>
+        </Box>
       </Paper>
       <Ids />
       <Skills />
+      <Interests />
     </Container>
   )
 }

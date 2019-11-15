@@ -28,7 +28,7 @@ import { Auth, useAuth } from '../../components/FirebaseAuth/use-auth'
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     card: {
-      minWidth: 275,
+      marginTop: theme.spacing(1),
     },
   })
 )
@@ -137,7 +137,7 @@ export const Ids: FC<{}> = props => {
     <IdContext.Provider value={{ handleRemoveId, handleSaveId }}>
       <Card className={classes.card}>
         <CardContent>
-          <Typography variant="h5" component="h2" gutterBottom>
+          <Typography variant="h6" gutterBottom>
             IDs
           </Typography>
           <List>

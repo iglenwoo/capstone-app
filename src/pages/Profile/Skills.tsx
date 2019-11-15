@@ -24,7 +24,7 @@ import { Auth, useAuth } from '../../components/FirebaseAuth/use-auth'
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     card: {
-      padding: theme.spacing(1),
+      marginTop: theme.spacing(1),
     },
     button: {
       minWidth: 100,
@@ -114,7 +114,7 @@ export const Skills: FC = props => {
   return (
     <Card className={classes.card}>
       <CardContent>
-        <Typography variant="h5" component="h2" gutterBottom>
+        <Typography variant="h6" gutterBottom>
           Skills
         </Typography>
         <Box display="flex" flexWrap="wrap">
