@@ -20,6 +20,12 @@ service cloud.firestore {
       allow read: if isOwnerOf(userId);
     }
 
+    match /interests/{userId} {
+      allow create: if isSignedIn();
+      allow update, delete: if isOwnerOf(userId);
+      allow read: if isOwnerOf(userId);
+    }
+
     match /projects/{projectId} {
       allow create: if isSignedIn() && isValidProject();
       allow update, delete: if currentUser().uid in existingData().owners;
