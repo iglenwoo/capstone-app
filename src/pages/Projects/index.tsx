@@ -15,14 +15,19 @@ import {
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     card: {
-      marginTop: theme.spacing(5),
-      padding: theme.spacing(3, 2),
+      marginTop: theme.spacing(2),
+      // padding: theme.spacing(3, 2),
     },
     fieldContainer: {
       display: 'flex',
       justifyContext: 'center',
       alignItems: 'top',
       flexWrap: 'wrap',
+    },
+    button: {
+      minWidth: 100,
+      maxHeight: 36,
+      marginLeft: theme.spacing(1),
     },
   })
 )
@@ -37,7 +42,7 @@ export const Projects = () => {
       <Card className={classes.card}>
         <CardContent>
           <Box className={classes.fieldContainer} mb={2}>
-            <Box flexGrow={7} mx={1}>
+            <Box flexGrow={1} mx={1}>
               <TextField
                 id="project-code"
                 label="Project Code"
@@ -48,8 +53,12 @@ export const Projects = () => {
                 fullWidth
               />
             </Box>
-            <Box flexGrow={1} mx={1} pt={1}>
-              <Button variant="contained" color="secondary" fullWidth>
+            <Box mx={1} pt={1}>
+              <Button
+                variant="contained"
+                color="secondary"
+                className={classes.button}
+              >
                 Create
               </Button>
             </Box>
@@ -81,8 +90,12 @@ export const Projects = () => {
                 fullWidth
               />
             </Box>
-            <Box flexGrow={1} mx={1} pt={1}>
-              <Button variant="contained" color="primary" fullWidth>
+            <Box mx={1} pt={1}>
+              <Button
+                variant="contained"
+                color="primary"
+                className={classes.button}
+              >
                 Join
               </Button>
             </Box>
