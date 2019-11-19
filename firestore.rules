@@ -1,6 +1,9 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    function prefix() {
+      return /databases/$(database)/documents;
+    }
 
     match /users/{userId} {
       allow create: if isSignedIn();
@@ -26,22 +29,28 @@ service cloud.firestore {
       allow read: if isOwnerOf(userId);
     }
 
-    match /projects/{projectId} {
-      allow create: if isSignedIn() && isValidProject();
-      allow update, delete: if currentUser().uid == existingData().owner;
-      allow read: if isValidUser();
+    match /projects/{projectCode} {
+      allow create: if isSignedIn() && notExisting(projectCode) && isValidProject();
+      allow update, delete: if currentUser().email == existingData().owner;
+      allow read: if (existing(projectCode) && isValidUser()) || (notExisting(projectCode) && isSignedIn());
+
+      function existing(code) {
+        return exists(/$(prefix())/projects/$(code))
+      }
+      function notExisting(code) {
+        return !existing(code)
+      }
 
       function isValidProject() {
         return
           incomingData().code != null &&
-          incomingData().password != null &&
           incomingData().owner != null;
       }
 
       function isValidUser() {
         return
-          existingData().owner == currentUser().uid ||
-          existingData().owner in existingData().members
+          existingData().owner == currentUser().token.email ||
+          existingData().owner in existingData().members;
       }
     }
 
