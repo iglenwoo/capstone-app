@@ -28,14 +28,20 @@ service cloud.firestore {
 
     match /projects/{projectId} {
       allow create: if isSignedIn() && isValidProject();
-      allow update, delete: if currentUser().uid in existingData().owners;
-      allow read: if existingData().show;
+      allow update, delete: if currentUser().uid == existingData().owner;
+      allow read: if isValidUser();
 
       function isValidProject() {
         return
           incomingData().code != null &&
-          incomingData().title != null &&
-          incomingData().show != null;
+          incomingData().password != null &&
+          incomingData().owner != null;
+      }
+
+      function isValidUser() {
+        return
+          existingData().owner == currentUser().uid ||
+          existingData().owner in existingData().members
       }
     }
 
