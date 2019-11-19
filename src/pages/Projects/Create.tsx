@@ -34,15 +34,11 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface Project {
   code: string
-  password: string
-  title: string
   owner: string
 }
 
 const INIT_PROJECT: Project = {
   code: '',
-  password: '',
-  title: '',
   owner: '',
 }
 
@@ -54,21 +50,24 @@ export const Create = () => {
     e.preventDefault()
 
     if (user === null) return
-
-    const projectRef = firestore.collection('projects').doc()
+    console.log(user.email)
+    //TODO: password -> owner invites members
+    const projectRef = firestore.collection('projects').doc(project.code)
     const userRef = firestore.collection('users').doc(user.uid)
     firestore
       .runTransaction(transaction => {
-        return transaction.get(userRef).then(doc => {
-          console.log(doc)
+        return transaction.get(projectRef).then(doc => {
+          if (doc.exists) {
+            throw `Project code ${project.code} exists!`
+          }
+
+          transaction.set(projectRef, { ...project, owner: user.email })
           transaction.update(userRef, {
             projects: firebase.firestore.FieldValue.arrayUnion(projectRef.id),
           })
-          transaction.set(projectRef, { ...project, owner: user.uid })
         })
       })
       .then(() => {
-        console.log('What? ')
         setProject({ ...INIT_PROJECT })
       })
       .catch(error => {
@@ -93,20 +92,6 @@ export const Create = () => {
               value={project.code}
               onChange={e =>
                 setProject({ ...project, code: e.currentTarget.value })
-              }
-            />
-          </Box>
-          <Box flexGrow={2} mx={1}>
-            <TextField
-              label="Password"
-              type="password"
-              helperText="Password (no white spaces, at least 8 characters)"
-              margin="dense"
-              variant="outlined"
-              fullWidth
-              value={project.password}
-              onChange={e =>
-                setProject({ ...project, password: e.currentTarget.value })
               }
             />
           </Box>
