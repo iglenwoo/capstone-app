@@ -37,7 +37,6 @@ export const Join = () => {
         <Box className={classes.fieldContainer} mb={2}>
           <Box flexGrow={2} mx={1}>
             <TextField
-              id="project-code"
               label="Project Code"
               placeholder="Capstone-Project"
               helperText="Project Unique code (no white spaces)"
@@ -48,7 +47,6 @@ export const Join = () => {
           </Box>
           <Box flexGrow={2} mx={1}>
             <TextField
-              id="project-password"
               label="Password"
               type="password"
               helperText="Password (no white spaces, at least 8 characters)"
