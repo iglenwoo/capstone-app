@@ -31,7 +31,7 @@ service cloud.firestore {
 
     match /projects/{projectCode} {
       allow create: if isSignedIn() && notExisting(projectCode) && isValidProject();
-      allow update, delete: if currentUser().email == existingData().owner;
+      allow update, delete: if currentUser().token.email == existingData().owner;
       allow read: if (existing(projectCode) && isValidUser()) || (notExisting(projectCode) && isSignedIn());
 
       function existing(code) {
