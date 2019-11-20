@@ -2,8 +2,10 @@ import * as React from 'react'
 import { useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import {
+  Box,
   Card,
   CardContent,
+  CircularProgress,
   Container,
   createStyles,
   makeStyles,
@@ -68,7 +70,9 @@ export const Project = () => {
               )}
             </div>
           ) : (
-            <div>Empty project</div>
+            <Box display="flex" alignItems="center">
+              <CircularProgress color="secondary" />
+            </Box>
           )}
         </CardContent>
       </Card>
