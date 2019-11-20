@@ -68,12 +68,21 @@ export const Project = () => {
   }
 
   const tabItems = tabs.map(tab => (
-    <Tab value={tab.index} label={tab.label} {...a11yProps(tab.index)} />
+    <Tab
+      value={tab.index}
+      label={tab.label}
+      {...a11yProps(tab.index)}
+      key={`tab-${tab.index}`}
+    />
   ))
 
   const tabPanels = tabs.map(tab => {
     return (
-      <TabPanel value={tabIndex} index={tab.index}>
+      <TabPanel
+        value={tabIndex}
+        index={tab.index}
+        key={`tabpanel-${tab.index}`}
+      >
         {tab.child}
       </TabPanel>
     )
