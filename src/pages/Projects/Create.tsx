@@ -13,6 +13,8 @@ import { useState } from 'react'
 import { SyntheticEvent } from 'react'
 import { Auth, useAuth } from '../../components/FirebaseAuth/use-auth'
 import * as firebase from 'firebase/app'
+import { useHistory } from 'react-router'
+import * as routes from '../../constants/routes'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -44,6 +46,7 @@ const INIT_PROJECT: Project = {
 
 export const Create = () => {
   const { user, firestore }: Auth = useAuth()
+  const history = useHistory()
   const [project, setProject] = useState<Project>({ ...INIT_PROJECT })
 
   const handleCreateClick = (e: SyntheticEvent) => {
@@ -69,9 +72,11 @@ export const Create = () => {
       })
       .then(() => {
         setProject({ ...INIT_PROJECT })
+        history.push(`${routes.PROJECTS}/${projectRef.id}`)
       })
       .catch(error => {
-        console.log('Error adding document:', error)
+        console.info('Error adding document:', error)
+        alert(error)
       })
   }
 
