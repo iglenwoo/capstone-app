@@ -17,7 +17,7 @@ import { Profile } from '../../pages/Profile'
 import { Projects } from '../../pages/Projects'
 import { MyProjects } from '../../pages/MyProjects'
 import { Account } from '../../pages/Account'
-import { Project } from '../../pages/Projects/Project'
+import { Project } from '../../pages/Project'
 
 interface PrivateRouteProps extends RouteProps {
   component: any
