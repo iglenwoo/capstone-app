@@ -19,7 +19,6 @@ export const Account: FC = () => {
 
   const [newPassword, setNewPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
-  const [error, setError] = useState()
 
   const onSubmit = (event: SyntheticEvent) => {
     event.preventDefault()
@@ -82,8 +81,6 @@ export const Account: FC = () => {
       <Box mt={8}>
         <Copyright />
       </Box>
-
-      {error && <p>{error.message}</p>}
     </Container>
   )
 }

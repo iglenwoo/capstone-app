@@ -58,7 +58,7 @@ export const Create = () => {
       .runTransaction(transaction => {
         return transaction.get(projectRef).then(doc => {
           if (doc.exists) {
-            throw `Project code ${project.code} exists!`
+            throw Error(`Project code ${project.code} already exists`)
           }
 
           transaction.set(projectRef, { ...project, owner: user.email })

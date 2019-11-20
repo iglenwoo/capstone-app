@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { FC } from 'react'
-import { Auth, useAuth } from '../../components/FirebaseAuth/use-auth'
+import { useAuth } from '../../components/FirebaseAuth/use-auth'
 import { useHistory } from 'react-router'
 import { useState } from 'react'
 import { SyntheticEvent } from 'react'
@@ -25,7 +25,7 @@ import { AlertDialog } from '../../components/Dialog/AlertDialog'
 import { useStyles } from '../../theme'
 
 export const SignIn: FC = () => {
-  const auth: Auth = useAuth()
+  const { user, signin } = useAuth()
   const history = useHistory()
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
@@ -36,7 +36,7 @@ export const SignIn: FC = () => {
   const classes = useStyles()
 
   const onSubmit = (event: SyntheticEvent) => {
-    const user = auth.signin(email, password, shouldPersist)
+    const user = signin(email, password, shouldPersist)
     user
       .then(u => {
         setEmail('')
@@ -56,7 +56,7 @@ export const SignIn: FC = () => {
     setShowDialog(false)
   }
 
-  if (auth.user) {
+  if (user) {
     return <Redirect to={routes.PROFILE} />
   }
 
