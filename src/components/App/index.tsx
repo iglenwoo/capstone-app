@@ -17,6 +17,7 @@ import { Profile } from '../../pages/Profile'
 import { Projects } from '../../pages/Projects'
 import { MyProjects } from '../../pages/MyProjects'
 import { Account } from '../../pages/Account'
+import { Project } from '../../pages/Projects/Project'
 
 interface PrivateRouteProps extends RouteProps {
   component: any
@@ -38,6 +39,11 @@ export function App() {
           <PrivateRoute exact path={routes.LANDING} component={Landing} />
           <PrivateRoute exact path={routes.PROFILE} component={Profile} />
           <PrivateRoute exact path={routes.PROJECTS} component={Projects} />
+          <PrivateRoute
+            exact
+            path={`${routes.PROJECTS}/:code`}
+            component={Project}
+          />
           <PrivateRoute
             exact
             path={routes.MY_PROJECTS}
