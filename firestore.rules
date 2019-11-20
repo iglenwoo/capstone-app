@@ -49,8 +49,8 @@ service cloud.firestore {
 
       function isValidUser() {
         return
-          existingData().owner == currentUser().token.email ||
-          existingData().owner in existingData().members;
+          currentUser().token.email == existingData().owner ||
+          currentUser().token.email in existingData().members;
       }
     }
 
