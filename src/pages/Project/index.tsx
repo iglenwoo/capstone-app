@@ -11,11 +11,17 @@ import {
   Typography,
 } from '@material-ui/core'
 import { ProjectInfo } from './ProjectInfo'
+import { Settings } from './Settings'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     card: {
       marginTop: theme.spacing(1),
+    },
+    cardContent: {
+      '&:last-child': {
+        paddingBottom: theme.spacing(2),
+      },
     },
   })
 )
@@ -41,7 +47,7 @@ const TabPanel = (props: TabPanelProps) => {
       {...other}
     >
       <Card className={classes.card}>
-        <CardContent>{children}</CardContent>
+        <CardContent className={classes.cardContent}>{children}</CardContent>
       </Card>
     </Typography>
   )
@@ -57,8 +63,7 @@ const a11yProps = (index: number) => {
 const tabs = [
   { label: 'Info', index: 0, child: <ProjectInfo /> },
   { label: 'Documents', index: 1, child: <div>Documents</div> }, // TODO
-  { label: 'Members', index: 2, child: <div>Members</div> }, // TODO
-  { label: 'Settings', index: 3, child: <div>Settings</div> }, // TODO
+  { label: 'Settings', index: 3, child: <Settings /> }, // TODO
 ]
 const tabItems = tabs.map(tab => (
   <Tab
