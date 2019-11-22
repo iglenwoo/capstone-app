@@ -1,4 +1,5 @@
-import * as React from 'react'
+import React, { useEffect, useState, createContext } from 'react'
+import { useParams } from 'react-router'
 import {
   Card,
   CardContent,
@@ -10,7 +11,8 @@ import {
   Theme,
   Typography,
 } from '@material-ui/core'
-import { ProjectInfo } from './ProjectInfo'
+import { Auth, useAuth } from '../../components/FirebaseAuth/use-auth'
+import { ProjectInfo, Project } from './ProjectInfo'
 import { Settings } from './Settings'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -74,8 +76,44 @@ const tabItems = tabs.map(tab => (
   />
 ))
 
-export const Project = () => {
+const INIT_PROJECT: Project = {
+  code: '',
+  owner: '',
+  members: [],
+}
+
+export const ProjectContext = createContext<{
+  project: Project
+  loading: boolean
+}>({
+  project: { ...INIT_PROJECT },
+  loading: true,
+})
+
+export const ProjectPage = () => {
   const [tabIndex, setTabIndex] = React.useState<number>(0)
+  const { user, firestore }: Auth = useAuth()
+  const { code } = useParams()
+  const [loading, setLoading] = useState<boolean>(true)
+  const [project, setProject] = useState<Project>({ ...INIT_PROJECT })
+
+  useEffect(() => {
+    if (user === null) return
+
+    firestore
+      .collection('projects')
+      .doc(code)
+      .get()
+      .then(doc => {
+        const data = doc.data()
+        setProject(data as Project)
+        setLoading(false)
+      })
+      .catch(error => {
+        console.log('Error getting document:', error)
+        setLoading(false)
+      })
+  }, [code, user, firestore])
 
   const handleChange = (event: React.ChangeEvent<{}>, newIndex: number) => {
     setTabIndex(newIndex)
@@ -94,17 +132,19 @@ export const Project = () => {
   })
 
   return (
-    <Container component="main" maxWidth="lg">
-      <Tabs
-        value={tabIndex}
-        onChange={handleChange}
-        indicatorColor="primary"
-        textColor="primary"
-        centered
-      >
-        {tabItems}
-      </Tabs>
-      {tabPanels}
-    </Container>
+    <ProjectContext.Provider value={{ project, loading }}>
+      <Container component="main" maxWidth="lg">
+        <Tabs
+          value={tabIndex}
+          onChange={handleChange}
+          indicatorColor="primary"
+          textColor="primary"
+          centered
+        >
+          {tabItems}
+        </Tabs>
+        {tabPanels}
+      </Container>
+    </ProjectContext.Provider>
   )
 }
