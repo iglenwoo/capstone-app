@@ -10,10 +10,10 @@ import {
 const theme = createMuiTheme({
   palette: {
     primary: {
-      main: '#556cd6',
+      main: '#689F38',
     },
     secondary: {
-      main: '#19857b',
+      main: '#FFC107',
     },
     error: {
       main: red.A400,
