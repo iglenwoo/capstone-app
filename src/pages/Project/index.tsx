@@ -58,7 +58,16 @@ const tabs = [
   { label: 'Info', index: 0, child: <ProjectInfo /> },
   { label: 'Documents', index: 1, child: <div>Documents</div> }, // TODO
   { label: 'Members', index: 2, child: <div>Members</div> }, // TODO
+  { label: 'Settings', index: 3, child: <div>Settings</div> }, // TODO
 ]
+const tabItems = tabs.map(tab => (
+  <Tab
+    value={tab.index}
+    label={tab.label}
+    {...a11yProps(tab.index)}
+    key={`tab-${tab.index}`}
+  />
+))
 
 export const Project = () => {
   const [tabIndex, setTabIndex] = React.useState<number>(0)
@@ -66,15 +75,6 @@ export const Project = () => {
   const handleChange = (event: React.ChangeEvent<{}>, newIndex: number) => {
     setTabIndex(newIndex)
   }
-
-  const tabItems = tabs.map(tab => (
-    <Tab
-      value={tab.index}
-      label={tab.label}
-      {...a11yProps(tab.index)}
-      key={`tab-${tab.index}`}
-    />
-  ))
 
   const tabPanels = tabs.map(tab => {
     return (
