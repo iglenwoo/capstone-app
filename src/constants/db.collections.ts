@@ -1,0 +1,5 @@
+export const USERS = 'users'
+export const IDS = 'ids'
+export const INTERESTS = 'interests'
+export const SKILLS = 'skills'
+export const PROJECTS = 'projects'

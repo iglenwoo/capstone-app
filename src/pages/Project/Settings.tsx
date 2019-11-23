@@ -1,13 +1,25 @@
-import * as React from 'react'
-import { useParams } from 'react-router-dom'
-import { Box, Typography } from '@material-ui/core'
+import React, { useContext } from 'react'
+import { Box, CircularProgress } from '@material-ui/core'
+import { ProjectContext } from './index'
+import { Auth, useAuth } from '../../components/FirebaseAuth/use-auth'
+import { Invite } from './Invite'
 
 export const Settings = () => {
-  const { code } = useParams()
+  const { user }: Auth = useAuth()
+  const { loading, project } = useContext(ProjectContext)
 
   return (
-    <Box>
-      <Typography component="h2">{code}</Typography>
-    </Box>
+    <>
+      {loading ? (
+        <Box display="flex" alignItems="center">
+          <CircularProgress color="secondary" />
+        </Box>
+      ) : (
+        <>
+          <h2>{project.code}</h2>
+          {user && user.email === project.owner ? <Invite /> : <h5>Member</h5>}
+        </>
+      )}
+    </>
   )
 }
