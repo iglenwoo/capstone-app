@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Auth, useAuth } from '../../components/FirebaseAuth/use-auth'
 import {
   Box,
@@ -13,7 +13,7 @@ import {
 } from '@material-ui/core'
 import { Link } from 'react-router-dom'
 import * as routes from '../../constants/routes'
-import { useEffect, useState } from 'react'
+import { USERS } from '../../constants/db.collections'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -32,16 +32,15 @@ export const MyProjects = () => {
     if (user === null) return
 
     firestore
-      .collection('users')
+      .collection(USERS)
       .doc(user.uid)
       .get()
       .then(doc => {
         const data = doc.data()
         if (data && data.projects) {
-          console.log(data.projects)
           setProjects(data.projects)
-          setLoading(false)
         }
+        setLoading(false)
       })
       .catch(error => {
         console.log('Error getting document:', error)
@@ -51,13 +50,12 @@ export const MyProjects = () => {
 
   const projectLinks = projects.map((p, i) => {
     return (
-      <Box p={1}>
+      <Box p={1} key={`${p}-${i}`}>
         <LinkUI
           href="#"
           variant="body2"
           component={Link}
           to={`${routes.PROJECTS}/${p}`}
-          key={`${p}-${i}`}
         >
           {p}
         </LinkUI>
@@ -76,7 +74,7 @@ export const MyProjects = () => {
               <CircularProgress color="secondary" />
             </Box>
           ) : (
-            <Box>{projectLinks}</Box>
+            <>{projectLinks}</>
           )}
         </CardContent>
       </Card>
