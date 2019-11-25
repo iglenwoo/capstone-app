@@ -14,18 +14,17 @@ import {
 } from '@material-ui/core'
 import { Link } from 'react-router-dom'
 import * as routes from '../../constants/routes'
-import { USERS } from '../../constants/db.collections'
-import { Invited } from './Invited'
+import { PROJECTS } from '../../constants/db.collections'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     card: {
-      marginTop: theme.spacing(2),
+      marginTop: theme.spacing(1),
     },
   })
 )
 
-export const MyProjects = () => {
+export const Invited = () => {
   const { user, firestore }: Auth = useAuth()
   const [projects, setProjects] = useState<string[]>([])
   const [loading, setLoading] = useState<boolean>(true)
@@ -34,14 +33,16 @@ export const MyProjects = () => {
     if (user === null) return
 
     firestore
-      .collection(USERS)
-      .doc(user.uid)
+      .collection(PROJECTS)
+      .where('members', 'array-contains', user.email)
       .get()
-      .then(doc => {
-        const data = doc.data()
-        if (data && data.projects) {
-          setProjects(data.projects)
-        }
+      .then(querySnapshot => {
+        const newProjects: string[] = []
+        querySnapshot.forEach(doc => {
+          console.log(doc.id)
+          newProjects.push(doc.id)
+        })
+        setProjects(newProjects)
         setLoading(false)
       })
       .catch(error => {
@@ -72,24 +73,21 @@ export const MyProjects = () => {
   const classes = useStyles()
 
   return (
-    <Container component="main" maxWidth="lg">
-      <Card className={classes.card}>
-        <CardContent>
-          {loading ? (
-            <Box display="flex" alignItems="center">
-              <CircularProgress color="secondary" />
-            </Box>
-          ) : (
-            <Box py={1}>
-              <Typography gutterBottom variant="h6">
-                Joined
-              </Typography>
-              <Box ml={1}>{projectsLinks}</Box>
-            </Box>
-          )}
-        </CardContent>
-      </Card>
-      <Invited />
-    </Container>
+    <Card className={classes.card}>
+      <CardContent>
+        {loading ? (
+          <Box display="flex" alignItems="center">
+            <CircularProgress color="secondary" />
+          </Box>
+        ) : (
+          <Box py={1}>
+            <Typography gutterBottom variant="h6">
+              Invited
+            </Typography>
+            <Box ml={1}>{projectsLinks}</Box>
+          </Box>
+        )}
+      </CardContent>
+    </Card>
   )
 }
