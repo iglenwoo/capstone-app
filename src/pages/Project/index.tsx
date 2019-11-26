@@ -64,8 +64,8 @@ const a11yProps = (index: number) => {
 
 const tabs = [
   { label: 'Info', index: 0, child: <ProjectInfo /> },
-  { label: 'Documents', index: 1, child: <div>Documents</div> }, // TODO
-  { label: 'Settings', index: 3, child: <Settings /> }, // TODO
+  { label: 'Documents', index: 1, child: <div>Documents</div> }, // TODO : Extract Document tab
+  { label: 'Settings', index: 3, child: <Settings /> },
 ]
 const tabItems = tabs.map(tab => (
   <Tab

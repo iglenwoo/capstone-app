@@ -13,6 +13,11 @@ export interface Project {
 export const ProjectInfo = () => {
   const { loading, project } = useContext(ProjectContext)
 
+  // TODO: Show Member data (ids, skills, interest
+
+  // todo: Show project details
+  // todo: Edit project details
+
   return (
     <Box>
       {loading ? (

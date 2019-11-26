@@ -76,7 +76,7 @@ export const Invite = () => {
         .then(() => {
           setLoading(false)
           setEmail('')
-          //TODO fetch memebers?
+          //TODO: notify the result by a toast?
         })
         .catch(error => {
           console.info('Error adding document:', error)
@@ -88,6 +88,8 @@ export const Invite = () => {
 
   const classes = useStyles()
 
+  // TODO: render current members
+  // polish: differentiate if members are joined
   return (
     <>
       {loading ? (

@@ -51,10 +51,8 @@ export const Create = () => {
 
   const handleCreateClick = (e: SyntheticEvent) => {
     e.preventDefault()
+    if (!user) return
 
-    if (user === null) return
-    console.log(user.email)
-    //TODO: password -> owner invites members
     const projectRef = firestore.collection('projects').doc(project.code)
     const userRef = firestore.collection('users').doc(user.uid)
     firestore
