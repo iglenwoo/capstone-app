@@ -1,20 +1,22 @@
-import React, { useEffect, useState } from 'react'
+import React, { SyntheticEvent, useEffect, useState } from 'react'
 import { Auth, useAuth } from '../../components/FirebaseAuth/use-auth'
+import * as firebase from 'firebase/app'
 import {
   Box,
+  Button,
   Card,
   CardContent,
   CircularProgress,
-  Container,
   createStyles,
-  Link as LinkUI,
+  List,
+  ListItem,
+  ListItemSecondaryAction,
+  ListItemText,
   makeStyles,
   Theme,
   Typography,
 } from '@material-ui/core'
-import { Link } from 'react-router-dom'
-import * as routes from '../../constants/routes'
-import { PROJECTS } from '../../constants/db.collections'
+import { PROJECTS, USERS } from '../../constants/db.collections'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -51,23 +53,47 @@ export const Invited = () => {
       })
   }, [user, firestore])
 
+  const handleAcceptClick = (e: SyntheticEvent, code: string) => {
+    e.preventDefault()
+    if (user === null) return
+
+    firestore
+      .collection(USERS)
+      .doc(user.uid)
+      .update({ projects: firebase.firestore.FieldValue.arrayUnion(code) })
+      .then(doc => {
+        console.log(doc)
+      })
+      .catch(error => {
+        console.log(`Error accpeting a project ${code}`, error)
+      })
+  }
+
   const projectsLinks = projects.length ? (
     projects.map((p, i) => {
       return (
-        <Box p={1} key={`${p}-${i}`}>
-          <LinkUI
-            href="#"
-            variant="body2"
-            component={Link}
-            to={`${routes.PROJECTS}/${p}`}
-          >
-            {p}
-          </LinkUI>
-        </Box>
+        <ListItem key={`${p}-${i}`}>
+          <ListItemText>
+            <Typography>Project: {p}</Typography>
+          </ListItemText>
+          <ListItemSecondaryAction>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={e => {
+                handleAcceptClick(e, p)
+              }}
+            >
+              Accept
+            </Button>
+          </ListItemSecondaryAction>
+        </ListItem>
       )
     })
   ) : (
-    <Box>No projects...</Box>
+    <ListItem>
+      <ListItemText>No projects...</ListItemText>
+    </ListItem>
   )
 
   const classes = useStyles()
@@ -84,7 +110,7 @@ export const Invited = () => {
             <Typography gutterBottom variant="h6">
               Invited
             </Typography>
-            <Box ml={1}>{projectsLinks}</Box>
+            <List>{projectsLinks}</List>
           </Box>
         )}
       </CardContent>
