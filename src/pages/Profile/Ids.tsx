@@ -24,6 +24,7 @@ import {
 import { AddCircle as AddCircleIcon } from '@material-ui/icons'
 import { EditableId } from './EditableId'
 import { Auth, useAuth } from '../../components/FirebaseAuth/use-auth'
+import { IDS } from '../../constants/db.collections'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -60,7 +61,7 @@ export const Ids: FC<{}> = props => {
     if (!user || !user.email) return
 
     firestore
-      .collection('ids')
+      .collection(IDS)
       .doc(user.email)
       .get()
       .then(doc => {
@@ -119,7 +120,7 @@ export const Ids: FC<{}> = props => {
       return Object.assign({}, obj)
     })
     firestore
-      .collection('ids')
+      .collection(IDS)
       .doc(user.email)
       .set({ ids: objs }, { merge: true })
       .then(doc => {

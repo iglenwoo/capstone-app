@@ -20,6 +20,8 @@ import {
 } from '@material-ui/core'
 import { AddCircle as AddCircleIcon } from '@material-ui/icons'
 import { Auth, useAuth } from '../../components/FirebaseAuth/use-auth'
+import { SKILLS } from '../../constants/db.collections'
+import { EditableChips } from '../../components/EditableChips'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -38,18 +40,18 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export const Skills: FC = props => {
+export const Skills: FC = () => {
   const { user, firestore }: Auth = useAuth()
   const [skills, setSkills] = useState<string[]>([])
   const [editingSkills, setEditingSkills] = useState<string[]>([])
-  const [onEdit, setOnEdit] = useState(false)
+  const [editing, setEditing] = useState(false)
   const [newSkill, setNewSkill] = useState<string>('')
 
   useEffect(() => {
     if (!user || !user.email) return
 
     firestore
-      .collection('skills')
+      .collection(SKILLS)
       .doc(user.email)
       .get()
       .then(doc => {
@@ -65,16 +67,16 @@ export const Skills: FC = props => {
   }, [user, firestore])
 
   useEffect(() => {
-    if (onEdit) {
+    if (editing) {
       setEditingSkills(skills)
     }
-  }, [onEdit, skills])
+  }, [editing, skills])
 
   const classes = useStyles()
 
   const handleEditClick = (e: SyntheticEvent) => {
     e.preventDefault()
-    setOnEdit(true)
+    setEditing(true)
   }
   const handleAddClick = (e: SyntheticEvent) => {
     e.preventDefault()
@@ -89,12 +91,12 @@ export const Skills: FC = props => {
     if (skills === editingSkills || !user || !user.email) return
 
     firestore
-      .collection('skills')
+      .collection(SKILLS)
       .doc(user.email)
       .set({ skills: editingSkills })
       .then(() => {
         setSkills(editingSkills)
-        setOnEdit(false)
+        setEditing(false)
       })
       .catch(error => {
         console.error('Error updating skills:', error)
@@ -102,7 +104,7 @@ export const Skills: FC = props => {
   }
   const handleCancelClick = (e: SyntheticEvent) => {
     e.preventDefault()
-    setOnEdit(false)
+    setEditing(false)
   }
 
   const handleDeleteClick = (e: SyntheticEvent, skillToDelete: string) => {
@@ -117,33 +119,12 @@ export const Skills: FC = props => {
         <Typography variant="h6" gutterBottom>
           Skills
         </Typography>
-        <Box display="flex" flexWrap="wrap">
-          {onEdit
-            ? editingSkills.map((s, i) => (
-                <Box display="inline" mt={1} ml={1} key={`${s}-${i}`}>
-                  <Chip
-                    label={s}
-                    onDelete={e => {
-                      handleDeleteClick(e, s)
-                    }}
-                  />
-                </Box>
-              ))
-            : skills.map((s, i) => (
-                <Box display="inline" mt={1} ml={1} key={`${s}-${i}`}>
-                  {onEdit ? (
-                    <Chip
-                      label={s}
-                      onDelete={e => {
-                        handleDeleteClick(e, s)
-                      }}
-                    />
-                  ) : (
-                    <Chip key={`${s}-${i}`} label={s} />
-                  )}
-                </Box>
-              ))}
-        </Box>
+        <EditableChips
+          chips={skills}
+          editingChips={editingSkills}
+          onDelete={handleDeleteClick}
+          editing={editing}
+        />
         <Box
           display="flex"
           justifyContent="flex-end"
@@ -153,7 +134,7 @@ export const Skills: FC = props => {
           mt={1}
           mx={1}
         >
-          {onEdit ? (
+          {editing ? (
             <>
               <TextField
                 label="New skill"

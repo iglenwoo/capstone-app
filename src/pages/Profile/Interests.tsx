@@ -20,6 +20,8 @@ import {
 } from '@material-ui/core'
 import { AddCircle as AddCircleIcon } from '@material-ui/icons'
 import { Auth, useAuth } from '../../components/FirebaseAuth/use-auth'
+import { INTERESTS } from '../../constants/db.collections'
+import { EditableChips } from '../../components/EditableChips'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -39,18 +41,18 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export const Interests: FC = props => {
+export const Interests: FC = () => {
   const { user, firestore }: Auth = useAuth()
   const [interests, setInterests] = useState<string[]>([])
   const [editingInterests, setEditingInterests] = useState<string[]>([])
-  const [onEdit, setOnEdit] = useState(false)
+  const [editing, setEditing] = useState(false)
   const [newInterest, setNewInterest] = useState<string>('')
 
   useEffect(() => {
     if (!user || !user.email) return
 
     firestore
-      .collection('interests')
+      .collection(INTERESTS)
       .doc(user.email)
       .get()
       .then(doc => {
@@ -66,16 +68,16 @@ export const Interests: FC = props => {
   }, [user, firestore])
 
   useEffect(() => {
-    if (onEdit) {
+    if (editing) {
       setEditingInterests(interests)
     }
-  }, [onEdit, interests])
+  }, [editing, interests])
 
   const classes = useStyles()
 
   const handleEditClick = (e: SyntheticEvent) => {
     e.preventDefault()
-    setOnEdit(true)
+    setEditing(true)
   }
   const handleAddClick = (e: SyntheticEvent) => {
     e.preventDefault()
@@ -90,12 +92,12 @@ export const Interests: FC = props => {
     if (interests === editingInterests || !user || !user.email) return
 
     firestore
-      .collection('interests')
+      .collection(INTERESTS)
       .doc(user.email)
       .set({ interests: editingInterests })
       .then(() => {
         setInterests(editingInterests)
-        setOnEdit(false)
+        setEditing(false)
       })
       .catch(error => {
         console.error('Error updating interests:', error)
@@ -103,7 +105,7 @@ export const Interests: FC = props => {
   }
   const handleCancelClick = (e: SyntheticEvent) => {
     e.preventDefault()
-    setOnEdit(false)
+    setEditing(false)
   }
 
   const handleDeleteClick = (e: SyntheticEvent, interestToDelete: string) => {
@@ -118,33 +120,12 @@ export const Interests: FC = props => {
         <Typography variant="h5" component="h2" gutterBottom>
           Interests
         </Typography>
-        <Box display="flex" flexWrap="wrap">
-          {onEdit
-            ? editingInterests.map((s, i) => (
-                <Box display="inline" mt={1} ml={1} key={`${s}-${i}`}>
-                  <Chip
-                    label={s}
-                    onDelete={e => {
-                      handleDeleteClick(e, s)
-                    }}
-                  />
-                </Box>
-              ))
-            : interests.map((s, i) => (
-                <Box display="inline" mt={1} ml={1} key={`${s}-${i}`}>
-                  {onEdit ? (
-                    <Chip
-                      label={s}
-                      onDelete={e => {
-                        handleDeleteClick(e, s)
-                      }}
-                    />
-                  ) : (
-                    <Chip key={`${s}-${i}`} label={s} />
-                  )}
-                </Box>
-              ))}
-        </Box>
+        <EditableChips
+          chips={interests}
+          editingChips={editingInterests}
+          onDelete={handleDeleteClick}
+          editing={editing}
+        />
         <Box
           display="flex"
           justifyContent="flex-end"
@@ -154,7 +135,7 @@ export const Interests: FC = props => {
           mt={1}
           mx={1}
         >
-          {onEdit ? (
+          {editing ? (
             <>
               <TextField
                 label="New interest"
