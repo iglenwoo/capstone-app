@@ -1,4 +1,4 @@
-import React, { useEffect, useState, createContext } from 'react'
+import React, { useState, createContext } from 'react'
 import { useParams } from 'react-router'
 import {
   Card,
@@ -14,6 +14,8 @@ import {
 import { Auth, useAuth } from '../../components/FirebaseAuth/use-auth'
 import { ProjectInfo, Project } from './ProjectInfo'
 import { Settings } from './Settings'
+import { useAsyncEffect } from '../../utils/use-async-effect'
+import { IDS, PROJECTS } from '../../constants/db.collections'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -92,32 +94,43 @@ export const ProjectContext = createContext<{
 
 export const ProjectPage = () => {
   const [tabIndex, setTabIndex] = React.useState<number>(0)
-  const { user, firestore }: Auth = useAuth()
+  const { firestore }: Auth = useAuth()
   const { code } = useParams()
   const [loading, setLoading] = useState<boolean>(true)
   const [project, setProject] = useState<Project>({ ...INIT_PROJECT })
 
-  useEffect(() => {
-    if (user === null) return
-
-    firestore
-      .collection('projects')
-      .doc(code)
-      .get()
-      .then(doc => {
-        const newProject = doc.data() as Project
-        setProject({ ...newProject })
-        setLoading(false)
-      })
-      .catch(error => {
-        console.log('Error getting document:', error)
-        setLoading(false)
-      })
-  }, [code, user, firestore])
-
   const handleChange = (event: React.ChangeEvent<{}>, newIndex: number) => {
     setTabIndex(newIndex)
   }
+
+  const reloadProject = async () => {
+    try {
+      setLoading(true)
+      const doc = await firestore
+        .collection(PROJECTS)
+        .doc(code)
+        .get()
+      const newProject = doc.data() as Project
+      setProject({ ...newProject })
+
+      //todo: move this to MembersTab
+      for (const member of newProject.members) {
+        console.log('member', member)
+        const idDoc = await firestore
+          .collection(IDS)
+          .doc(member)
+          .get()
+        console.log('isDoc', idDoc)
+      }
+
+      setLoading(false)
+    } catch (e) {
+      console.log('Error getting document:', e)
+      setLoading(false)
+    }
+  }
+
+  useAsyncEffect(reloadProject, [])
 
   const tabPanels = tabs.map(tab => {
     return (
