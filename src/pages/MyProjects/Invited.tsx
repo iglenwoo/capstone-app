@@ -1,4 +1,4 @@
-import React, { SyntheticEvent, useEffect, useState } from 'react'
+import React, { SyntheticEvent, useContext, useEffect, useState } from 'react'
 import { Auth, useAuth } from '../../components/FirebaseAuth/use-auth'
 import * as firebase from 'firebase/app'
 import {
@@ -17,6 +17,7 @@ import {
   Typography,
 } from '@material-ui/core'
 import { PROJECTS, USERS } from '../../constants/db.collections'
+import { MyProjectContext } from './index'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -27,11 +28,13 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 export const Invited = () => {
+  const { joinedProjects } = useContext(MyProjectContext)
   const { user, firestore }: Auth = useAuth()
   const [projects, setProjects] = useState<string[]>([])
   const [loading, setLoading] = useState<boolean>(true)
 
   useEffect(() => {
+    setLoading(true)
     if (user === null) return
 
     firestore
@@ -41,9 +44,11 @@ export const Invited = () => {
       .then(querySnapshot => {
         const newProjects: string[] = []
         querySnapshot.forEach(doc => {
-          console.log(doc.id)
-          newProjects.push(doc.id)
+          if (!joinedProjects.includes(doc.id)) {
+            newProjects.push(doc.id)
+          }
         })
+
         setProjects(newProjects)
         setLoading(false)
       })
@@ -51,7 +56,7 @@ export const Invited = () => {
         console.log('Error getting document:', error)
         setLoading(false)
       })
-  }, [user, firestore])
+  }, [user, firestore, joinedProjects])
 
   const handleAcceptClick = (e: SyntheticEvent, code: string) => {
     e.preventDefault()

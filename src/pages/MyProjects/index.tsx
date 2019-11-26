@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { createContext, useEffect, useState } from 'react'
 import { Auth, useAuth } from '../../components/FirebaseAuth/use-auth'
 import {
   Box,
@@ -24,6 +24,12 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   })
 )
+
+export const MyProjectContext = createContext<{
+  joinedProjects: string[]
+}>({
+  joinedProjects: [],
+})
 
 export const MyProjects = () => {
   const { user, firestore }: Auth = useAuth()
@@ -72,24 +78,26 @@ export const MyProjects = () => {
   const classes = useStyles()
 
   return (
-    <Container component="main" maxWidth="lg">
-      <Card className={classes.card}>
-        <CardContent>
-          {loading ? (
-            <Box display="flex" alignItems="center">
-              <CircularProgress color="secondary" />
-            </Box>
-          ) : (
-            <Box py={1}>
-              <Typography gutterBottom variant="h6">
-                Joined
-              </Typography>
-              <Box ml={1}>{projectsLinks}</Box>
-            </Box>
-          )}
-        </CardContent>
-      </Card>
-      <Invited />
-    </Container>
+    <MyProjectContext.Provider value={{ joinedProjects: projects }}>
+      <Container component="main" maxWidth="lg">
+        <Card className={classes.card}>
+          <CardContent>
+            {loading ? (
+              <Box display="flex" alignItems="center">
+                <CircularProgress color="secondary" />
+              </Box>
+            ) : (
+              <Box py={1}>
+                <Typography gutterBottom variant="h6">
+                  Joined
+                </Typography>
+                <Box ml={1}>{projectsLinks}</Box>
+              </Box>
+            )}
+          </CardContent>
+        </Card>
+        <Invited />
+      </Container>
+    </MyProjectContext.Provider>
   )
 }
