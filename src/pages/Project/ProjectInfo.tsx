@@ -1,19 +1,18 @@
 import * as React from 'react'
-import { useContext } from 'react'
+import { FC, useContext } from 'react'
 import { Box, CircularProgress } from '@material-ui/core'
-import { Auth, useAuth } from '../../components/FirebaseAuth/use-auth'
 import { ProjectContext } from './index'
 
 export interface Project {
   code: string
   owner: string
-  members?: string[]
+  members: string[]
 }
 
-export const ProjectInfo = () => {
+export const ProjectInfo: FC = () => {
   const { loading, project } = useContext(ProjectContext)
 
-  // TODO: Show Member data (ids, skills, interest
+  // TODO: Show Member data (ids, skills, interest)
 
   // todo: Show project details
   // todo: Edit project details
@@ -27,19 +26,25 @@ export const ProjectInfo = () => {
       ) : (
         <div>
           <h2>Project: {project.code}</h2>
-          <h2>Owner: {project.owner}</h2>
-          {project.members ? (
-            <>
-              <h2>Member</h2>
-              {project.members.map((p, i) => (
-                <h2 key={`${p}-${i}`}>{p}</h2>
-              ))}
-            </>
-          ) : (
-            <div>No member...</div>
-          )}
+          <h5>Owner: {project.owner}</h5>
+          <Members members={project.members} />
         </div>
       )}
     </Box>
+  )
+}
+
+const Members: FC<{
+  members: string[]
+}> = props => {
+  return props.members ? (
+    <>
+      <h2>Member</h2>
+      {props.members.map((p, i) => (
+        <h5 key={`${p}-${i}`}>{p}</h5>
+      ))}
+    </>
+  ) : (
+    <div>No member...</div>
   )
 }

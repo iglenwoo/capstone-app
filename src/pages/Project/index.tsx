@@ -105,8 +105,8 @@ export const ProjectPage = () => {
       .doc(code)
       .get()
       .then(doc => {
-        const data = doc.data()
-        setProject(data as Project)
+        const newProject = doc.data() as Project
+        setProject({ ...newProject })
         setLoading(false)
       })
       .catch(error => {
