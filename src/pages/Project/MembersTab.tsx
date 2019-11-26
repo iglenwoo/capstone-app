@@ -27,14 +27,12 @@ export const MembersTab: FC = () => {
 
   useAsyncEffect(fetchMemberIds, [])
 
-  return project.members ? (
+  return (
     <>
-      <h2>Member</h2>
-      {project.members.map((p, i) => (
-        <h5 key={`${p}-${i}`}>{p}</h5>
-      ))}
+      <h2>Members</h2>
+      <h3>IDs</h3>
+      <h3>Skills</h3>
+      <h3>Interests</h3>
     </>
-  ) : (
-    <div>No member...</div>
   )
 }

@@ -23,26 +23,13 @@ export const ProjectInfoTab: FC = () => {
         </Box>
       ) : (
         <div>
-          <h2>Project: {project.code}</h2>
+          <h2>Project Code: {project.code}</h2>
           <h5>Owner: {project.owner}</h5>
-          <MembersList members={project.members} />
+          <h3>Title</h3>
+          <h3>Description</h3>
+          <h3>Source Code Repositories</h3>
         </div>
       )}
     </Box>
-  )
-}
-
-const MembersList: FC<{
-  members: string[]
-}> = props => {
-  return props.members ? (
-    <>
-      <h2>Member</h2>
-      {props.members.map((p, i) => (
-        <h5 key={`${p}-${i}`}>{p}</h5>
-      ))}
-    </>
-  ) : (
-    <div>No member...</div>
   )
 }

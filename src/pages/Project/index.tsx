@@ -68,8 +68,8 @@ const a11yProps = (index: number) => {
 
 const tabs = [
   { label: 'Info', index: 0, child: <ProjectInfoTab /> },
-  { label: 'Members', index: 0, child: <MembersTab /> },
-  { label: 'Documents', index: 1, child: <DocumentsTab /> },
+  { label: 'Members', index: 1, child: <MembersTab /> },
+  { label: 'Documents', index: 2, child: <DocumentsTab /> },
   { label: 'Settings', index: 3, child: <SettingsTab /> },
 ]
 const tabItems = tabs.map(tab => (
