@@ -4,7 +4,7 @@ import { ProjectContext } from './index'
 import { Auth, useAuth } from '../../components/FirebaseAuth/use-auth'
 import { Invite } from './Invite'
 
-export const Settings = () => {
+export const SettingsTab = () => {
   const { user }: Auth = useAuth()
   const { loading, project } = useContext(ProjectContext)
 

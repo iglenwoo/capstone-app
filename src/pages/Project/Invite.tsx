@@ -88,7 +88,7 @@ export const Invite = () => {
 
   const classes = useStyles()
 
-  // TODO: render current members
+  // todo: render current members
   // polish: differentiate if members are joined
   return (
     <>

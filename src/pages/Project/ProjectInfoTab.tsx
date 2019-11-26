@@ -9,10 +9,8 @@ export interface Project {
   members: string[]
 }
 
-export const ProjectInfo: FC = () => {
+export const ProjectInfoTab: FC = () => {
   const { loading, project } = useContext(ProjectContext)
-
-  // TODO: Show Member data (ids, skills, interest)
 
   // todo: Show project details
   // todo: Edit project details
@@ -27,14 +25,14 @@ export const ProjectInfo: FC = () => {
         <div>
           <h2>Project: {project.code}</h2>
           <h5>Owner: {project.owner}</h5>
-          <Members members={project.members} />
+          <MembersList members={project.members} />
         </div>
       )}
     </Box>
   )
 }
 
-const Members: FC<{
+const MembersList: FC<{
   members: string[]
 }> = props => {
   return props.members ? (

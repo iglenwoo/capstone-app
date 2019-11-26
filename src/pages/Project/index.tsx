@@ -12,10 +12,12 @@ import {
   Typography,
 } from '@material-ui/core'
 import { Auth, useAuth } from '../../components/FirebaseAuth/use-auth'
-import { ProjectInfo, Project } from './ProjectInfo'
-import { Settings } from './Settings'
+import { ProjectInfoTab, Project } from './ProjectInfoTab'
+import { SettingsTab } from './SettingsTab'
 import { useAsyncEffect } from '../../utils/use-async-effect'
 import { IDS, PROJECTS } from '../../constants/db.collections'
+import { MembersTab } from './MembersTab'
+import { DocumentsTab } from './DocumentsTab'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -65,9 +67,10 @@ const a11yProps = (index: number) => {
 }
 
 const tabs = [
-  { label: 'Info', index: 0, child: <ProjectInfo /> },
-  { label: 'Documents', index: 1, child: <div>Documents</div> }, // TODO : Extract Document tab
-  { label: 'Settings', index: 3, child: <Settings /> },
+  { label: 'Info', index: 0, child: <ProjectInfoTab /> },
+  { label: 'Members', index: 0, child: <MembersTab /> },
+  { label: 'Documents', index: 1, child: <DocumentsTab /> },
+  { label: 'Settings', index: 3, child: <SettingsTab /> },
 ]
 const tabItems = tabs.map(tab => (
   <Tab
@@ -112,16 +115,6 @@ export const ProjectPage = () => {
         .get()
       const newProject = doc.data() as Project
       setProject({ ...newProject })
-
-      //todo: move this to MembersTab
-      for (const member of newProject.members) {
-        console.log('member', member)
-        const idDoc = await firestore
-          .collection(IDS)
-          .doc(member)
-          .get()
-        console.log('isDoc', idDoc)
-      }
 
       setLoading(false)
     } catch (e) {
