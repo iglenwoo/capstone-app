@@ -57,11 +57,11 @@ export const Ids: FC<{}> = props => {
   const [newId, setNewId] = useState<Id>({ ...INIT_ID })
 
   useEffect(() => {
-    if (user === null) return
+    if (!user || !user.email) return
 
     firestore
       .collection('ids')
-      .doc(user.uid)
+      .doc(user.email)
       .get()
       .then(doc => {
         const data = doc.data()
@@ -113,13 +113,14 @@ export const Ids: FC<{}> = props => {
   }
 
   const setNewIds = (newIds: Id[], cb: () => void) => {
-    if (user === null) return
+    if (!user || !user.email) return
+
     const objs = newIds.map(obj => {
       return Object.assign({}, obj)
     })
     firestore
       .collection('ids')
-      .doc(user.uid)
+      .doc(user.email)
       .set({ ids: objs }, { merge: true })
       .then(doc => {
         setIds(newIds)

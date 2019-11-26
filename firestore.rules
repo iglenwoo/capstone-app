@@ -11,22 +11,22 @@ service cloud.firestore {
       allow read: if isOwnerOf(userId) || isSignedIn();
     }
 
-    match /ids/{userId} {
+    match /ids/{email} {
       allow create: if isSignedIn();
-      allow update, delete: if isOwnerOf(userId);
-      allow read: if isOwnerOf(userId);
+      allow update, delete: if isOwnerOfEmail(email);
+      allow read: if isOwnerOfEmail(email) || isSignedIn();
     }
 
-    match /skills/{userId} {
+    match /skills/{email} {
       allow create: if isSignedIn();
-      allow update, delete: if isOwnerOf(userId);
-      allow read: if isOwnerOf(userId);
+      allow update, delete: if isOwnerOfEmail(email);
+      allow read: if isOwnerOfEmail(email) || isSignedIn();
     }
 
-    match /interests/{userId} {
+    match /interests/{email} {
       allow create: if isSignedIn();
-      allow update, delete: if isOwnerOf(userId);
-      allow read: if isOwnerOf(userId);
+      allow update, delete: if isOwnerOfEmail(email);
+      allow read: if isOwnerOfEmail(email) || isSignedIn();
     }
 
     match /projects/{projectCode} {
@@ -62,6 +62,9 @@ service cloud.firestore {
     }
     function isOwnerOf(userId) {
       return currentUser().uid == userId;
+    }
+    function isOwnerOfEmail(email) {
+      return currentUser().token.email == email;
     }
 
     function existingData() {

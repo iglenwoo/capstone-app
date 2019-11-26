@@ -47,11 +47,11 @@ export const Interests: FC = props => {
   const [newInterest, setNewInterest] = useState<string>('')
 
   useEffect(() => {
-    if (user === null) return
+    if (!user || !user.email) return
 
     firestore
       .collection('interests')
-      .doc(user.uid)
+      .doc(user.email)
       .get()
       .then(doc => {
         const data = doc.data()
@@ -87,11 +87,11 @@ export const Interests: FC = props => {
   }
   const handleSaveClick = (e: SyntheticEvent) => {
     e.preventDefault()
-    if (interests === editingInterests || user === null) return
+    if (interests === editingInterests || !user || !user.email) return
 
     firestore
       .collection('interests')
-      .doc(user.uid)
+      .doc(user.email)
       .set({ interests: editingInterests })
       .then(() => {
         setInterests(editingInterests)

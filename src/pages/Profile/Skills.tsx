@@ -46,11 +46,11 @@ export const Skills: FC = props => {
   const [newSkill, setNewSkill] = useState<string>('')
 
   useEffect(() => {
-    if (user === null) return
+    if (!user || !user.email) return
 
     firestore
       .collection('skills')
-      .doc(user.uid)
+      .doc(user.email)
       .get()
       .then(doc => {
         const data = doc.data()
@@ -86,11 +86,11 @@ export const Skills: FC = props => {
   }
   const handleSaveClick = (e: SyntheticEvent) => {
     e.preventDefault()
-    if (skills === editingSkills || user === null) return
+    if (skills === editingSkills || !user || !user.email) return
 
     firestore
       .collection('skills')
-      .doc(user.uid)
+      .doc(user.email)
       .set({ skills: editingSkills })
       .then(() => {
         setSkills(editingSkills)
