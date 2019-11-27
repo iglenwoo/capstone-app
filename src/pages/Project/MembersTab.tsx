@@ -91,11 +91,11 @@ export const MembersTab: FC = () => {
     <>
       <MembersList title="Members" members={allMembers} />
       <Divider />
-      <h3>IDs</h3>
+      <Typography variant="h4">IDs</Typography>
       {idGroups.map((g, i) => (
-        <Box key={`${g.service}-${i}`}>
-          <Typography>Service: {g.service}</Typography>
-          <Typography>Count: {g.count}</Typography>
+        <Box key={`${g.service}-${i}`} ml={1}>
+          <Typography variant="body1">Service: {g.service}</Typography>
+          <Typography variant="body1">Count: {g.count}</Typography>
         </Box>
       ))}
       <Divider />
