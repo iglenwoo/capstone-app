@@ -12,6 +12,7 @@ import { Auth, useAuth } from '../../components/FirebaseAuth/use-auth'
 import * as firebase from 'firebase'
 import { ProjectContext } from './index'
 import { PROJECTS, USERS } from '../../constants/db.collections'
+import { useSnackbar } from 'notistack'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -30,6 +31,7 @@ const useStyles = makeStyles((theme: Theme) =>
 export const Invite = () => {
   const { user, firestore }: Auth = useAuth()
   const { project } = useContext(ProjectContext)
+  const { enqueueSnackbar } = useSnackbar()
   const [email, setEmail] = useState('')
   const [newUserId, setNewUserId] = useState('')
   const [loading, setLoading] = useState(false)
@@ -75,8 +77,8 @@ export const Invite = () => {
         })
         .then(() => {
           setLoading(false)
+          enqueueSnackbar(`${email} is invited`, { variant: 'success' })
           setEmail('')
-          //TODO: notify the result by a toast?
         })
         .catch(error => {
           console.info('Error adding document:', error)

@@ -6,12 +6,21 @@ import { App } from './components/App'
 import theme from './theme'
 import * as serviceWorker from './serviceWorker'
 import { ProvideAuth } from './components/FirebaseAuth/use-auth'
+import { SnackbarProvider } from 'notistack'
 
 ReactDOM.render(
   <ThemeProvider theme={theme}>
     <CssBaseline />
     <ProvideAuth>
-      <App />
+      <SnackbarProvider
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+        maxSnack={3}
+      >
+        <App />
+      </SnackbarProvider>
     </ProvideAuth>
   </ThemeProvider>,
   document.getElementById('root')
