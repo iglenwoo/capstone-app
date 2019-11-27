@@ -15,9 +15,11 @@ import { LockOutlined as LockOutlinedIcon } from '@material-ui/icons'
 import Copyright from '../../components/Copyright'
 import { AlertDialog } from '../../components/Dialog/AlertDialog'
 import { useStyles } from '../../theme'
+import { useSnackbar } from 'notistack'
 
 export const PasswordForget: FC = () => {
   const auth: Auth = useAuth()
+  const { enqueueSnackbar } = useSnackbar()
 
   const [email, setEmail] = useState('')
   const [error, setError] = useState()
@@ -31,8 +33,7 @@ export const PasswordForget: FC = () => {
     auth
       .sendPasswordResetEmail(email)
       .then(() => {
-        console.log('reset succeeded')
-        //TODO: Notice to reset password
+        enqueueSnackbar('Password reset succeeded', { variant: 'success' })
       })
       .catch(error => {
         setError(error.message)
