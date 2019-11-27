@@ -18,7 +18,7 @@ import { Projects } from '../../pages/Projects'
 import { MyProjects } from '../../pages/MyProjects'
 import { Account } from '../../pages/Account'
 import { ProjectPage } from '../../pages/Project'
-import { LinearProgress } from '@material-ui/core'
+import { LinearProgress, withStyles } from '@material-ui/core'
 
 export function App() {
   return (
@@ -53,6 +53,15 @@ export function App() {
   )
 }
 
+const ColorLinearProgress = withStyles({
+  colorPrimary: {
+    backgroundColor: '#b2dfdb',
+  },
+  barColorPrimary: {
+    backgroundColor: '#00695c',
+  },
+})(LinearProgress)
+
 interface GuestRouteProps extends RouteProps {
   component: any
 }
@@ -65,7 +74,7 @@ const GuestRoute = (props: GuestRouteProps) => {
     <Route
       {...rest}
       render={routeProps => {
-        if (isLoading) return <LinearProgress />
+        if (isLoading) return <ColorLinearProgress variant="buffer" />
         return user ? (
           <Redirect to={routes.MY_PROJECTS} />
         ) : (
@@ -88,7 +97,7 @@ const PrivateRoute = (props: PrivateRouteProps) => {
     <Route
       {...rest}
       render={routeProps => {
-        if (isLoading) return <LinearProgress />
+        if (isLoading) return <ColorLinearProgress />
         return user ? (
           path && path in [routes.SIGN_IN, routes.SIGN_UP] ? (
             <Redirect
