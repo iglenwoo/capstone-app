@@ -76,7 +76,6 @@ export const MembersTab: FC = () => {
       }
 
       const groups = Object.values(idHash)
-      console.log('groups', groups)
       groups.sort((a, b) => {
         return b.count - a.count
       })

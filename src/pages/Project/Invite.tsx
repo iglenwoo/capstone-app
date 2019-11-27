@@ -86,7 +86,7 @@ export const Invite = () => {
           setLoading(false)
         })
     }
-  }, [newUserId])
+  }, [newUserId, firestore, email, enqueueSnackbar, project.code])
 
   const classes = useStyles()
 
