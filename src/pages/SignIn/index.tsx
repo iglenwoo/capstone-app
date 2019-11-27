@@ -19,13 +19,13 @@ import {
   Typography,
 } from '@material-ui/core'
 import { LockOutlined as LockOutlinedIcon } from '@material-ui/icons'
-import { Link, Redirect } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import Copyright from '../../components/Copyright'
 import { AlertDialog } from '../../components/Dialog/AlertDialog'
 import { useStyles } from '../../theme'
 
 export const SignIn: FC = () => {
-  const { user, signin } = useAuth()
+  const { signin } = useAuth()
   const history = useHistory()
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
@@ -54,10 +54,6 @@ export const SignIn: FC = () => {
   const onDialogClose = () => {
     setError('')
     setShowDialog(false)
-  }
-
-  if (user) {
-    return <Redirect to={routes.PROFILE} />
   }
 
   return (

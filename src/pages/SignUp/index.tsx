@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import {
   Avatar,
   Box,
@@ -23,6 +23,7 @@ import * as routes from '../../constants/routes'
 
 export const SignUp: FC = () => {
   const { firestore, signup } = useAuth()
+  const history = useHistory()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
@@ -40,6 +41,8 @@ export const SignUp: FC = () => {
       .set({
         email: newUser.email,
       })
+
+    history.push(routes.MY_PROJECTS)
   }
 
   const classes = useStyles()

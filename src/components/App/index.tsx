@@ -57,15 +57,24 @@ export function App() {
 }
 
 const PrivateRoute = (props: PrivateRouteProps) => {
-  const { component: Component, ...rest } = props
-  const auth: Auth = useAuth()
+  const { component: Component, path, ...rest } = props
+  const { user }: Auth = useAuth()
 
   return (
     <Route
       {...rest}
       render={routeProps =>
-        auth.user ? (
-          <Component {...routeProps} />
+        user ? (
+          path && path in [routes.SIGN_IN, routes.SIGN_UP] ? (
+            <Redirect
+              to={{
+                pathname: routes.SIGN_IN,
+                state: { from: routeProps.location },
+              }}
+            />
+          ) : (
+            <Component {...routeProps} />
+          )
         ) : (
           <Redirect
             to={{
