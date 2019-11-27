@@ -16,6 +16,7 @@ const firestore: firebase.firestore.Firestore = firebase.firestore()
 
 export interface Auth {
   firestore: firebase.firestore.Firestore
+  isLoading: boolean
   user: firebase.User | null
   signin: (
     email: string,
@@ -30,6 +31,7 @@ export interface Auth {
 
 const authContext = createContext<Auth>({
   firestore,
+  isLoading: true,
   user: null,
   signin: (email: string, password: string, shouldPersist: boolean) =>
     Promise.resolve(null),
@@ -56,6 +58,7 @@ export const useAuth = () => {
 // Provider hook that creates auth object and handles state
 function useProvideAuth(): Auth {
   const [user, setUser] = useState<firebase.User | null>(null)
+  const [isLoading, setIsLoading] = useState<boolean>(true)
 
   // Wrap any Firebase methods we want to use making sure ...
   // ... to save the user to state.
@@ -125,11 +128,8 @@ function useProvideAuth(): Auth {
   // ... latest auth object.
   useEffect(() => {
     const unsubscribe = firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        setUser(user)
-      } else {
-        setUser(null)
-      }
+      setUser(user ? user : null)
+      setIsLoading(false)
     })
 
     // Cleanup subscription on unmount
@@ -139,6 +139,7 @@ function useProvideAuth(): Auth {
   // Return the user object and auth methods
   return {
     firestore,
+    isLoading,
     user,
     signin,
     signup,

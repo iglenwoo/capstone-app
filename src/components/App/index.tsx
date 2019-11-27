@@ -18,10 +18,7 @@ import { Projects } from '../../pages/Projects'
 import { MyProjects } from '../../pages/MyProjects'
 import { Account } from '../../pages/Account'
 import { ProjectPage } from '../../pages/Project'
-
-interface PrivateRouteProps extends RouteProps {
-  component: any
-}
+import { LinearProgress } from '@material-ui/core'
 
 export function App() {
   return (
@@ -29,9 +26,9 @@ export function App() {
       <div>
         <TopBar />
         <Switch>
-          <Route exact path={routes.SIGN_UP} component={SignUp} />
-          <Route exact path={routes.SIGN_IN} component={SignIn} />
-          <Route
+          <GuestRoute exact path={routes.SIGN_UP} component={SignUp} />
+          <GuestRoute exact path={routes.SIGN_IN} component={SignIn} />
+          <GuestRoute
             exact
             path={routes.PASSWORD_FORGET}
             component={PasswordForget}
@@ -56,19 +53,47 @@ export function App() {
   )
 }
 
-const PrivateRoute = (props: PrivateRouteProps) => {
-  const { component: Component, path, ...rest } = props
-  const { user }: Auth = useAuth()
+interface GuestRouteProps extends RouteProps {
+  component: any
+}
+
+const GuestRoute = (props: GuestRouteProps) => {
+  const { isLoading, user } = useAuth()
+  const { component: Component, ...rest } = props
 
   return (
     <Route
       {...rest}
-      render={routeProps =>
-        user ? (
+      render={routeProps => {
+        if (isLoading) return <LinearProgress />
+        return user ? (
+          <Redirect to={routes.MY_PROJECTS} />
+        ) : (
+          <Component {...routeProps} />
+        )
+      }}
+    />
+  )
+}
+
+interface PrivateRouteProps extends RouteProps {
+  component: any
+}
+
+const PrivateRoute = (props: PrivateRouteProps) => {
+  const { component: Component, path, ...rest } = props
+  const { isLoading, user }: Auth = useAuth()
+
+  return (
+    <Route
+      {...rest}
+      render={routeProps => {
+        if (isLoading) return <LinearProgress />
+        return user ? (
           path && path in [routes.SIGN_IN, routes.SIGN_UP] ? (
             <Redirect
               to={{
-                pathname: routes.SIGN_IN,
+                pathname: routes.MY_PROJECTS,
                 state: { from: routeProps.location },
               }}
             />
@@ -83,7 +108,7 @@ const PrivateRoute = (props: PrivateRouteProps) => {
             }}
           />
         )
-      }
+      }}
     />
   )
 }
