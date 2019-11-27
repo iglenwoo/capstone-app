@@ -15,7 +15,7 @@ import { Auth, useAuth } from '../../components/FirebaseAuth/use-auth'
 import { ProjectInfoTab, Project } from './ProjectInfoTab'
 import { SettingsTab } from './SettingsTab'
 import { useAsyncEffect } from '../../utils/use-async-effect'
-import { IDS, PROJECTS } from '../../constants/db.collections'
+import { PROJECTS } from '../../constants/db.collections'
 import { MembersTab } from './MembersTab'
 import { DocumentsTab } from './DocumentsTab'
 

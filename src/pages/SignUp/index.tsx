@@ -18,7 +18,6 @@ import { useState } from 'react'
 import { SyntheticEvent } from 'react'
 import { useStyles } from '../../theme'
 import { useAuth } from '../../components/FirebaseAuth/use-auth'
-import firebase from 'firebase'
 import * as routes from '../../constants/routes'
 
 export const SignUp: FC = () => {
@@ -29,7 +28,7 @@ export const SignUp: FC = () => {
 
   const onSubmit = async (event: SyntheticEvent) => {
     event.preventDefault()
-    const newUser: firebase.User | null = await signup(email, password)
+    const newUser = await signup(email, password)
     if (!newUser) {
       alert('Sorry, something went wrong. Please try to signup again.')
       return

@@ -13,6 +13,7 @@ import { useState } from 'react'
 import { SyntheticEvent } from 'react'
 import { Auth, useAuth } from '../../components/FirebaseAuth/use-auth'
 import * as firebase from 'firebase/app'
+import 'firebase/firestore'
 import { useHistory } from 'react-router'
 import * as routes from '../../constants/routes'
 

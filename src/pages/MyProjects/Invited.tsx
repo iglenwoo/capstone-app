@@ -1,6 +1,7 @@
 import React, { SyntheticEvent, useContext, useEffect, useState } from 'react'
 import { Auth, useAuth } from '../../components/FirebaseAuth/use-auth'
 import * as firebase from 'firebase/app'
+import 'firebase/firestore'
 import {
   Box,
   Button,

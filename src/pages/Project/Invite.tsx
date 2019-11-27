@@ -9,7 +9,8 @@ import {
   Theme,
 } from '@material-ui/core'
 import { Auth, useAuth } from '../../components/FirebaseAuth/use-auth'
-import * as firebase from 'firebase'
+import * as firebase from 'firebase/app'
+import 'firebase/firestore'
 import { ProjectContext } from './index'
 import { PROJECTS, USERS } from '../../constants/db.collections'
 import { useSnackbar } from 'notistack'
