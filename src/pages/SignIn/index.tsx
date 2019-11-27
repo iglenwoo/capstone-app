@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { FC } from 'react'
+import { FC, useEffect } from 'react'
 import { useAuth } from '../../components/FirebaseAuth/use-auth'
 import { useHistory } from 'react-router'
 import { useState } from 'react'
@@ -21,21 +21,34 @@ import {
 import { LockOutlined as LockOutlinedIcon } from '@material-ui/icons'
 import { Link } from 'react-router-dom'
 import Copyright from '../../components/Copyright'
-import { AlertDialog } from '../../components/Dialog/AlertDialog'
 import { useStyles } from '../../theme'
+import { useSnackbar } from 'notistack'
+import { validateEmail } from '../../utils'
 
 export const SignIn: FC = () => {
   const { signin } = useAuth()
   const history = useHistory()
+  const { enqueueSnackbar } = useSnackbar()
   const [email, setEmail] = useState<string>('')
+  const [emailError, setEmailError] = useState<boolean>(true)
   const [password, setPassword] = useState<string>('')
+  const [passwordError, setPasswordError] = useState<boolean>(true)
   const [shouldPersist, setShouldPersist] = useState<boolean>(false)
-  const [error, setError] = useState<string>()
-  const [showDialog, setShowDialog] = useState<boolean>(false)
 
   const classes = useStyles()
 
+  useEffect(() => {
+    setEmailError(!validateEmail(email))
+  }, [email])
+
+  useEffect(() => {
+    setPasswordError(password.length < 8)
+  }, [password])
+
   const onSubmit = (event: SyntheticEvent) => {
+    event.preventDefault()
+    if (emailError || passwordError) return
+
     const user = signin(email, password, shouldPersist)
     user
       .then(u => {
@@ -44,16 +57,10 @@ export const SignIn: FC = () => {
         history.push(routes.MY_PROJECTS)
       })
       .catch(error => {
-        setError(error.message)
-        setShowDialog(true)
+        enqueueSnackbar(error.message, { variant: 'error' })
       })
 
     event.preventDefault()
-  }
-
-  const onDialogClose = () => {
-    setError('')
-    setShowDialog(false)
   }
 
   return (
@@ -77,25 +84,28 @@ export const SignIn: FC = () => {
             required
             fullWidth
             id="email"
-            label="Email Address"
             name="email"
+            label="Email Address"
+            type="email"
             autoComplete="email"
             autoFocus
             value={email}
             onChange={e => setEmail(e.currentTarget.value)}
+            error={emailError}
           />
           <TextField
             variant="outlined"
             margin="normal"
             required
             fullWidth
+            id="password"
             name="password"
             label="Password"
             type="password"
-            id="password"
             autoComplete="current-password"
             value={password}
             onChange={e => setPassword(e.currentTarget.value)}
+            error={passwordError}
           />
           <FormControlLabel
             control={
@@ -146,8 +156,6 @@ export const SignIn: FC = () => {
       <Box mt={8}>
         <Copyright />
       </Box>
-
-      <AlertDialog open={showDialog} message={error} onClose={onDialogClose} />
     </Container>
   )
 }

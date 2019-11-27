@@ -14,10 +14,10 @@ ReactDOM.render(
     <ProvideAuth>
       <SnackbarProvider
         anchorOrigin={{
-          vertical: 'bottom',
+          vertical: 'top',
           horizontal: 'center',
         }}
-        maxSnack={3}
+        maxSnack={5}
       >
         <App />
       </SnackbarProvider>
