@@ -75,11 +75,9 @@ export const Interests: FC = () => {
   const classes = useStyles()
 
   const handleEditClick = (e: SyntheticEvent) => {
-    e.preventDefault()
     setEditing(true)
   }
   const handleAddClick = (e: SyntheticEvent) => {
-    e.preventDefault()
     if (!newInterest) return
 
     const newEditingInterests = [...editingInterests, newInterest]
@@ -87,7 +85,6 @@ export const Interests: FC = () => {
     setNewInterest('')
   }
   const handleSaveClick = (e: SyntheticEvent) => {
-    e.preventDefault()
     if (interests === editingInterests || !user || !user.email) return
 
     firestore
@@ -103,12 +100,10 @@ export const Interests: FC = () => {
       })
   }
   const handleCancelClick = (e: SyntheticEvent) => {
-    e.preventDefault()
     setEditing(false)
   }
 
   const handleDeleteClick = (e: SyntheticEvent, interestToDelete: string) => {
-    e.preventDefault()
     const newInterests = editingInterests.filter(i => i !== interestToDelete)
     setEditingInterests(newInterests)
   }

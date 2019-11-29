@@ -38,8 +38,6 @@ export const Invite = () => {
   const [loading, setLoading] = useState(false)
 
   const handleInviteClick = (e: SyntheticEvent) => {
-    e.preventDefault()
-
     if (user === null) return
 
     setLoading(true)

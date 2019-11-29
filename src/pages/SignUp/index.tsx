@@ -27,7 +27,6 @@ export const SignUp: FC = () => {
   const [password, setPassword] = useState('')
 
   const onSubmit = async (event: SyntheticEvent) => {
-    event.preventDefault()
     const newUser = await signup(email, password)
     if (!newUser) {
       alert('Sorry, something went wrong. Please try to signup again.')
@@ -42,6 +41,8 @@ export const SignUp: FC = () => {
       })
 
     history.push(routes.MY_PROJECTS)
+
+    event.preventDefault()
   }
 
   const classes = useStyles()

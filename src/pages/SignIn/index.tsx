@@ -46,7 +46,6 @@ export const SignIn: FC = () => {
   }, [password])
 
   const onSubmit = (event: SyntheticEvent) => {
-    event.preventDefault()
     if (emailError || passwordError) return
 
     const user = signin(email, password, shouldPersist)

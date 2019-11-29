@@ -60,7 +60,6 @@ export const Invited = () => {
   }, [user, firestore, joinedProjects])
 
   const handleAcceptClick = (e: SyntheticEvent, code: string) => {
-    e.preventDefault()
     if (user === null) return
 
     firestore

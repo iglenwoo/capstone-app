@@ -28,8 +28,6 @@ export const PasswordForget: FC = () => {
   const classes = useStyles()
 
   const onSubmit = (event: any) => {
-    event.preventDefault()
-
     auth
       .sendPasswordResetEmail(email)
       .then(() => {
@@ -39,6 +37,8 @@ export const PasswordForget: FC = () => {
         setError(error.message)
         setShowDialog(true)
       })
+
+    event.preventDefault()
   }
 
   const onDialogClose = () => {

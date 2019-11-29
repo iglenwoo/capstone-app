@@ -30,21 +30,17 @@ export const EditableId: FC<{
   const [id, setId] = useState<Id>(props.id)
 
   const handleCancelClick = (e: SyntheticEvent) => {
-    e.preventDefault()
     setId(props.id)
     setOnEdit(false)
   }
   const handleSaveClick = (e: SyntheticEvent) => {
-    e.preventDefault()
     handleSaveId(props.index, id)
     setOnEdit(false)
   }
   const handleEditClick = (e: SyntheticEvent) => {
-    e.preventDefault()
     setOnEdit(true)
   }
   const handleDeleteClick = (e: SyntheticEvent) => {
-    e.preventDefault()
     handleRemoveId(props.index)
   }
 

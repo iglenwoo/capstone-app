@@ -74,11 +74,9 @@ export const Skills: FC = () => {
   const classes = useStyles()
 
   const handleEditClick = (e: SyntheticEvent) => {
-    e.preventDefault()
     setEditing(true)
   }
   const handleAddClick = (e: SyntheticEvent) => {
-    e.preventDefault()
     if (!newSkill) return
 
     const newEditingSkills = [...editingSkills, newSkill]
@@ -86,7 +84,6 @@ export const Skills: FC = () => {
     setNewSkill('')
   }
   const handleSaveClick = (e: SyntheticEvent) => {
-    e.preventDefault()
     if (skills === editingSkills || !user || !user.email) return
 
     firestore
@@ -102,12 +99,10 @@ export const Skills: FC = () => {
       })
   }
   const handleCancelClick = (e: SyntheticEvent) => {
-    e.preventDefault()
     setEditing(false)
   }
 
   const handleDeleteClick = (e: SyntheticEvent, skillToDelete: string) => {
-    e.preventDefault()
     const newSkills = editingSkills.filter(s => s !== skillToDelete)
     setEditingSkills(newSkills)
   }

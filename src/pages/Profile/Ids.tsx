@@ -89,8 +89,6 @@ export const Ids: FC<{}> = props => {
   }
 
   const handleAddId = (e: SyntheticEvent) => {
-    e.preventDefault()
-
     if (!newId.service) {
       alert('Please type a service')
       return

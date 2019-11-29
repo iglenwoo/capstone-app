@@ -41,19 +41,15 @@ const AuthedButtons = () => {
   const history = useHistory()
 
   const handleProfile = (event: SyntheticEvent) => {
-    event.preventDefault()
     history.push(routes.PROFILE)
   }
   const handleProjects = (event: SyntheticEvent) => {
-    event.preventDefault()
     history.push(routes.PROJECTS)
   }
   const handleMyProjects = (event: SyntheticEvent) => {
-    event.preventDefault()
     history.push(routes.MY_PROJECTS)
   }
   const handleSingOut = (event: SyntheticEvent) => {
-    event.preventDefault()
     auth.signout()
   }
 
@@ -83,11 +79,9 @@ const UnAuthedButtons = () => {
   const history = useHistory()
 
   const handleSignUp = (event: SyntheticEvent) => {
-    event.preventDefault()
     history.push(routes.SIGN_UP)
   }
   const handleSignIn = (event: SyntheticEvent) => {
-    event.preventDefault()
     history.push(routes.SIGN_IN)
   }
 

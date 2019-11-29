@@ -51,7 +51,6 @@ export const Create = () => {
   const [project, setProject] = useState<Project>({ ...INIT_PROJECT })
 
   const handleCreateClick = (e: SyntheticEvent) => {
-    e.preventDefault()
     if (!user) return
 
     const projectRef = firestore.collection('projects').doc(project.code)
