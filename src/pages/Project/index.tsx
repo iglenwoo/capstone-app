@@ -118,6 +118,10 @@ export const ProjectPage = () => {
 
       setLoading(false)
     } catch (e) {
+      if (e.message === 'Missing or insufficient permissions.') {
+        console.log('message', e.message)
+        // todo: show something for unauthed project
+      }
       console.log('Error getting document:', e)
       setLoading(false)
     }
