@@ -89,7 +89,7 @@ export const Skills: FC = () => {
     firestore
       .collection(SKILLS)
       .doc(user.email)
-      .set({ skills: editingSkills })
+      .set({ skills: editingSkills, email: user.email })
       .then(() => {
         setSkills(editingSkills)
         setEditing(false)

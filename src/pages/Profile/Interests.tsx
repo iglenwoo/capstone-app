@@ -90,7 +90,7 @@ export const Interests: FC = () => {
     firestore
       .collection(INTERESTS)
       .doc(user.email)
-      .set({ interests: editingInterests })
+      .set({ interests: editingInterests, email: user.email })
       .then(() => {
         setInterests(editingInterests)
         setEditing(false)
