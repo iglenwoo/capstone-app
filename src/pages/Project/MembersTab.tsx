@@ -11,38 +11,36 @@ import { MembersList } from './MembersList'
 // TODO: members IDS, SKILLS, INTERESTS
 export interface IdGroup extends Id {
   count: number
-  email: string[]
+  emails: string[]
 }
 
-const parseToIds = (idDoc: firebase.firestore.DocumentSnapshot) => {
+const parseToIds = (idDoc: firebase.firestore.QuerySnapshot) => {
   let ids: Id[] = []
-  if (idDoc.exists) {
-    const data = idDoc.data()
-    if (data && data.ids) {
-      const idsProp: Id[] = data.ids
-      ids = idsProp.map((id: Id) => {
-        return { ...id, service: id.service.toLowerCase() }
-      })
-    }
+  if (!idDoc.empty) {
+    idDoc.forEach(result => {
+      const data = result.data()
+      if (data && data.ids) {
+        const idsProp: Id[] = data.ids
+        idsProp.forEach((id: Id) => {
+          ids.push({ ...id, service: id.service.toLowerCase() })
+        })
+      }
+    })
   }
 
   return ids
 }
 
-const addIdHash = (
-  idHash: { [key: string]: IdGroup },
-  ids: Id[],
-  member: string
-) => {
+const addIdHash = (idHash: { [key: string]: IdGroup }, ids: Id[]) => {
   for (const id of ids) {
     if (idHash[id.service]) {
       idHash[id.service].count += 1
-      idHash[id.service].email = idHash[id.service].email.concat(member)
+      idHash[id.service].emails = idHash[id.service].emails.concat(id.email)
     } else {
       idHash[id.service] = {
         ...id,
         count: 1,
-        email: [member],
+        emails: [id.email],
       }
     }
   }
@@ -65,15 +63,13 @@ export const MembersTab: FC = () => {
 
     try {
       const idHash: { [key: string]: IdGroup } = {}
-      for (const member of allMembers) {
-        const idDoc: firebase.firestore.DocumentSnapshot = await firestore
-          .collection(IDS)
-          .doc(member)
-          .get()
+      const idDoc: firebase.firestore.QuerySnapshot = await firestore
+        .collection(IDS)
+        .where('email', 'in', allMembers)
+        .get()
 
-        const ids: Id[] = parseToIds(idDoc)
-        addIdHash(idHash, ids, member)
-      }
+      const ids: Id[] = parseToIds(idDoc)
+      addIdHash(idHash, ids)
 
       const groups = Object.values(idHash)
       groups.sort((a, b) => {

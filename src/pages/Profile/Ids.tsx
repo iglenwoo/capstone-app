@@ -45,11 +45,13 @@ export const IdContext = createContext<{
 export interface Id {
   service: string
   value: string
+  email: string
 }
 
 const INIT_ID: Id = {
   service: '',
   value: '',
+  email: '',
 }
 
 export const Ids: FC<{}> = props => {
