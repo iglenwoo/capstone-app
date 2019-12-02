@@ -5,8 +5,24 @@ import { useAsyncEffect } from '../../utils/use-async-effect'
 import { Auth, useAuth } from '../../components/FirebaseAuth/use-auth'
 import * as firebase from 'firebase/app'
 import { Id } from '../Profile/Ids'
-import { Box, Divider, Typography } from '@material-ui/core'
+import {
+  Box,
+  Chip,
+  createStyles,
+  Divider,
+  makeStyles,
+  Theme,
+  Typography,
+} from '@material-ui/core'
 import { MembersList } from './MembersList'
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    chipCount: {
+      marginLeft: theme.spacing(1),
+    },
+  })
+)
 
 // TODO: members IDS, SKILLS, INTERESTS
 export interface IdGroup extends Id {
@@ -83,15 +99,24 @@ export const MembersTab: FC = () => {
 
   useAsyncEffect(fetchMemberIds, [allMembers])
 
+  const classes = useStyles()
   return (
     <>
       <MembersList title="Members" members={allMembers} />
       <Divider />
       <Typography variant="h4">IDs</Typography>
       {idGroups.map((g, i) => (
-        <Box key={`${g.service}-${i}`} ml={1}>
-          <Typography variant="body1">Service: {g.service}</Typography>
-          <Typography variant="body1">Count: {g.count}</Typography>
+        <Box display="inline" key={`${g.service}-${i}`} mt={1} ml={1}>
+          <Chip
+            label={
+              <>
+                <Typography variant="body1">{g.service}</Typography>
+                <Typography variant="body1" className={classes.chipCount}>
+                  {g.count}
+                </Typography>
+              </>
+            }
+          />
         </Box>
       ))}
       <Divider />
