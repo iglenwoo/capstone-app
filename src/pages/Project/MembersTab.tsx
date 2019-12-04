@@ -6,7 +6,6 @@ import { Auth, useAuth } from '../../components/FirebaseAuth/use-auth'
 import * as firebase from 'firebase/app'
 import { Id } from '../Profile/Ids'
 import {
-  Box,
   Chip,
   createStyles,
   Divider,
@@ -18,6 +17,11 @@ import { MembersList } from './MembersList'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    chip: {
+      marginTop: theme.spacing(1),
+      marginBottom: theme.spacing(1),
+      marginLeft: theme.spacing(1),
+    },
     chipCount: {
       marginLeft: theme.spacing(1),
     },
@@ -106,18 +110,18 @@ export const MembersTab: FC = () => {
       <Divider />
       <Typography variant="h4">IDs</Typography>
       {idGroups.map((g, i) => (
-        <Box display="inline" key={`${g.service}-${i}`} mt={1} ml={1}>
-          <Chip
-            label={
-              <>
-                <Typography variant="body1">{g.service}</Typography>
-                <Typography variant="body1" className={classes.chipCount}>
-                  {g.count}
-                </Typography>
-              </>
-            }
-          />
-        </Box>
+        <Chip
+          key={`${g.service}-${i}`}
+          className={classes.chip}
+          label={
+            <>
+              <Typography variant="body1">{g.service}</Typography>
+              <Typography variant="body1" className={classes.chipCount}>
+                {g.count}
+              </Typography>
+            </>
+          }
+        />
       ))}
       <Divider />
       <h3>Skills</h3>
