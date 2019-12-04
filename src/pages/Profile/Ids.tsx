@@ -122,7 +122,7 @@ export const Ids: FC<{}> = props => {
     firestore
       .collection(IDS)
       .doc(user.email)
-      .set({ ids: objs })
+      .set({ ids: objs, email: user.email })
       .then(doc => {
         setIds(newIds)
         cb()
