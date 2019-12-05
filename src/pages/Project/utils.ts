@@ -1,6 +1,6 @@
 import * as firebase from 'firebase'
 import { Id } from '../Profile/Ids'
-import { IdGroup } from './MembersTab'
+import { CountableGroup, IdGroup, SkillGroup, Skills } from './MembersTab'
 
 export const parseToIds = (idDoc: firebase.firestore.QuerySnapshot) => {
   let ids: Id[] = []
@@ -31,5 +31,44 @@ export const addIdHash = (idHash: { [key: string]: IdGroup }, ids: Id[]) => {
         emails: [id.email],
       }
     }
+  }
+}
+
+export const parseToSkills = (snapshot: firebase.firestore.QuerySnapshot) => {
+  let skillsList: Skills[] = []
+  if (!snapshot.empty) {
+    snapshot.forEach(result => {
+      const data = result.data()
+      if (!data) throw new Error('Data in skills snapshot is empty')
+      console.log('data', data)
+      if (!data.email) throw new Error('Data.email in skills snapshot is empty')
+      if (!data.skills)
+        throw new Error('Data.skills in skills snapshot is empty')
+      const skills: Skills = data as Skills
+      skills.skills = skills.skills.map(s => s.toLowerCase())
+      skillsList.push(skills)
+    })
+  }
+
+  return skillsList
+}
+
+export const addSkillHash = (
+  skillHash: { [key: string]: SkillGroup },
+  skillsList: Skills[]
+) => {
+  for (const skills of skillsList) {
+    skills.skills.forEach(skill => {
+      if (skillHash[skill]) {
+        skillHash[skill].count += 1
+        skillHash[skill].emails = skillHash[skill].emails.concat(skills.email)
+      } else {
+        skillHash[skill] = {
+          name: skill,
+          count: 1,
+          emails: [skills.email],
+        }
+      }
+    })
   }
 }
