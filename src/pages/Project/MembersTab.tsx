@@ -5,30 +5,11 @@ import { useAsyncEffect } from '../../utils/use-async-effect'
 import { Auth, useAuth } from '../../components/FirebaseAuth/use-auth'
 import * as firebase from 'firebase/app'
 import { Id } from '../Profile/Ids'
-import {
-  Chip,
-  createStyles,
-  Divider,
-  makeStyles,
-  Theme,
-  Typography,
-} from '@material-ui/core'
+import { Divider, Typography } from '@material-ui/core'
 import { MembersList } from './MembersList'
+import { SortedIdChips } from './SortedIdChips'
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    chip: {
-      marginTop: theme.spacing(1),
-      marginBottom: theme.spacing(1),
-      marginLeft: theme.spacing(1),
-    },
-    chipCount: {
-      marginLeft: theme.spacing(1),
-    },
-  })
-)
-
-// TODO: members IDS, SKILLS, INTERESTS
+// TODO: members SKILLS, INTERESTS
 export interface IdGroup extends Id {
   count: number
   emails: string[]
@@ -103,26 +84,12 @@ export const MembersTab: FC = () => {
 
   useAsyncEffect(fetchMemberIds, [allMembers])
 
-  const classes = useStyles()
   return (
     <>
       <MembersList title="Members" members={allMembers} />
       <Divider />
       <Typography variant="h4">IDs</Typography>
-      {idGroups.map((g, i) => (
-        <Chip
-          key={`${g.service}-${i}`}
-          className={classes.chip}
-          label={
-            <>
-              <Typography variant="body1">{g.service}</Typography>
-              <Typography variant="body1" className={classes.chipCount}>
-                {g.count}
-              </Typography>
-            </>
-          }
-        />
-      ))}
+      <SortedIdChips idGroups={idGroups} />
       <Divider />
       <h3>Skills</h3>
       <Divider />
