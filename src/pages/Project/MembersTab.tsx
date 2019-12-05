@@ -8,43 +8,12 @@ import { Id } from '../Profile/Ids'
 import { Divider, Typography } from '@material-ui/core'
 import { MembersList } from './MembersList'
 import { SortedIdChips } from './SortedIdChips'
+import { addIdHash, parseToIds } from './utils'
 
 // TODO: members SKILLS, INTERESTS
 export interface IdGroup extends Id {
   count: number
   emails: string[]
-}
-
-const parseToIds = (idDoc: firebase.firestore.QuerySnapshot) => {
-  let ids: Id[] = []
-  if (!idDoc.empty) {
-    idDoc.forEach(result => {
-      const data = result.data()
-      if (data && data.ids) {
-        const idsProp: Id[] = data.ids
-        idsProp.forEach((id: Id) => {
-          ids.push({ ...id, service: id.service.toLowerCase() })
-        })
-      }
-    })
-  }
-
-  return ids
-}
-
-const addIdHash = (idHash: { [key: string]: IdGroup }, ids: Id[]) => {
-  for (const id of ids) {
-    if (idHash[id.service]) {
-      idHash[id.service].count += 1
-      idHash[id.service].emails = idHash[id.service].emails.concat(id.email)
-    } else {
-      idHash[id.service] = {
-        ...id,
-        count: 1,
-        emails: [id.email],
-      }
-    }
-  }
 }
 
 export const MembersTab: FC = () => {
