@@ -1,6 +1,12 @@
 import * as firebase from 'firebase'
 import { Id } from '../Profile/Ids'
-import { CountableGroup, IdGroup, SkillGroup, Skills } from './MembersTab'
+import {
+  IdGroup,
+  InterestGroup,
+  Interests,
+  SkillGroup,
+  Skills,
+} from './MembersTab'
 
 export const parseToIds = (idDoc: firebase.firestore.QuerySnapshot) => {
   let ids: Id[] = []
@@ -67,6 +73,49 @@ export const addSkillHash = (
           name: skill,
           count: 1,
           emails: [skills.email],
+        }
+      }
+    })
+  }
+}
+
+export const parseToInterests = (
+  snapshot: firebase.firestore.QuerySnapshot
+) => {
+  let interestsList: Interests[] = []
+  if (!snapshot.empty) {
+    snapshot.forEach(result => {
+      const data = result.data()
+      if (!data) throw new Error('Data in skills snapshot is empty')
+      console.log('data', data)
+      if (!data.email) throw new Error('Data.email in skills snapshot is empty')
+      if (!data.interests)
+        throw new Error('Data.interests in skills snapshot is empty')
+      const interests: Interests = data as Interests
+      interests.interests = interests.interests.map(i => i.toLowerCase())
+      interestsList.push(interests)
+    })
+  }
+
+  return interestsList
+}
+
+export const addInterestHash = (
+  interestHash: { [key: string]: InterestGroup },
+  interestsList: Interests[]
+) => {
+  for (const interests of interestsList) {
+    interests.interests.forEach(interest => {
+      if (interestHash[interest]) {
+        interestHash[interest].count += 1
+        interestHash[interest].emails = interestHash[interest].emails.concat(
+          interests.email
+        )
+      } else {
+        interestHash[interest] = {
+          name: interest,
+          count: 1,
+          emails: [interests.email],
         }
       }
     })

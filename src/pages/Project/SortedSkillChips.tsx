@@ -6,7 +6,7 @@ import {
   Theme,
   Typography,
 } from '@material-ui/core'
-import { SkillGroup } from './MembersTab'
+import { CountableGroup } from './MembersTab'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -22,13 +22,13 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 export const SortedSkillChips: FC<{
-  skillGroups: SkillGroup[]
+  groups: CountableGroup[]
 }> = props => {
   const classes = useStyles()
 
   return (
     <>
-      {props.skillGroups.map((g, i) => (
+      {props.groups.map((g, i) => (
         <Chip
           key={`${g.name}-${i}`}
           className={classes.chip}
