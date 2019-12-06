@@ -52,6 +52,22 @@ service cloud.firestore {
           currentUser().token.email == existingData().owner ||
           currentUser().token.email in existingData().members;
       }
+
+      function projectData() {
+         return get(/$(prefix())/projects/$(projectCode)).data
+      }
+
+      match /documents/{docId} {
+        allow create: if isAllowedUser();
+        allow update, delete: if isAllowedUser();
+        allow read: if isAllowedUser();
+
+        function isAllowedUser() {
+          return
+            currentUser().token.email == projectData().owner ||
+            currentUser().token.email in projectData().members;
+        }
+      }
     }
 
     function currentUser() {
