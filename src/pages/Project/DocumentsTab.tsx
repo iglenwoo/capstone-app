@@ -4,6 +4,26 @@ import { useAuth } from '../../components/FirebaseAuth/use-auth'
 import { useAsyncEffect } from '../../utils/use-async-effect'
 import * as firebase from 'firebase'
 import { DOCUMENTS, PROJECTS } from '../../constants/routes'
+import {
+  Box,
+  Button,
+  createStyles,
+  makeStyles,
+  Theme,
+  Typography,
+} from '@material-ui/core'
+import { CloudUpload as CloudUploadIcon } from '@material-ui/icons'
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    project: {
+      marginBottom: theme.spacing(2),
+    },
+    input: {
+      display: 'none',
+    },
+  })
+)
 
 // TODO: DocumentsTab
 /*
@@ -39,10 +59,31 @@ export const DocumentsTab: FC = () => {
 
   useAsyncEffect(fetchDocs, [project.code])
 
+  const classes = useStyles()
   return (
     <>
-      <h2>Documents</h2>
-      <h5>{project.code}</h5>
+      <Typography variant="h5" className={classes.project}>
+        Project Code: {project.code}
+      </Typography>
+      <Box>
+        <input
+          accept="image/*"
+          className={classes.input}
+          id="contained-button-file"
+          multiple
+          type="file"
+        />
+        <label htmlFor="contained-button-file">
+          <Button
+            variant="contained"
+            component="span"
+            color="secondary"
+            startIcon={<CloudUploadIcon />}
+          >
+            Upload
+          </Button>
+        </label>
+      </Box>
     </>
   )
 }
