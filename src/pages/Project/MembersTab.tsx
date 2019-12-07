@@ -5,7 +5,13 @@ import { useAsyncEffect } from '../../utils/use-async-effect'
 import { Auth, useAuth } from '../../components/FirebaseAuth/use-auth'
 import * as firebase from 'firebase/app'
 import { Id } from '../Profile/Ids'
-import { Divider, Typography } from '@material-ui/core'
+import {
+  createStyles,
+  Divider,
+  makeStyles,
+  Theme,
+  Typography,
+} from '@material-ui/core'
 import { MembersList } from './MembersList'
 import { SortedIdChips } from './SortedIdChips'
 import {
@@ -17,6 +23,17 @@ import {
   parseToSkills,
 } from './utils'
 import { SortedSkillChips } from './SortedSkillChips'
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    title: {
+      marginTop: theme.spacing(2),
+    },
+    divider: {
+      marginTop: theme.spacing(1),
+    },
+  })
+)
 
 export interface CountableGroup {
   name?: string // todo: refactor to have this value
@@ -124,17 +141,25 @@ export const MembersTab: FC = () => {
   useAsyncEffect(fetchMemberSkills, [allMembers])
   useAsyncEffect(fetchMemberInterests, [allMembers])
 
+  const classes = useStyles()
+
   return (
     <>
       <MembersList title="Members" members={allMembers} />
-      <Divider />
-      <Typography variant="h4">IDs</Typography>
+      <Divider className={classes.divider} />
+      <Typography variant="h5" className={classes.title}>
+        IDs
+      </Typography>
       <SortedIdChips idGroups={idGroups} />
-      <Divider />
-      <h3>Skills</h3>
+      <Divider className={classes.divider} />
+      <Typography variant="h5" className={classes.title}>
+        Skills
+      </Typography>
       <SortedSkillChips groups={skillGroups} />
-      <Divider />
-      <h3>Interests</h3>
+      <Divider className={classes.divider} />
+      <Typography variant="h5" className={classes.title}>
+        Interests
+      </Typography>
       <SortedSkillChips groups={interestGroups} />
     </>
   )
