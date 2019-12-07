@@ -1,9 +1,10 @@
 import React, { useContext } from 'react'
-import { Box, CircularProgress } from '@material-ui/core'
+import { Box } from '@material-ui/core'
 import { ProjectContext } from './index'
 import { Auth, useAuth } from '../../components/FirebaseAuth/use-auth'
 import { Invite } from './Invite'
 import { MembersList } from './MembersList'
+import { Loading } from '../../components/Loading'
 
 export const SettingsTab = () => {
   const { user }: Auth = useAuth()
@@ -12,9 +13,7 @@ export const SettingsTab = () => {
   return (
     <>
       {loading ? (
-        <Box display="flex" alignItems="center">
-          <CircularProgress color="secondary" />
-        </Box>
+        <Loading />
       ) : (
         <>
           <h2>{project.code}</h2>

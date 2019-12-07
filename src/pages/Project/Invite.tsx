@@ -2,7 +2,6 @@ import React, { SyntheticEvent, useContext, useEffect, useState } from 'react'
 import {
   Box,
   Button,
-  CircularProgress,
   createStyles,
   makeStyles,
   TextField,
@@ -14,6 +13,7 @@ import 'firebase/firestore'
 import { ProjectContext } from './index'
 import { PROJECTS, USERS } from '../../constants/db.collections'
 import { useSnackbar } from 'notistack'
+import { Loading } from '../../components/Loading'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -94,9 +94,7 @@ export const Invite = () => {
   return (
     <>
       {loading ? (
-        <Box display="flex" alignItems="center">
-          <CircularProgress color="secondary" />
-        </Box>
+        <Loading />
       ) : (
         <Box className={classes.fieldContainer} mb={2}>
           <Box flexGrow={2} mx={1}>

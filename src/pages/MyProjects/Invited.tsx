@@ -7,7 +7,6 @@ import {
   Button,
   Card,
   CardContent,
-  CircularProgress,
   createStyles,
   List,
   ListItem,
@@ -19,6 +18,7 @@ import {
 } from '@material-ui/core'
 import { PROJECTS, USERS } from '../../constants/db.collections'
 import { MyProjectContext } from './index'
+import { Loading } from '../../components/Loading'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -107,9 +107,7 @@ export const Invited = () => {
     <Card className={classes.card}>
       <CardContent>
         {loading ? (
-          <Box display="flex" alignItems="center">
-            <CircularProgress color="secondary" />
-          </Box>
+          <Loading />
         ) : (
           <Box py={1}>
             <Typography gutterBottom variant="h6">
