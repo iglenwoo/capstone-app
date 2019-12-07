@@ -59,6 +59,10 @@ export const DocumentsTab: FC = () => {
 
   useAsyncEffect(fetchDocs, [project.code])
 
+  const handleUpload = (files: FileList | null) => {
+    if (!files || !files.length) return
+  }
+
   const classes = useStyles()
   return (
     <>
@@ -71,6 +75,10 @@ export const DocumentsTab: FC = () => {
           className={classes.input}
           id="contained-button-file"
           multiple
+          onChange={e => handleUpload(e.currentTarget.files)}
+          onClick={e => {
+            e.currentTarget.value = ''
+          }}
           type="file"
         />
         <label htmlFor="contained-button-file">
