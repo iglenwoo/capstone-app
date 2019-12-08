@@ -13,6 +13,7 @@ import {
   Typography,
 } from '@material-ui/core'
 import { CloudUpload as CloudUploadIcon } from '@material-ui/icons'
+import { useSnackbar } from 'notistack'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -37,7 +38,8 @@ const useStyles = makeStyles((theme: Theme) =>
 */
 export const DocumentsTab: FC = () => {
   const { project } = useContext(ProjectContext)
-  const { firestore } = useAuth()
+  const { firestore, storage } = useAuth()
+  const { enqueueSnackbar } = useSnackbar()
 
   const fetchDocs = async () => {
     if (!project.code) return
@@ -61,6 +63,24 @@ export const DocumentsTab: FC = () => {
 
   const handleUpload = (files: FileList | null) => {
     if (!files || !files.length) return
+
+    const storageRef = storage.ref()
+    for (let i = 0; i < files.length; i++) {
+      // get item
+      const file = files.item(i)
+      if (!file) {
+        console.log('file is empty.')
+        continue
+      }
+      const fileRef = storageRef.child(`${project.code}/${file.name}`)
+
+      enqueueSnackbar(`${file.name} uploading...`, { variant: 'default' })
+      fileRef.put(file).then(() => {
+        enqueueSnackbar(`${file.name} uploading succeeded!`, {
+          variant: 'success',
+        })
+      })
+    }
   }
 
   const classes = useStyles()
