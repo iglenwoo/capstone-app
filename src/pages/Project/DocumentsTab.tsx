@@ -28,17 +28,14 @@ const useStyles = makeStyles((theme: Theme) =>
 
 // TODO: DocumentsTab
 /*
-  [ ] fetch the doc
-  [ ] find a lib for text editor
-  [ ] npm add XXX
-  [ ] view(render) the doc
-  [ ] add new doc
-  [ ] edit a doc -> save
-  [ ] design side tabs and main doc body
+  [ ] listen on /documents/
+  [ ] view(render) the doc list
+  [ ] download a doc
+  [ ] delete a doc
 */
 export const DocumentsTab: FC = () => {
   const { project } = useContext(ProjectContext)
-  const { firestore, storage } = useAuth()
+  const { firestore, storage, user } = useAuth()
   const { enqueueSnackbar } = useSnackbar()
 
   const fetchDocs = async () => {
@@ -73,9 +70,16 @@ export const DocumentsTab: FC = () => {
         continue
       }
       const fileRef = storageRef.child(`${project.code}/${file.name}`)
+      const metadata: firebase.storage.UploadMetadata = {
+        customMetadata: {
+          project: project.code,
+          fileName: file.name,
+          updatedBy: user && user.email ? user.email : '',
+        },
+      }
 
       enqueueSnackbar(`${file.name} uploading...`, { variant: 'default' })
-      fileRef.put(file).then(() => {
+      fileRef.put(file, metadata).then(() => {
         enqueueSnackbar(`${file.name} uploading succeeded!`, {
           variant: 'success',
         })
