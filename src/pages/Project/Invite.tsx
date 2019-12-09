@@ -29,18 +29,19 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   })
 )
+
 export const Invite = () => {
   const { user, firestore }: Auth = useAuth()
-  const { project } = useContext(ProjectContext)
+  const { project, loading, reloadProject } = useContext(ProjectContext)
   const { enqueueSnackbar } = useSnackbar()
   const [email, setEmail] = useState('')
   const [newUserId, setNewUserId] = useState('')
-  const [loading, setLoading] = useState(false)
+  const [inviting, setInviting] = useState(false)
 
   const handleInviteClick = (e: SyntheticEvent) => {
     if (user === null) return
 
-    setLoading(true)
+    setInviting(true)
     firestore
       .collection(USERS)
       .where('email', '==', email)
@@ -56,12 +57,13 @@ export const Invite = () => {
       })
       .catch(error => {
         alert(error)
-        setLoading(false)
+        setInviting(false)
       })
   }
 
   useEffect(() => {
-    if (newUserId) {
+    if (newUserId && email) {
+      setInviting(true)
       const projectRef = firestore.collection(PROJECTS).doc(project.code)
       firestore
         .runTransaction(transaction => {
@@ -75,17 +77,20 @@ export const Invite = () => {
           })
         })
         .then(() => {
-          setLoading(false)
+          setInviting(false)
           enqueueSnackbar(`${email} is invited`, { variant: 'success' })
           setEmail('')
+          setNewUserId('')
+          reloadProject()
         })
         .catch(error => {
           console.info('Error adding document:', error)
           alert(error)
-          setLoading(false)
+          setInviting(false)
         })
     }
-  }, [newUserId, firestore, email, enqueueSnackbar, project.code])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [newUserId, firestore, email, project.code])
 
   const classes = useStyles()
 
@@ -93,7 +98,7 @@ export const Invite = () => {
   // polish: differentiate if members are joined
   return (
     <>
-      {loading ? (
+      {loading || inviting ? (
         <Loading />
       ) : (
         <Box className={classes.fieldContainer} mb={2}>

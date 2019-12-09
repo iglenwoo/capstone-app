@@ -91,9 +91,11 @@ const INIT_PROJECT: Project = {
 export const ProjectContext = createContext<{
   project: Project
   loading: boolean
+  reloadProject: () => void
 }>({
   project: { ...INIT_PROJECT },
   loading: true,
+  reloadProject: () => {},
 })
 
 export const ProjectPage = () => {
@@ -151,7 +153,7 @@ export const ProjectPage = () => {
   })
 
   return (
-    <ProjectContext.Provider value={{ project, loading }}>
+    <ProjectContext.Provider value={{ project, loading, reloadProject }}>
       <Container component="main" maxWidth="lg">
         <Tabs
           value={tabIndex}

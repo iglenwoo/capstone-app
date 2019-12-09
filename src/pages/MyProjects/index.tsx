@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState } from 'react'
+import React, { createContext, useCallback, useEffect, useState } from 'react'
 import { Auth, useAuth } from '../../components/FirebaseAuth/use-auth'
 import {
   Box,
@@ -38,7 +38,7 @@ export const MyProjects = () => {
   const [projects, setProjects] = useState<string[]>([])
   const [loading, setLoading] = useState<boolean>(true)
 
-  const fetchProjects = () => {
+  const fetchProjects = useCallback(() => {
     if (user === null) return
 
     setLoading(true)
@@ -57,13 +57,13 @@ export const MyProjects = () => {
         console.log('Error getting document:', error)
         setLoading(false)
       })
-  }
+  }, [firestore, user])
 
   useEffect(() => {
     if (user === null) return
 
     fetchProjects()
-  }, [user, firestore])
+  }, [user, firestore, fetchProjects])
 
   const projectsLinks = projects.length ? (
     projects.map((p, i) => {
