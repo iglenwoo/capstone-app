@@ -27,8 +27,10 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export const MyProjectContext = createContext<{
   joinedProjects: string[]
+  fetchProjects: () => void
 }>({
   joinedProjects: [],
+  fetchProjects: () => {},
 })
 
 export const MyProjects = () => {
@@ -36,9 +38,10 @@ export const MyProjects = () => {
   const [projects, setProjects] = useState<string[]>([])
   const [loading, setLoading] = useState<boolean>(true)
 
-  useEffect(() => {
+  const fetchProjects = () => {
     if (user === null) return
 
+    setLoading(true)
     firestore
       .collection(USERS)
       .doc(user.uid)
@@ -54,6 +57,12 @@ export const MyProjects = () => {
         console.log('Error getting document:', error)
         setLoading(false)
       })
+  }
+
+  useEffect(() => {
+    if (user === null) return
+
+    fetchProjects()
   }, [user, firestore])
 
   const projectsLinks = projects.length ? (
@@ -78,7 +87,9 @@ export const MyProjects = () => {
   const classes = useStyles()
 
   return (
-    <MyProjectContext.Provider value={{ joinedProjects: projects }}>
+    <MyProjectContext.Provider
+      value={{ joinedProjects: projects, fetchProjects }}
+    >
       <Container component="main" maxWidth="lg">
         <Card className={classes.card}>
           <CardContent>

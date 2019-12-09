@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 export const Invited = () => {
-  const { joinedProjects } = useContext(MyProjectContext)
+  const { joinedProjects, fetchProjects } = useContext(MyProjectContext)
   const { user, firestore }: Auth = useAuth()
   const [projects, setProjects] = useState<string[]>([])
   const [loading, setLoading] = useState<boolean>(true)
@@ -45,6 +45,7 @@ export const Invited = () => {
       .then(querySnapshot => {
         const newProjects: string[] = []
         querySnapshot.forEach(doc => {
+          console.log(doc)
           if (!joinedProjects.includes(doc.id)) {
             newProjects.push(doc.id)
           }
@@ -68,6 +69,7 @@ export const Invited = () => {
       .update({ projects: firebase.firestore.FieldValue.arrayUnion(code) })
       .then(doc => {
         console.log(doc)
+        fetchProjects()
       })
       .catch(error => {
         console.log(`Error accpeting a project ${code}`, error)
@@ -97,7 +99,7 @@ export const Invited = () => {
     })
   ) : (
     <ListItem>
-      <ListItemText>No projects...</ListItemText>
+      <ListItemText>No project invited</ListItemText>
     </ListItem>
   )
 
