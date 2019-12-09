@@ -1,4 +1,4 @@
-import { FC, default as React, useContext } from 'react'
+import { FC, default as React, useContext, useState } from 'react'
 import { ProjectContext } from './index'
 import { useAuth } from '../../components/FirebaseAuth/use-auth'
 import { useAsyncEffect } from '../../utils/use-async-effect'
@@ -14,6 +14,16 @@ import {
 } from '@material-ui/core'
 import { CloudUpload as CloudUploadIcon } from '@material-ui/icons'
 import { useSnackbar } from 'notistack'
+import { Loading } from '../../components/Loading'
+
+interface Document {
+  contextType: string
+  mediaLink: string
+  name: string
+  size: string
+  updatedAt: firebase.firestore.Timestamp
+  updatedBy: string
+}
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -28,31 +38,41 @@ const useStyles = makeStyles((theme: Theme) =>
 
 // TODO: DocumentsTab
 /*
-  [ ] listen on /documents/
   [ ] view(render) the doc list
   [ ] download a doc
   [ ] delete a doc
 */
 export const DocumentsTab: FC = () => {
-  const { project } = useContext(ProjectContext)
+  const { loading, project } = useContext(ProjectContext)
   const { firestore, storage, user } = useAuth()
+  const storageRef = storage.ref()
   const { enqueueSnackbar } = useSnackbar()
+  const [documents, setDocuments] = useState<Document[]>([])
+  const [isDocLoading, setIsDocLoading] = useState(true)
 
   const fetchDocs = async () => {
     if (!project.code) return
 
     try {
-      const snapshot: firebase.firestore.QuerySnapshot = await firestore
+      setIsDocLoading(true)
+
+      firestore
         .collection(PROJECTS)
         .doc(project.code)
         .collection(DOCUMENTS)
-        .get()
-
-      snapshot.forEach(result => {
-        console.log('result', result)
-      })
+        .onSnapshot(snapshot => {
+          const newDocs: Document[] = []
+          snapshot.forEach(result => {
+            const data = result.data()
+            const document = data as Document
+            newDocs.push(document)
+          })
+          setDocuments(newDocs)
+          setIsDocLoading(false)
+        })
     } catch (e) {
       console.log('Error getting document:', e)
+      setIsDocLoading(false)
     }
   }
 
@@ -61,12 +81,9 @@ export const DocumentsTab: FC = () => {
   const handleUpload = (files: FileList | null) => {
     if (!files || !files.length) return
 
-    const storageRef = storage.ref()
     for (let i = 0; i < files.length; i++) {
-      // get item
       const file = files.item(i)
       if (!file) {
-        console.log('file is empty.')
         continue
       }
       const fileRef = storageRef.child(`${project.code}/${file.name}`)
@@ -79,43 +96,63 @@ export const DocumentsTab: FC = () => {
       }
 
       enqueueSnackbar(`${file.name} uploading...`, { variant: 'default' })
-      fileRef.put(file, metadata).then(() => {
-        enqueueSnackbar(`${file.name} uploading succeeded!`, {
-          variant: 'success',
+      fileRef
+        .put(file, metadata)
+        .then(() => {
+          enqueueSnackbar(`${file.name} uploading succeeded!`, {
+            variant: 'success',
+          })
         })
-      })
+        .finally(() => {
+          setIsDocLoading(true)
+        })
     }
   }
 
   const classes = useStyles()
   return (
     <>
-      <Typography variant="h5" className={classes.project}>
-        Project Code: {project.code}
-      </Typography>
-      <Box>
-        <input
-          accept="image/*"
-          className={classes.input}
-          id="contained-button-file"
-          multiple
-          onChange={e => handleUpload(e.currentTarget.files)}
-          onClick={e => {
-            e.currentTarget.value = ''
-          }}
-          type="file"
-        />
-        <label htmlFor="contained-button-file">
-          <Button
-            variant="contained"
-            component="span"
-            color="secondary"
-            startIcon={<CloudUploadIcon />}
-          >
-            Upload
-          </Button>
-        </label>
-      </Box>
+      {loading ? (
+        <Loading />
+      ) : (
+        <>
+          <Typography variant="h5" className={classes.project}>
+            Project Code: {project.code}
+          </Typography>
+          <Box>
+            <input
+              accept="image/*"
+              className={classes.input}
+              id="contained-button-file"
+              multiple
+              onChange={e => handleUpload(e.currentTarget.files)}
+              onClick={e => {
+                e.currentTarget.value = ''
+              }}
+              type="file"
+            />
+            <label htmlFor="contained-button-file">
+              <Button
+                variant="contained"
+                component="span"
+                color="secondary"
+                startIcon={<CloudUploadIcon />}
+              >
+                Upload
+              </Button>
+            </label>
+          </Box>
+          <Box m={2}>
+            {isDocLoading ? (
+              <Loading />
+            ) : (
+              documents.map((doc, i) => (
+                <Box key={`${doc.name}-${i}`}>{doc.name}</Box>
+              ))
+            )}
+          </Box>
+        </>
+      )}
     </>
   )
 }
