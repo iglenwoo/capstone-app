@@ -16,6 +16,7 @@ exports.updateFileList = functions.storage.object().onFinalize(async (object) =>
     .collection('projects').doc(project)
     .collection('documents').doc(fileName).set({
       name: fileName,
+      path: object.name,
       mediaLink: object.mediaLink,
       contextType: object.contentType,
       size: object.size,

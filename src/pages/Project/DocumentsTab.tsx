@@ -15,11 +15,13 @@ import {
 import { CloudUpload as CloudUploadIcon } from '@material-ui/icons'
 import { useSnackbar } from 'notistack'
 import { Loading } from '../../components/Loading'
+import { DocumentList } from './DocumentList'
 
-interface Document {
+export interface Document {
   contextType: string
   mediaLink: string
   name: string
+  path: string
   size: string
   updatedAt: firebase.firestore.Timestamp
   updatedBy: string
@@ -121,7 +123,6 @@ export const DocumentsTab: FC = () => {
           </Typography>
           <Box>
             <input
-              accept="image/*"
               className={classes.input}
               id="contained-button-file"
               multiple
@@ -146,9 +147,7 @@ export const DocumentsTab: FC = () => {
             {isDocLoading ? (
               <Loading />
             ) : (
-              documents.map((doc, i) => (
-                <Box key={`${doc.name}-${i}`}>{doc.name}</Box>
-              ))
+              <DocumentList documents={documents} />
             )}
           </Box>
         </>
