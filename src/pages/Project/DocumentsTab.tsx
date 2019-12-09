@@ -38,12 +38,6 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-// TODO: DocumentsTab
-/*
-  [ ] view(render) the doc list
-  [ ] download a doc
-  [ ] delete a doc
-*/
 export const DocumentsTab: FC = () => {
   const { loading, project } = useContext(ProjectContext)
   const { firestore, storage, user } = useAuth()
