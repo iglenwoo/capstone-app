@@ -57,12 +57,12 @@ export const Create = () => {
     const userRef = firestore.collection('users').doc(user.uid)
     firestore
       .runTransaction(transaction => {
-        return transaction.get(projectRef).then(doc => {
-          if (doc.exists) {
-            throw Error(`Project code ${project.code} already exists`)
-          }
-
-          transaction.set(projectRef, { ...project, owner: user.email })
+        return transaction.get(userRef).then(doc => {
+          transaction.set(projectRef, {
+            ...project,
+            owner: user.email,
+            members: [],
+          })
           transaction.update(userRef, {
             projects: firebase.firestore.FieldValue.arrayUnion(projectRef.id),
           })
