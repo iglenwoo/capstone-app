@@ -147,7 +147,10 @@ export const DocumentsTab: FC = () => {
             {isDocLoading ? (
               <Loading />
             ) : (
-              <DocumentList documents={documents} />
+              <DocumentList
+                documents={documents}
+                setIsDocLoading={setIsDocLoading}
+              />
             )}
           </Box>
         </>

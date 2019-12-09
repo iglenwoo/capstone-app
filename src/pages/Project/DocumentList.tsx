@@ -1,4 +1,4 @@
-import { default as React, FC, SyntheticEvent } from 'react'
+import { default as React, FC, SyntheticEvent, useState } from 'react'
 import {
   createStyles,
   Divider,
@@ -18,6 +18,8 @@ import {
 
 import { Document } from './DocumentsTab'
 import { useAuth } from '../../components/FirebaseAuth/use-auth'
+import { useSnackbar } from 'notistack'
+import { ConfirmDialog } from '../../components/Dialog/ConflrmDIalog'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -33,8 +35,12 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export const DocumentList: FC<{
   documents: Document[]
+  setIsDocLoading: (value: ((prevState: boolean) => boolean) | boolean) => void
 }> = prop => {
   const { storage } = useAuth()
+  const { enqueueSnackbar } = useSnackbar()
+  const [openDeleteConfirm, setOpenDeleteConfirm] = useState(false)
+  const [docToDelete, setDocToDelete] = useState<Document | null>(null)
 
   const handleDownload = (e: SyntheticEvent, doc: Document) => {
     const ref = storage.ref(doc.path)
@@ -68,6 +74,37 @@ export const DocumentList: FC<{
       })
   }
 
+  const handleDelete = (doc: Document) => {
+    setDocToDelete(doc)
+    setOpenDeleteConfirm(true)
+  }
+
+  const confirmDelete = () => {
+    if (!docToDelete) {
+      console.log('doc is empty???')
+      return
+    }
+    deleteDoc(docToDelete)
+  }
+
+  const deleteDoc = (doc: Document) => {
+    const ref = storage.ref(doc.path)
+    prop.setIsDocLoading(true)
+    ref
+      .delete()
+      .then(() => {
+        enqueueSnackbar(`${doc.name} deleted`, { variant: 'success' })
+      })
+      .catch(error => {
+        enqueueSnackbar(`Failed to delete ${doc.name}`, { variant: 'error' })
+        console.log(error)
+      })
+      .finally(() => {
+        setDocToDelete(null)
+        prop.setIsDocLoading(true)
+      })
+  }
+
   const classes = useStyles()
   return (
     <List className={classes.root}>
@@ -94,12 +131,29 @@ export const DocumentList: FC<{
             primary={doc.updatedAt.toDate().toLocaleString('en-US')}
           />
           <ListItemSecondaryAction>
-            <IconButton edge="end" aria-label="delete">
+            <IconButton
+              edge="end"
+              aria-label="delete"
+              onClick={e => handleDelete(doc)}
+            >
               <DeleteIcon />
             </IconButton>
           </ListItemSecondaryAction>
         </ListItem>
       ))}
+      <ConfirmDialog
+        open={openDeleteConfirm}
+        onConfirm={() => {
+          confirmDelete()
+        }}
+        onCancel={() => {
+          setOpenDeleteConfirm(false)
+        }}
+        title="Delete"
+        message={
+          docToDelete ? `Are you sure to delete ${docToDelete.name} ?` : ''
+        }
+      />
     </List>
   )
 }
