@@ -1,5 +1,5 @@
 import React, { useState, createContext } from 'react'
-import { useParams } from 'react-router'
+import { useHistory, useParams } from 'react-router'
 import {
   Card,
   CardContent,
@@ -18,6 +18,7 @@ import { useAsyncEffect } from '../../utils/use-async-effect'
 import { PROJECTS } from '../../constants/db.collections'
 import { MembersTab } from './MembersTab'
 import { DocumentsTab } from './DocumentsTab'
+import { useSnackbar } from 'notistack'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -99,6 +100,8 @@ export const ProjectPage = () => {
   const [tabIndex, setTabIndex] = React.useState<number>(0)
   const { firestore }: Auth = useAuth()
   const { code } = useParams()
+  const { enqueueSnackbar } = useSnackbar()
+  const history = useHistory()
   const [loading, setLoading] = useState<boolean>(true)
   const [project, setProject] = useState<Project>({ ...INIT_PROJECT })
 
@@ -119,11 +122,17 @@ export const ProjectPage = () => {
       setLoading(false)
     } catch (e) {
       if (e.message === 'Missing or insufficient permissions.') {
-        console.log('message', e.message)
-        // todo: show something for unauthed project
+        enqueueSnackbar(
+          `You are not a member of project '${code}'\nYou will be redirected to the previous page in 3 seconds.`,
+          {
+            variant: 'error',
+          }
+        )
       }
       console.log('Error getting document:', e)
-      setLoading(false)
+      setTimeout(() => {
+        history.goBack()
+      }, 3000)
     }
   }
 
