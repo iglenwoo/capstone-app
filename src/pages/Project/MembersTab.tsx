@@ -26,6 +26,9 @@ import { SortedSkillChips } from './SortedSkillChips'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    project: {
+      marginBottom: theme.spacing(2),
+    },
     title: {
       marginTop: theme.spacing(2),
     },
@@ -145,7 +148,10 @@ export const MembersTab: FC = () => {
 
   return (
     <>
-      <MembersList title="Members" members={allMembers} />
+      <Typography variant="h5" className={classes.project}>
+        Project Code: {project.code}
+      </Typography>
+      <MembersList members={allMembers} />
       <Divider className={classes.divider} />
       <Typography variant="h5" className={classes.title}>
         IDs

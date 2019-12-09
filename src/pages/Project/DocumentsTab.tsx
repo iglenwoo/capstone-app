@@ -32,8 +32,17 @@ const useStyles = makeStyles((theme: Theme) =>
     project: {
       marginBottom: theme.spacing(2),
     },
+    fieldContainer: {
+      display: 'flex',
+      justifyContent: 'flex-end',
+      alignItems: 'top',
+      flexWrap: 'wrap',
+    },
     input: {
       display: 'none',
+    },
+    button: {
+      minWidth: 150,
     },
   })
 )
@@ -115,7 +124,7 @@ export const DocumentsTab: FC = () => {
           <Typography variant="h5" className={classes.project}>
             Project Code: {project.code}
           </Typography>
-          <Box>
+          <Box className={classes.fieldContainer} mb={2} mx={1}>
             <input
               className={classes.input}
               id="contained-button-file"
@@ -128,6 +137,7 @@ export const DocumentsTab: FC = () => {
             />
             <label htmlFor="contained-button-file">
               <Button
+                className={classes.button}
                 variant="contained"
                 component="span"
                 color="secondary"
