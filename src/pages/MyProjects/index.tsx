@@ -4,7 +4,6 @@ import {
   Box,
   Card,
   CardContent,
-  CircularProgress,
   Container,
   createStyles,
   Link as LinkUI,
@@ -16,6 +15,7 @@ import { Link } from 'react-router-dom'
 import * as routes from '../../constants/routes'
 import { USERS } from '../../constants/db.collections'
 import { Invited } from './Invited'
+import { Loading } from '../../components/Loading'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -83,9 +83,7 @@ export const MyProjects = () => {
         <Card className={classes.card}>
           <CardContent>
             {loading ? (
-              <Box display="flex" alignItems="center">
-                <CircularProgress color="secondary" />
-              </Box>
+              <Loading />
             ) : (
               <Box py={1}>
                 <Typography gutterBottom variant="h6">

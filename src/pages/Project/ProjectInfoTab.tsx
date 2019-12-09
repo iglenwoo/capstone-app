@@ -1,7 +1,8 @@
 import * as React from 'react'
 import { FC, useContext } from 'react'
-import { Box, CircularProgress } from '@material-ui/core'
+import { Box } from '@material-ui/core'
 import { ProjectContext } from './index'
+import { Loading } from '../../components/Loading'
 
 export interface Project {
   code: string
@@ -18,9 +19,7 @@ export const ProjectInfoTab: FC = () => {
   return (
     <Box>
       {loading ? (
-        <Box display="flex" alignItems="center">
-          <CircularProgress color="secondary" />
-        </Box>
+        <Loading />
       ) : (
         <div>
           <h2>Project Code: {project.code}</h2>

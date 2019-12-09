@@ -46,7 +46,6 @@ export const parseToSkills = (snapshot: firebase.firestore.QuerySnapshot) => {
     snapshot.forEach(result => {
       const data = result.data()
       if (!data) throw new Error('Data in skills snapshot is empty')
-      console.log('data', data)
       if (!data.email) throw new Error('Data.email in skills snapshot is empty')
       if (!data.skills)
         throw new Error('Data.skills in skills snapshot is empty')
@@ -87,7 +86,6 @@ export const parseToInterests = (
     snapshot.forEach(result => {
       const data = result.data()
       if (!data) throw new Error('Data in skills snapshot is empty')
-      console.log('data', data)
       if (!data.email) throw new Error('Data.email in skills snapshot is empty')
       if (!data.interests)
         throw new Error('Data.interests in skills snapshot is empty')
