@@ -16,6 +16,8 @@ import * as firebase from 'firebase/app'
 import 'firebase/firestore'
 import { useHistory } from 'react-router'
 import * as routes from '../../constants/routes'
+import { validateProjectCode } from '../../utils'
+import { useSnackbar } from 'notistack'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -48,10 +50,17 @@ const INIT_PROJECT: Project = {
 export const Create = () => {
   const { user, firestore }: Auth = useAuth()
   const history = useHistory()
+  const { enqueueSnackbar } = useSnackbar()
   const [project, setProject] = useState<Project>({ ...INIT_PROJECT })
 
   const handleCreateClick = (e: SyntheticEvent) => {
     if (!user) return
+    if (!validateProjectCode(project.code)) {
+      enqueueSnackbar(`Please use alphabet, numbers, '-' or '_'.`, {
+        variant: 'error',
+      })
+      return
+    }
 
     const projectRef = firestore.collection('projects').doc(project.code)
     const userRef = firestore.collection('users').doc(user.uid)
