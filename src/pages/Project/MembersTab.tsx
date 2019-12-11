@@ -71,7 +71,7 @@ export const MembersTab: FC = () => {
       members.push(project.owner)
     }
     if (project.members.length > 0) {
-      members.concat(project.members)
+      members.push(...project.members)
     }
     setAllMembers(members)
   }, [project.owner, project.members])
