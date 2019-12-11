@@ -19,6 +19,7 @@ import * as routes from '../../constants/routes'
 import { validateProjectCode } from '../../utils'
 import { useSnackbar } from 'notistack'
 import { useEffect } from 'react'
+import { Loading } from '../../components/Loading'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -55,6 +56,7 @@ export const Create = () => {
   const [project, setProject] = useState<Project>({ ...INIT_PROJECT })
   const [codeError, setCodeError] = useState<boolean>(false)
   const [disabledCreate, setDisabledCreate] = useState<boolean>(true)
+  const [loading, setLoading] = useState<boolean>(false)
 
   useEffect(() => {
     if (project.code) {
@@ -78,6 +80,7 @@ export const Create = () => {
       return
     }
     setCodeError(false)
+    setLoading(true)
 
     const projectRef = firestore.collection('projects').doc(project.code)
     const userRef = firestore.collection('users').doc(user.uid)
@@ -102,6 +105,7 @@ export const Create = () => {
         console.info('Error adding document:', error)
         alert(error)
       })
+      .finally(() => setLoading(false))
   }
 
   const classes = useStyles()
@@ -112,34 +116,38 @@ export const Create = () => {
         <Typography gutterBottom variant="h6">
           Create a project
         </Typography>
-        <Box className={classes.fieldContainer} mb={0}>
-          <Box flexGrow={2} mx={1}>
-            <TextField
-              label="New Project Code"
-              placeholder="Awesome-project-code"
-              helperText="Project Unique code (alphabets, numbers, '-', and '_' are only allowed)"
-              margin="dense"
-              variant="outlined"
-              fullWidth
-              value={project.code}
-              onChange={e =>
-                setProject({ ...project, code: e.currentTarget.value })
-              }
-              error={codeError}
-            />
+        {loading ? (
+          <Loading />
+        ) : (
+          <Box className={classes.fieldContainer} mb={0}>
+            <Box flexGrow={2} mx={1}>
+              <TextField
+                label="New Project Code"
+                placeholder="Awesome-project-code"
+                helperText="Project Unique code (alphabets, numbers, '-', and '_' are only allowed)"
+                margin="dense"
+                variant="outlined"
+                fullWidth
+                value={project.code}
+                onChange={e =>
+                  setProject({ ...project, code: e.currentTarget.value })
+                }
+                error={codeError}
+              />
+            </Box>
+            <Box mx={1} pt={1}>
+              <Button
+                variant="contained"
+                color="secondary"
+                className={classes.button}
+                onClick={handleCreateClick}
+                disabled={disabledCreate}
+              >
+                Create
+              </Button>
+            </Box>
           </Box>
-          <Box mx={1} pt={1}>
-            <Button
-              variant="contained"
-              color="secondary"
-              className={classes.button}
-              onClick={handleCreateClick}
-              disabled={disabledCreate}
-            >
-              Create
-            </Button>
-          </Box>
-        </Box>
+        )}
       </CardContent>
     </Card>
   )
