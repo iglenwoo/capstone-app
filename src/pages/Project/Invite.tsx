@@ -51,7 +51,6 @@ export const Invite = () => {
           throw Error(`Email ${email} not found`)
         }
         querySnapshot.forEach(function(doc) {
-          console.log(doc.id, ' => ', doc.data())
           setNewUserId(doc.id)
         })
       })

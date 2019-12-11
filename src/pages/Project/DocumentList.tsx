@@ -48,7 +48,6 @@ export const DocumentList: FC<{
       .getDownloadURL()
       .then(url => {
         // Insert url into an <img> tag to "download"
-        console.log('url', url)
         window.open(url)
       })
       .catch(error => {

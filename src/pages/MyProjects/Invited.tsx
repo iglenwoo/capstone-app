@@ -45,7 +45,6 @@ export const Invited = () => {
       .then(querySnapshot => {
         const newProjects: string[] = []
         querySnapshot.forEach(doc => {
-          console.log(doc)
           if (!joinedProjects.includes(doc.id)) {
             newProjects.push(doc.id)
           }
@@ -68,7 +67,6 @@ export const Invited = () => {
       .doc(user.uid)
       .update({ projects: firebase.firestore.FieldValue.arrayUnion(code) })
       .then(doc => {
-        console.log(doc)
         fetchProjects()
       })
       .catch(error => {

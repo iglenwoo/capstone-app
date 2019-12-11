@@ -44,10 +44,8 @@ export const SignUp: FC = () => {
     event.preventDefault()
     if (emailError || passwordError) return
 
-    console.log('signup')
     const newUser = signup(email, password)
       .then(user => {
-        console.log(user)
         if (user && user.uid && user.email) {
           firestore
             .collection('users')
@@ -62,7 +60,6 @@ export const SignUp: FC = () => {
       .catch(error => {
         enqueueSnackbar(error.message, { variant: 'error' })
       })
-    console.log('newUser', newUser)
   }
 
   const classes = useStyles()
