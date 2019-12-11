@@ -66,9 +66,14 @@ export const MembersTab: FC = () => {
   const [interestGroups, setInterestGroups] = useState<InterestGroup[]>([])
 
   useEffect(() => {
-    if (project.owner && project.members.length > 0) {
-      setAllMembers([...project.members, project.owner])
+    const members: string[] = []
+    if (project.owner) {
+      members.push(project.owner)
     }
+    if (project.members.length > 0) {
+      members.concat(project.members)
+    }
+    setAllMembers(members)
   }, [project.owner, project.members])
 
   const fetchMemberIds = async () => {
