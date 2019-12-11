@@ -46,6 +46,7 @@ export const SignIn: FC = () => {
   }, [password])
 
   const onSubmit = (event: SyntheticEvent) => {
+    event.preventDefault()
     if (emailError || passwordError) return
 
     const user = signin(email, password, shouldPersist)
@@ -58,8 +59,6 @@ export const SignIn: FC = () => {
       .catch(error => {
         enqueueSnackbar(error.message, { variant: 'error' })
       })
-
-    event.preventDefault()
   }
 
   return (
@@ -125,6 +124,7 @@ export const SignIn: FC = () => {
             variant="contained"
             color="primary"
             className={classes.submit}
+            disabled={emailError || passwordError}
           >
             Sign In
           </Button>

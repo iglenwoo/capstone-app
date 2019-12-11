@@ -19,30 +19,50 @@ import { SyntheticEvent } from 'react'
 import { useStyles } from '../../theme'
 import { useAuth } from '../../components/FirebaseAuth/use-auth'
 import * as routes from '../../constants/routes'
+import { useEffect } from 'react'
+import { validateEmail } from '../../utils'
+import { useSnackbar } from 'notistack'
 
 export const SignUp: FC = () => {
   const { firestore, signup } = useAuth()
   const history = useHistory()
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const { enqueueSnackbar } = useSnackbar()
+  const [email, setEmail] = useState<string>('')
+  const [emailError, setEmailError] = useState<boolean>(true)
+  const [password, setPassword] = useState<string>('')
+  const [passwordError, setPasswordError] = useState<boolean>(true)
 
-  const onSubmit = async (event: SyntheticEvent) => {
-    const newUser = await signup(email, password)
-    if (!newUser) {
-      alert('Sorry, something went wrong. Please try to signup again.')
-      return
-    }
+  useEffect(() => {
+    setEmailError(!validateEmail(email))
+  }, [email])
 
-    firestore
-      .collection('users')
-      .doc(newUser.uid)
-      .set({
-        email: newUser.email,
-      })
+  useEffect(() => {
+    setPasswordError(password.length < 8)
+  }, [password])
 
-    history.push(routes.MY_PROJECTS)
-
+  const onSubmit = (event: SyntheticEvent) => {
     event.preventDefault()
+    if (emailError || passwordError) return
+
+    console.log('signup')
+    const newUser = signup(email, password)
+      .then(user => {
+        console.log(user)
+        if (user && user.uid && user.email) {
+          firestore
+            .collection('users')
+            .doc(user.uid)
+            .set({
+              email: user.email,
+            })
+
+          history.push(routes.MY_PROJECTS)
+        }
+      })
+      .catch(error => {
+        enqueueSnackbar(error.message, { variant: 'error' })
+      })
+    console.log('newUser', newUser)
   }
 
   const classes = useStyles()
@@ -71,6 +91,7 @@ export const SignUp: FC = () => {
                 autoFocus
                 value={email}
                 onChange={e => setEmail(e.currentTarget.value)}
+                error={emailError}
               />
             </Grid>
             <Grid item xs={12}>
@@ -85,6 +106,7 @@ export const SignUp: FC = () => {
                 autoComplete="current-password"
                 value={password}
                 onChange={e => setPassword(e.currentTarget.value)}
+                error={passwordError}
               />
             </Grid>
           </Grid>
@@ -94,6 +116,7 @@ export const SignUp: FC = () => {
             variant="contained"
             color="primary"
             className={classes.submit}
+            disabled={emailError || passwordError}
           >
             Sign Up
           </Button>
