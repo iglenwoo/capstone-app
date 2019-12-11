@@ -15,7 +15,6 @@ import { PasswordForget } from '../../pages/PasswordForget'
 import { Landing } from '../../pages/Landing'
 import { Profile } from '../../pages/Profile'
 import { Projects } from '../../pages/Projects'
-import { MyProjects } from '../../pages/MyProjects'
 import { Account } from '../../pages/Account'
 import { ProjectPage } from '../../pages/Project'
 import { LinearProgress, ThemeProvider, withStyles } from '@material-ui/core'
@@ -42,11 +41,6 @@ export function App() {
               exact
               path={`${routes.PROJECTS}/:code`}
               component={ProjectPage}
-            />
-            <PrivateRoute
-              exact
-              path={routes.MY_PROJECTS}
-              component={MyProjects}
             />
             <PrivateRoute exact path={routes.ACCOUNT} component={Account} />
           </Switch>
@@ -79,7 +73,7 @@ const GuestRoute = (props: GuestRouteProps) => {
       render={routeProps => {
         if (isLoading) return <ColorLinearProgress variant="buffer" />
         return user ? (
-          <Redirect to={routes.MY_PROJECTS} />
+          <Redirect to={routes.PROJECTS} />
         ) : (
           <Component {...routeProps} />
         )
@@ -105,7 +99,7 @@ const PrivateRoute = (props: PrivateRouteProps) => {
           path && path in [routes.SIGN_IN, routes.SIGN_UP] ? (
             <Redirect
               to={{
-                pathname: routes.MY_PROJECTS,
+                pathname: routes.PROJECTS,
                 state: { from: routeProps.location },
               }}
             />

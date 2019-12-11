@@ -46,9 +46,6 @@ const AuthedButtons = () => {
   const handleProjects = (event: SyntheticEvent) => {
     history.push(routes.PROJECTS)
   }
-  const handleMyProjects = (event: SyntheticEvent) => {
-    history.push(routes.MY_PROJECTS)
-  }
   const handleSingOut = (event: SyntheticEvent) => {
     auth.signout()
   }
@@ -63,9 +60,6 @@ const AuthedButtons = () => {
         </Button>
         <Button color="inherit" onClick={handleProjects}>
           Projects
-        </Button>
-        <Button color="inherit" onClick={handleMyProjects}>
-          My Projects
         </Button>
       </div>
       <Button color="inherit" onClick={handleSingOut}>

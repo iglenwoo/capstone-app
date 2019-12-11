@@ -51,10 +51,10 @@ export const SignIn: FC = () => {
 
     const user = signin(email, password, shouldPersist)
     user
-      .then(u => {
+      .then(() => {
         setEmail('')
         setPassword('')
-        history.push(routes.MY_PROJECTS)
+        history.push(routes.PROJECTS)
       })
       .catch(error => {
         enqueueSnackbar(error.message, { variant: 'error' })
@@ -111,7 +111,7 @@ export const SignIn: FC = () => {
                 value="remember"
                 color="primary"
                 checked={shouldPersist}
-                onChange={e => {
+                onChange={() => {
                   setShouldPersist(!shouldPersist)
                 }}
               />

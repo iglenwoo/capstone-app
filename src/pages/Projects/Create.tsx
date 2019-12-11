@@ -7,10 +7,10 @@ import {
   makeStyles,
   TextField,
   Theme,
+  Typography,
 } from '@material-ui/core'
 import * as React from 'react'
 import { useState } from 'react'
-import { SyntheticEvent } from 'react'
 import { Auth, useAuth } from '../../components/FirebaseAuth/use-auth'
 import * as firebase from 'firebase/app'
 import 'firebase/firestore'
@@ -18,6 +18,7 @@ import { useHistory } from 'react-router'
 import * as routes from '../../constants/routes'
 import { validateProjectCode } from '../../utils'
 import { useSnackbar } from 'notistack'
+import { useEffect } from 'react'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -52,21 +53,37 @@ export const Create = () => {
   const history = useHistory()
   const { enqueueSnackbar } = useSnackbar()
   const [project, setProject] = useState<Project>({ ...INIT_PROJECT })
+  const [codeError, setCodeError] = useState<boolean>(false)
+  const [disabledCreate, setDisabledCreate] = useState<boolean>(true)
 
-  const handleCreateClick = (e: SyntheticEvent) => {
+  useEffect(() => {
+    if (project.code) {
+      if (validateProjectCode(project.code)) {
+        setCodeError(false)
+        setDisabledCreate(false)
+      } else {
+        setCodeError(true)
+        setDisabledCreate(true)
+      }
+    }
+  }, [project.code])
+
+  const handleCreateClick = () => {
     if (!user) return
     if (!validateProjectCode(project.code)) {
       enqueueSnackbar(`Please use alphabet, numbers, '-' or '_'.`, {
         variant: 'error',
       })
+      setCodeError(true)
       return
     }
+    setCodeError(false)
 
     const projectRef = firestore.collection('projects').doc(project.code)
     const userRef = firestore.collection('users').doc(user.uid)
     firestore
       .runTransaction(transaction => {
-        return transaction.get(userRef).then(doc => {
+        return transaction.get(userRef).then(() => {
           transaction.set(projectRef, {
             ...project,
             owner: user.email,
@@ -92,12 +109,15 @@ export const Create = () => {
   return (
     <Card className={classes.card}>
       <CardContent>
-        <Box className={classes.fieldContainer} mb={2}>
+        <Typography gutterBottom variant="h6">
+          Create a project
+        </Typography>
+        <Box className={classes.fieldContainer} mb={0}>
           <Box flexGrow={2} mx={1}>
             <TextField
-              label="Project Code"
-              placeholder="Capstone-Project"
-              helperText="Project Unique code (no white spaces)"
+              label="New Project Code"
+              placeholder="Awesome-project-code"
+              helperText="Project Unique code (alphabets, numbers, '-', and '_' are only allowed)"
               margin="dense"
               variant="outlined"
               fullWidth
@@ -105,6 +125,7 @@ export const Create = () => {
               onChange={e =>
                 setProject({ ...project, code: e.currentTarget.value })
               }
+              error={codeError}
             />
           </Box>
           <Box mx={1} pt={1}>
@@ -113,6 +134,7 @@ export const Create = () => {
               color="secondary"
               className={classes.button}
               onClick={handleCreateClick}
+              disabled={disabledCreate}
             >
               Create
             </Button>

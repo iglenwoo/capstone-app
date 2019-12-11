@@ -17,7 +17,7 @@ import {
   Typography,
 } from '@material-ui/core'
 import { PROJECTS, USERS } from '../../constants/db.collections'
-import { MyProjectContext } from './index'
+import { ProjectsContext } from './index'
 import { Loading } from '../../components/Loading'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -28,8 +28,8 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export const Invited = () => {
-  const { joinedProjects, fetchProjects } = useContext(MyProjectContext)
+export const Invitations = () => {
+  const { joinedProjects, fetchProjects } = useContext(ProjectsContext)
   const { user, firestore }: Auth = useAuth()
   const [projects, setProjects] = useState<string[]>([])
   const [loading, setLoading] = useState<boolean>(true)
@@ -66,11 +66,11 @@ export const Invited = () => {
       .collection(USERS)
       .doc(user.uid)
       .update({ projects: firebase.firestore.FieldValue.arrayUnion(code) })
-      .then(doc => {
+      .then(() => {
         fetchProjects()
       })
       .catch(error => {
-        console.log(`Error accpeting a project ${code}`, error)
+        console.log(`Error accepting a project ${code}`, error)
       })
   }
 
@@ -79,7 +79,7 @@ export const Invited = () => {
       return (
         <ListItem key={`${p}-${i}`}>
           <ListItemText>
-            <Typography>Project: {p}</Typography>
+            <Typography>Project Code: {p}</Typography>
           </ListItemText>
           <ListItemSecondaryAction>
             <Button
@@ -111,7 +111,7 @@ export const Invited = () => {
         ) : (
           <Box py={1}>
             <Typography gutterBottom variant="h6">
-              Invited
+              Invitations
             </Typography>
             <List>{projectsLinks}</List>
           </Box>
