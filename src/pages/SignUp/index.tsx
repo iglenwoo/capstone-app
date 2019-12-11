@@ -56,7 +56,7 @@ export const SignUp: FC = () => {
               email: user.email,
             })
 
-          history.push(routes.MY_PROJECTS)
+          history.push(routes.PROFILE)
         }
       })
       .catch(error => {

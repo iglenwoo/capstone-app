@@ -92,7 +92,10 @@ function useProvideAuth(): Auth {
   ): Promise<firebase.User | null> => {
     return firebase
       .auth()
-      .createUserWithEmailAndPassword(email, password)
+      .setPersistence(firebase.auth.Auth.Persistence.SESSION)
+      .then(() => {
+        return firebase.auth().createUserWithEmailAndPassword(email, password)
+      })
       .then(response => {
         setUser(response.user)
         return response.user
