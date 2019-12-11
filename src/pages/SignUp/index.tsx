@@ -11,7 +11,7 @@ import {
   TextField,
   Typography,
 } from '@material-ui/core'
-import { LockOutlined as LockOutlinedIcon } from '@material-ui/icons'
+import { AccountCircle as AccountCircleIcon } from '@material-ui/icons'
 import Copyright from '../../components/Copyright'
 import { FC } from 'react'
 import { useState } from 'react'
@@ -71,8 +71,8 @@ export const SignUp: FC = () => {
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className={classes.paper}>
-        <Avatar className={classes.avatar}>
-          <LockOutlinedIcon />
+        <Avatar className={classes.avatarSignUp}>
+          <AccountCircleIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
           Sign up

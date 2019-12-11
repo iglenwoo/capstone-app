@@ -11,7 +11,7 @@ import {
   TextField,
   Typography,
 } from '@material-ui/core'
-import { LockOutlined as LockOutlinedIcon } from '@material-ui/icons'
+import { LockOpenOutlined as LockOpenOutlinedIcon } from '@material-ui/icons'
 import Copyright from '../../components/Copyright'
 import { AlertDialog } from '../../components/Dialog/AlertDialog'
 import { useStyles } from '../../theme'
@@ -50,8 +50,8 @@ export const PasswordForget: FC = () => {
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className={classes.paper}>
-        <Avatar className={classes.avatar}>
-          <LockOutlinedIcon />
+        <Avatar className={classes.avatarForgotPW}>
+          <LockOpenOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
           Password Forget

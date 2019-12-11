@@ -52,9 +52,17 @@ export const useStyles = makeStyles((theme: Theme) =>
       flexDirection: 'column',
       alignItems: 'center',
     },
-    avatar: {
+    avatarSignUp: {
       margin: theme.spacing(1),
       backgroundColor: theme.palette.secondary.main,
+    },
+    avatarSignIn: {
+      margin: theme.spacing(1),
+      backgroundColor: theme.palette.primary.main,
+    },
+    avatarForgotPW: {
+      margin: theme.spacing(1),
+      backgroundColor: 'red',
     },
     form: {
       width: '100%', // Fix IE 11 issue.
