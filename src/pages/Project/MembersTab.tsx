@@ -23,6 +23,7 @@ import {
   parseToSkills,
 } from './utils'
 import { SortedSkillChips } from './SortedSkillChips'
+import { Invite } from './Invite'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -59,7 +60,7 @@ export interface InterestGroup extends CountableGroup {}
 
 export const MembersTab: FC = () => {
   const { project } = useContext(ProjectContext)
-  const { firestore }: Auth = useAuth()
+  const { user, firestore }: Auth = useAuth()
   const [allMembers, setAllMembers] = useState<string[]>([])
   const [idGroups, setIdGroups] = useState<IdGroup[]>([])
   const [skillGroups, setSkillGroups] = useState<SkillGroup[]>([])
@@ -156,6 +157,7 @@ export const MembersTab: FC = () => {
       <Typography variant="h5" className={classes.project}>
         Project Code: {project.code}
       </Typography>
+      {user && user.email === project.owner && <Invite />}
       <MembersList members={allMembers} />
       <Divider className={classes.divider} />
       <Typography variant="h5" className={classes.title}>

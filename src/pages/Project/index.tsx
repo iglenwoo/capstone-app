@@ -13,7 +13,6 @@ import {
 } from '@material-ui/core'
 import { Auth, useAuth } from '../../components/FirebaseAuth/use-auth'
 import { ProjectInfoTab, Project } from './ProjectInfoTab'
-import { SettingsTab } from './SettingsTab'
 import { useAsyncEffect } from '../../utils/use-async-effect'
 import { PROJECTS } from '../../constants/db.collections'
 import { MembersTab } from './MembersTab'
@@ -71,7 +70,6 @@ const tabs = [
   { label: 'Info', index: 0, child: <ProjectInfoTab /> },
   { label: 'Members', index: 1, child: <MembersTab /> },
   { label: 'Documents', index: 2, child: <DocumentsTab /> },
-  { label: 'Settings', index: 3, child: <SettingsTab /> },
 ]
 const tabItems = tabs.map(tab => (
   <Tab
