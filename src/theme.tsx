@@ -6,8 +6,23 @@ import {
   Theme,
 } from '@material-ui/core/styles'
 
-// A custom theme for this app
-const theme = createMuiTheme({
+export const outerTheme = createMuiTheme({
+  palette: {
+    primary: {
+      main: '#d73f09',
+    },
+    secondary: {
+      main: '#546e7a',
+    },
+    error: {
+      main: red.A400,
+    },
+    background: {
+      default: '#fff',
+    },
+  },
+})
+export const innerTheme = createMuiTheme({
   palette: {
     primary: {
       main: '#689F38',
@@ -50,5 +65,3 @@ export const useStyles = makeStyles((theme: Theme) =>
     },
   })
 )
-
-export default theme

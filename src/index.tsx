@@ -3,13 +3,13 @@ import ReactDOM from 'react-dom'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import { ThemeProvider } from '@material-ui/styles'
 import { App } from './components/App'
-import theme from './theme'
+import { outerTheme } from './theme'
 import * as serviceWorker from './serviceWorker'
 import { ProvideAuth } from './components/FirebaseAuth/use-auth'
 import { SnackbarProvider } from 'notistack'
 
 ReactDOM.render(
-  <ThemeProvider theme={theme}>
+  <ThemeProvider theme={outerTheme}>
     <CssBaseline />
     <ProvideAuth>
       <SnackbarProvider

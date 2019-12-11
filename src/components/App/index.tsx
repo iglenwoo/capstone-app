@@ -18,36 +18,39 @@ import { Projects } from '../../pages/Projects'
 import { MyProjects } from '../../pages/MyProjects'
 import { Account } from '../../pages/Account'
 import { ProjectPage } from '../../pages/Project'
-import { LinearProgress, withStyles } from '@material-ui/core'
+import { LinearProgress, ThemeProvider, withStyles } from '@material-ui/core'
+import { innerTheme } from '../../theme'
 
 export function App() {
   return (
     <Router>
       <div>
         <TopBar />
-        <Switch>
-          <GuestRoute exact path={routes.SIGN_UP} component={SignUp} />
-          <GuestRoute exact path={routes.SIGN_IN} component={SignIn} />
-          <GuestRoute
-            exact
-            path={routes.PASSWORD_FORGET}
-            component={PasswordForget}
-          />
-          <PrivateRoute exact path={routes.LANDING} component={Landing} />
-          <PrivateRoute exact path={routes.PROFILE} component={Profile} />
-          <PrivateRoute exact path={routes.PROJECTS} component={Projects} />
-          <PrivateRoute
-            exact
-            path={`${routes.PROJECTS}/:code`}
-            component={ProjectPage}
-          />
-          <PrivateRoute
-            exact
-            path={routes.MY_PROJECTS}
-            component={MyProjects}
-          />
-          <PrivateRoute exact path={routes.ACCOUNT} component={Account} />
-        </Switch>
+        <ThemeProvider theme={innerTheme}>
+          <Switch>
+            <GuestRoute exact path={routes.SIGN_UP} component={SignUp} />
+            <GuestRoute exact path={routes.SIGN_IN} component={SignIn} />
+            <GuestRoute
+              exact
+              path={routes.PASSWORD_FORGET}
+              component={PasswordForget}
+            />
+            <PrivateRoute exact path={routes.LANDING} component={Landing} />
+            <PrivateRoute exact path={routes.PROFILE} component={Profile} />
+            <PrivateRoute exact path={routes.PROJECTS} component={Projects} />
+            <PrivateRoute
+              exact
+              path={`${routes.PROJECTS}/:code`}
+              component={ProjectPage}
+            />
+            <PrivateRoute
+              exact
+              path={routes.MY_PROJECTS}
+              component={MyProjects}
+            />
+            <PrivateRoute exact path={routes.ACCOUNT} component={Account} />
+          </Switch>
+        </ThemeProvider>
       </div>
     </Router>
   )
