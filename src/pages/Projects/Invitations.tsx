@@ -10,6 +10,7 @@ import {
   createStyles,
   List,
   ListItem,
+  ListItemIcon,
   ListItemSecondaryAction,
   ListItemText,
   makeStyles,
@@ -19,6 +20,8 @@ import {
 import { PROJECTS, USERS } from '../../constants/db.collections'
 import { ProjectsContext } from './index'
 import { Loading } from '../../components/Loading'
+import { EmptyListItem } from './ProjectList'
+import { Add as AddIcon } from '@material-ui/icons'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -77,7 +80,10 @@ export const Invitations = () => {
   const projectsLinks = projects.length ? (
     projects.map((p, i) => {
       return (
-        <ListItem key={`${p}-${i}`}>
+        <ListItem key={`${p}-${i}`} dense>
+          <ListItemIcon>
+            <AddIcon />
+          </ListItemIcon>
           <ListItemText>
             <Typography>Project Code: {p}</Typography>
           </ListItemText>
@@ -96,9 +102,7 @@ export const Invitations = () => {
       )
     })
   ) : (
-    <ListItem>
-      <ListItemText>No project invited</ListItemText>
-    </ListItem>
+    <EmptyListItem />
   )
 
   const classes = useStyles()

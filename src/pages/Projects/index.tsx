@@ -6,17 +6,15 @@ import {
   CardContent,
   Container,
   createStyles,
-  Link as LinkUI,
   makeStyles,
   Theme,
   Typography,
 } from '@material-ui/core'
-import { Link } from 'react-router-dom'
-import * as routes from '../../constants/routes'
 import { USERS } from '../../constants/db.collections'
 import { Loading } from '../../components/Loading'
 import { Invitations } from './Invitations'
 import { Create } from './Create'
+import { ProjectList } from './ProjectList'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -66,25 +64,6 @@ export const Projects = () => {
     fetchProjects()
   }, [user, firestore, fetchProjects])
 
-  const projectsLinks = projects.length ? (
-    projects.map((p, i) => {
-      return (
-        <Box p={1} key={`${p}-${i}`}>
-          <LinkUI
-            href="#"
-            variant="body2"
-            component={Link}
-            to={`${routes.PROJECTS}/${p}`}
-          >
-            {p}
-          </LinkUI>
-        </Box>
-      )
-    })
-  ) : (
-    <Box>No projects...</Box>
-  )
-
   const classes = useStyles()
 
   return (
@@ -102,7 +81,9 @@ export const Projects = () => {
                 <Typography gutterBottom variant="h6">
                   My Projects
                 </Typography>
-                <Box ml={1}>{projectsLinks}</Box>
+                <Box ml={1}>
+                  <ProjectList projects={projects} />
+                </Box>
               </Box>
             )}
           </CardContent>
