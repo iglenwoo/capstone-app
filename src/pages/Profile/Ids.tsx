@@ -32,7 +32,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       marginTop: theme.spacing(1),
     },
     title: {
-      backgroundColor: theme.palette.grey.A100,
+      backgroundColor: theme.palette.grey['100'],
     },
     value: {
       width: '100%',
