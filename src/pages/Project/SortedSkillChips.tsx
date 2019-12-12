@@ -31,16 +31,16 @@ export const SortedSkillChips: FC<{
     <>
       {props.groups.map((g, i) => (
         <Tooltip
+          key={`${g.name}-${i}`}
           title={
             <>
-              {g.emails.map(e => (
-                <Typography>{e}</Typography>
+              {g.emails.map((e, j) => (
+                <Typography key={`${e}-${j}`}>{e}</Typography>
               ))}
             </>
           }
         >
           <Chip
-            key={`${g.name}-${i}`}
             className={classes.chip}
             label={
               <>

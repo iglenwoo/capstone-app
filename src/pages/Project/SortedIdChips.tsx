@@ -32,16 +32,16 @@ export const SortedIdChips: FC<{
     <>
       {props.idGroups.map((g, i) => (
         <Tooltip
+          key={`${g.service}-${i}`}
           title={
             <>
-              {g.emails.map(e => (
-                <Typography>{e}</Typography>
+              {g.emails.map((e, j) => (
+                <Typography key={`${e}-${j}`}>{e}</Typography>
               ))}
             </>
           }
         >
           <Chip
-            key={`${g.service}-${i}`}
             className={classes.chip}
             label={
               <>

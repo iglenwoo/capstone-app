@@ -57,7 +57,6 @@ export const ProjectInfoTab: FC = () => {
 
   const setTitleAndDesc = () => {
     if (project) {
-      console.log(project)
       if (project.title) setTitle(project.title)
       if (project.desc) setDesc(project.desc)
     }
@@ -135,11 +134,11 @@ export const ProjectInfoTab: FC = () => {
           ) : (
             <Typography variant="body1" className={classes.inputValue}>
               {project.desc &&
-                project.desc.split('\n').map(s => (
-                  <>
+                project.desc.split('\n').map((s, i) => (
+                  <React.Fragment key={`desc-${i}`}>
                     {s}
                     <br />
-                  </>
+                  </React.Fragment>
                 ))}
             </Typography>
           )}
