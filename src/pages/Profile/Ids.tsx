@@ -25,6 +25,7 @@ import { AddCircle as AddCircleIcon } from '@material-ui/icons'
 import { EditableId } from './EditableId'
 import { Auth, useAuth } from '../../components/FirebaseAuth/use-auth'
 import { IDS } from '../../constants/db.collections'
+import { Loading } from '../../components/Loading'
 
 export const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -64,6 +65,7 @@ const INIT_ID: Id = {
 
 export const Ids: FC<{}> = props => {
   const { user, firestore }: Auth = useAuth()
+  const [loading, setLoading] = useState(true)
   const [ids, setIds] = useState<Id[]>([])
   const [newId, setNewId] = useState<Id>({ ...INIT_ID })
 
@@ -82,6 +84,9 @@ export const Ids: FC<{}> = props => {
       })
       .catch(error => {
         console.log('Error getting document:', error)
+      })
+      .finally(() => {
+        setLoading(false)
       })
   }, [user, firestore])
 
@@ -124,6 +129,7 @@ export const Ids: FC<{}> = props => {
   const setNewIds = (newIds: Id[], cb: () => void) => {
     if (!user || !user.email) return
 
+    setLoading(true)
     const objs = newIds.map(obj => {
       return Object.assign({}, obj)
     })
@@ -139,6 +145,9 @@ export const Ids: FC<{}> = props => {
       .catch(error => {
         console.log('Error updating document:', error)
       })
+      .finally(() => {
+        setLoading(false)
+      })
   }
 
   const classes = useStyles()
@@ -150,67 +159,71 @@ export const Ids: FC<{}> = props => {
           <Typography variant="h6" gutterBottom>
             IDs
           </Typography>
-          <List dense>
-            <ListItem className={classes.title}>
-              <ListItemText primary="Service" />
-              <ListItemText primary="Account" />
-              <ListItemSecondaryAction />
-            </ListItem>
-            {ids.length ? (
-              ids.map((id, index) => (
-                <EditableId
-                  id={id}
-                  index={index}
-                  key={`${id.service}.${index}`}
-                />
-              ))
-            ) : (
-              <>
-                <Divider />
-                <ListItem>
-                  <ListItemText primary="Please add your IDs." />
-                </ListItem>
-              </>
-            )}
-            <ListItem>
-              <ListItemText className={classes.value}>
-                <TextField
-                  variant="outlined"
-                  margin="dense"
-                  label="Service Name"
-                  placeholder="Gibhub"
-                  fullWidth
-                  value={newId.service}
-                  onChange={e =>
-                    setNewId({ ...newId, service: e.currentTarget.value })
-                  }
-                />
-              </ListItemText>
-              <ListItemText className={classes.value}>
-                <TextField
-                  variant="outlined"
-                  margin="dense"
-                  label="Account (ID)"
-                  placeholder="example"
-                  fullWidth
-                  value={newId.value}
-                  onChange={e =>
-                    setNewId({ ...newId, value: e.currentTarget.value })
-                  }
-                />
-              </ListItemText>
-              <ListItemSecondaryAction>
-                <IconButton
-                  edge="end"
-                  aria-label="add"
-                  color="primary"
-                  onClick={handleAddId}
-                >
-                  <AddCircleIcon />
-                </IconButton>
-              </ListItemSecondaryAction>
-            </ListItem>
-          </List>
+          {loading ? (
+            <Loading />
+          ) : (
+            <List dense>
+              <ListItem className={classes.title}>
+                <ListItemText primary="Service" />
+                <ListItemText primary="Account" />
+                <ListItemSecondaryAction />
+              </ListItem>
+              {ids.length ? (
+                ids.map((id, index) => (
+                  <EditableId
+                    id={id}
+                    index={index}
+                    key={`${id.service}.${index}`}
+                  />
+                ))
+              ) : (
+                <>
+                  <Divider />
+                  <ListItem>
+                    <ListItemText primary="Please add your IDs." />
+                  </ListItem>
+                </>
+              )}
+              <ListItem>
+                <ListItemText className={classes.value}>
+                  <TextField
+                    variant="outlined"
+                    margin="dense"
+                    label="Service Name"
+                    placeholder="Gibhub"
+                    fullWidth
+                    value={newId.service}
+                    onChange={e =>
+                      setNewId({ ...newId, service: e.currentTarget.value })
+                    }
+                  />
+                </ListItemText>
+                <ListItemText className={classes.value}>
+                  <TextField
+                    variant="outlined"
+                    margin="dense"
+                    label="Account (ID)"
+                    placeholder="example"
+                    fullWidth
+                    value={newId.value}
+                    onChange={e =>
+                      setNewId({ ...newId, value: e.currentTarget.value })
+                    }
+                  />
+                </ListItemText>
+                <ListItemSecondaryAction>
+                  <IconButton
+                    edge="end"
+                    aria-label="add"
+                    color="primary"
+                    onClick={handleAddId}
+                  >
+                    <AddCircleIcon />
+                  </IconButton>
+                </ListItemSecondaryAction>
+              </ListItem>
+            </List>
+          )}
         </CardContent>
       </Card>
     </IdContext.Provider>
