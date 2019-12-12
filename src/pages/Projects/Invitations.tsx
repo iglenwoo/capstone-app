@@ -21,7 +21,7 @@ import { PROJECTS, USERS } from '../../constants/db.collections'
 import { ProjectsContext } from './index'
 import { Loading } from '../../components/Loading'
 import { EmptyListItem } from './ProjectList'
-import { Add as AddIcon } from '@material-ui/icons'
+import { NotificationImportant as NotificationImportantIcon } from '@material-ui/icons'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -83,10 +83,10 @@ export const Invitations = () => {
       return (
         <ListItem key={`${p}-${i}`} dense>
           <ListItemIcon>
-            <AddIcon />
+            <NotificationImportantIcon />
           </ListItemIcon>
           <ListItemText>
-            <Typography>Project Code: {p}</Typography>
+            <Typography>{p}</Typography>
           </ListItemText>
           <ListItemSecondaryAction>
             <Button

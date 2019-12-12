@@ -9,20 +9,11 @@ import {
   ListItemText,
   makeStyles,
   Theme,
+  Typography,
 } from '@material-ui/core'
-import { KeyboardArrowRight as KeyboardArrowRightIcon } from '@material-ui/icons'
+import { DoubleArrowSharp as DoubleArrowIcon } from '@material-ui/icons'
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      width: '100%',
-      backgroundColor: theme.palette.background.paper,
-    },
-    project: {
-      // width: '30%',
-    },
-  })
-)
+const useStyles = makeStyles((theme: Theme) => createStyles({}))
 
 export const ProjectList: FC<{
   projects: string[]
@@ -35,7 +26,7 @@ export const ProjectList: FC<{
   }
 
   return (
-    <List className={classes.root}>
+    <List>
       {props.projects.map((p: string, i) => (
         <ListItem
           key={`${p}-${i}`}
@@ -46,9 +37,11 @@ export const ProjectList: FC<{
           }}
         >
           <ListItemIcon>
-            <KeyboardArrowRightIcon />
+            <DoubleArrowIcon />
           </ListItemIcon>
-          <ListItemText className={classes.project} primary={p} />
+          <ListItemText>
+            <Typography>{p}</Typography>
+          </ListItemText>
         </ListItem>
       ))}
       {props.projects.length === 0 && <EmptyListItem />}
