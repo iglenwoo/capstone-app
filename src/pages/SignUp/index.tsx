@@ -44,7 +44,7 @@ export const SignUp: FC = () => {
     event.preventDefault()
     if (emailError || passwordError) return
 
-    const newUser = signup(email, password)
+    signup(email, password)
       .then(user => {
         if (user && user.uid && user.email) {
           firestore

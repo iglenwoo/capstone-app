@@ -2,13 +2,10 @@ import React, { FC } from 'react'
 import { useHistory } from 'react-router-dom'
 import * as routes from '../../constants/routes'
 import {
-  createStyles,
   List,
   ListItem,
   ListItemIcon,
   ListItemText,
-  makeStyles,
-  Theme,
   Typography,
 } from '@material-ui/core'
 import { DoubleArrowSharp as DoubleArrowIcon } from '@material-ui/icons'

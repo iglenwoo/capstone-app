@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { FC, useContext, useEffect } from 'react'
+import { FC, useCallback, useContext, useEffect } from 'react'
 import {
   Box,
   Button,
@@ -17,7 +17,6 @@ import { PROJECTS } from '../../constants/db.collections'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {},
     inputTitle: {
       marginBottom: theme.spacing(2),
     },
@@ -55,15 +54,16 @@ export const ProjectInfoTab: FC = () => {
   const [title, setTitle] = useState<string>('')
   const [desc, setDesc] = useState<string>('')
 
-  const setTitleAndDesc = () => {
+  const setTitleAndDesc = useCallback(() => {
     if (project) {
       if (project.title) setTitle(project.title)
       if (project.desc) setDesc(project.desc)
     }
-  }
+  }, [project])
+
   useEffect(() => {
     setTitleAndDesc()
-  }, [project])
+  }, [setTitleAndDesc])
 
   const handleEditClick = () => {
     setEditing(true)
@@ -92,17 +92,17 @@ export const ProjectInfoTab: FC = () => {
   const classes = useStyles()
 
   return (
-    <Box>
+    <>
+      <Typography variant="h5" className={classes.inputTitle}>
+        Project Code: {project.code}
+      </Typography>
+      <Typography variant="subtitle1" className={classes.inputTitle}>
+        Owned by {project.owner}
+      </Typography>
       {loading ? (
         <Loading />
       ) : (
-        <Box className={classes.root}>
-          <Typography variant="h5" className={classes.inputTitle}>
-            Project Code: {project.code}
-          </Typography>
-          <Typography variant="subtitle1" className={classes.inputTitle}>
-            Owned by {project.owner}
-          </Typography>
+        <>
           <Typography variant="h6">Title:</Typography>
           {editing ? (
             <TextField
@@ -110,7 +110,6 @@ export const ProjectInfoTab: FC = () => {
               margin="dense"
               variant="outlined"
               placeholder="Awesome project"
-              className={classes.inputValue}
               value={title}
               onChange={e => setTitle(e.currentTarget.value)}
             />
@@ -127,7 +126,6 @@ export const ProjectInfoTab: FC = () => {
               margin="dense"
               variant="outlined"
               placeholder="This is an awesome project"
-              className={classes.inputValue}
               value={desc}
               onChange={e => setDesc(e.currentTarget.value)}
             />
@@ -173,8 +171,8 @@ export const ProjectInfoTab: FC = () => {
               </Button>
             )}
           </Box>
-        </Box>
+        </>
       )}
-    </Box>
+    </>
   )
 }
