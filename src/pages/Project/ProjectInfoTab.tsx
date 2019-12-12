@@ -97,7 +97,10 @@ export const ProjectInfoTab: FC = () => {
         Project Code: {project.code}
       </Typography>
       <Typography variant="subtitle1" className={classes.inputTitle}>
-        Owned by {project.owner}
+        Owned by{' '}
+        {`${project.owner} ${
+          user && user.email === project.owner ? '(me)' : ''
+        }`}
       </Typography>
       {loading ? (
         <Loading />
