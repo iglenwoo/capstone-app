@@ -15,8 +15,13 @@ export const parseToIds = (idDoc: firebase.firestore.QuerySnapshot) => {
       const data = result.data()
       if (data && data.ids) {
         const idsProp: Id[] = data.ids
+        console.log('idsProp', idsProp)
         idsProp.forEach((id: Id) => {
-          ids.push({ ...id, service: id.service.toLowerCase() })
+          ids.push({
+            ...id,
+            email: data.email,
+            service: id.service.toLowerCase(),
+          })
         })
       }
     })
@@ -28,8 +33,11 @@ export const parseToIds = (idDoc: firebase.firestore.QuerySnapshot) => {
 export const addIdHash = (idHash: { [key: string]: IdGroup }, ids: Id[]) => {
   for (const id of ids) {
     if (idHash[id.service]) {
+      console.log('0', idHash[id.service])
       idHash[id.service].count += 1
+      console.log('1', idHash[id.service].emails)
       idHash[id.service].emails = idHash[id.service].emails.concat(id.email)
+      console.log('2', idHash[id.service].emails)
     } else {
       idHash[id.service] = {
         ...id,

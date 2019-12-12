@@ -4,6 +4,7 @@ import {
   createStyles,
   makeStyles,
   Theme,
+  Tooltip,
   Typography,
 } from '@material-ui/core'
 import { CountableGroup } from './MembersTab'
@@ -29,18 +30,28 @@ export const SortedSkillChips: FC<{
   return (
     <>
       {props.groups.map((g, i) => (
-        <Chip
-          key={`${g.name}-${i}`}
-          className={classes.chip}
-          label={
+        <Tooltip
+          title={
             <>
-              <Typography variant="body1">{g.name}</Typography>
-              <Typography variant="body1" className={classes.chipCount}>
-                {g.count}
-              </Typography>
+              {g.emails.map(e => (
+                <Typography>{e}</Typography>
+              ))}
             </>
           }
-        />
+        >
+          <Chip
+            key={`${g.name}-${i}`}
+            className={classes.chip}
+            label={
+              <>
+                <Typography variant="body1">{g.name}</Typography>
+                <Typography variant="body1" className={classes.chipCount}>
+                  {g.count}
+                </Typography>
+              </>
+            }
+          />
+        </Tooltip>
       ))}
     </>
   )

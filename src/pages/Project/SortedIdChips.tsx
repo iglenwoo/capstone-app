@@ -1,9 +1,11 @@
 import React, { FC } from 'react'
 import {
+  Box,
   Chip,
   createStyles,
   makeStyles,
   Theme,
+  Tooltip,
   Typography,
 } from '@material-ui/core'
 import { IdGroup } from './MembersTab'
@@ -29,18 +31,28 @@ export const SortedIdChips: FC<{
   return (
     <>
       {props.idGroups.map((g, i) => (
-        <Chip
-          key={`${g.service}-${i}`}
-          className={classes.chip}
-          label={
+        <Tooltip
+          title={
             <>
-              <Typography variant="body1">{g.service}</Typography>
-              <Typography variant="body1" className={classes.chipCount}>
-                {g.count}
-              </Typography>
+              {g.emails.map(e => (
+                <Typography>{e}</Typography>
+              ))}
             </>
           }
-        />
+        >
+          <Chip
+            key={`${g.service}-${i}`}
+            className={classes.chip}
+            label={
+              <>
+                <Typography variant="body1">{g.service}</Typography>
+                <Typography variant="body1" className={classes.chipCount}>
+                  {g.count}
+                </Typography>
+              </>
+            }
+          />
+        </Tooltip>
       ))}
     </>
   )
