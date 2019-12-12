@@ -172,20 +172,18 @@ export const Ids: FC<{}> = props => {
             placement="right-start"
             title={
               <>
-                <Typography color="inherit">IDs:</Typography>
+                <Typography color="inherit">Service Accounts:</Typography>
                 <b>Add your service accounts here.</b>
+                <br />
+                <i>e.g. Github, Slack, LinkedIn, Facebook, Google, OSU, ...</i>
                 <br />
                 This will help you to share them with other team members in a
                 project.
-                <br />
-                <i>
-                  e.g. Github, Slack, LinkedIn, Facebook, Google, Outlook, OSU
-                </i>
               </>
             }
           >
             <Typography variant="h6" display="inline" gutterBottom>
-              IDs
+              Service Accounts
             </Typography>
           </HtmlTooltip>
           {loading ? (

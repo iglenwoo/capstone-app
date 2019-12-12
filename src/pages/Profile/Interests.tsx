@@ -121,10 +121,10 @@ export const Interests: FC = () => {
               <Typography color="inherit">Interests:</Typography>
               <b>Add what you are passion/interested about here.</b>
               <br />
+              <i>e.g. Coffee, Reading, Drawing, Sports, ...</i>
+              <br />
               This will help you to share them with other team members in a
               project.
-              <br />
-              <i>e.g. Coffee, Reading, Drawing, Sports</i>
             </>
           }
         >

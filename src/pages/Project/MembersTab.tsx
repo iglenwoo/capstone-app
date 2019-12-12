@@ -161,12 +161,12 @@ export const MembersTab: FC = () => {
       <MembersList members={allMembers} />
       <Divider className={classes.divider} />
       <Typography variant="h5" className={classes.title}>
-        IDs
+        Service Accounts
       </Typography>
       <SortedIdChips idGroups={idGroups} />
       <Divider className={classes.divider} />
       <Typography variant="h5" className={classes.title}>
-        Skills
+        Technical Skills
       </Typography>
       <SortedSkillChips groups={skillGroups} />
       <Divider className={classes.divider} />

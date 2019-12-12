@@ -119,10 +119,10 @@ export const Skills: FC = () => {
               <Typography color="inherit">Technical Skills:</Typography>
               <b>Add your technical skills here.</b>
               <br />
+              <i>e.g. Java, TypeScript, Backend, PhotoShop, FinalCut, ...</i>
+              <br />
               This will help you to share them with other team members in a
               project.
-              <br />
-              <i>e.g. Java, TypeScript, Backend, PhotoShop, FinalCut</i>
             </>
           }
         >
