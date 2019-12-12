@@ -91,7 +91,7 @@ export const Skills: FC = () => {
         setEditing(false)
         setLoading(false)
       })
-  }, [editing])
+  }, [editing, editingSkills, firestore, skills, user])
 
   const handleAddClick = (e: SyntheticEvent) => {
     if (!newSkill) return

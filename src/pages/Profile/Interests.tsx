@@ -93,9 +93,9 @@ export const Interests: FC = () => {
         setEditing(false)
         setLoading(false)
       })
-  }, [editing])
+  }, [editing, editingInterests, firestore, interests, user])
 
-  const handleAddClick = (e: SyntheticEvent) => {
+  const handleAddClick = () => {
     if (!newInterest) return
 
     const newEditingInterests = [...editingInterests, newInterest]
