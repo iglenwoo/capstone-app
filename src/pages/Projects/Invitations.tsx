@@ -29,10 +29,16 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: theme.spacing(1),
       marginBottom: theme.spacing(2),
     },
+    listItem: {
+      '&:hover': {
+        backgroundColor: theme.palette.grey['200'],
+      },
+    },
   })
 )
 
 export const Invitations = () => {
+  const classes = useStyles()
   const { joinedProjects, fetchProjects } = useContext(ProjectsContext)
   const { user, firestore }: Auth = useAuth()
   const [projects, setProjects] = useState<string[]>([])
@@ -81,7 +87,7 @@ export const Invitations = () => {
   const projectsLinks = projects.length ? (
     projects.map((p, i) => {
       return (
-        <ListItem key={`${p}-${i}`} dense>
+        <ListItem key={`${p}-${i}`} className={classes.listItem} dense>
           <ListItemIcon>
             <NotificationImportantIcon />
           </ListItemIcon>
@@ -105,8 +111,6 @@ export const Invitations = () => {
   ) : (
     <EmptyListItem />
   )
-
-  const classes = useStyles()
 
   return (
     <Card className={classes.card}>

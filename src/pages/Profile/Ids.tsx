@@ -150,7 +150,7 @@ export const Ids: FC<{}> = props => {
           <Typography variant="h6" gutterBottom>
             IDs
           </Typography>
-          <List>
+          <List dense>
             <ListItem className={classes.title}>
               <ListItemText primary="Service" />
               <ListItemText primary="Account" />
@@ -172,7 +172,7 @@ export const Ids: FC<{}> = props => {
                 </ListItem>
               </>
             )}
-            <ListItem dense>
+            <ListItem>
               <ListItemText className={classes.value}>
                 <TextField
                   variant="outlined"

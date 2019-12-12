@@ -13,12 +13,9 @@ import {
 } from '@material-ui/core'
 import { DoubleArrowSharp as DoubleArrowIcon } from '@material-ui/icons'
 
-const useStyles = makeStyles((theme: Theme) => createStyles({}))
-
 export const ProjectList: FC<{
   projects: string[]
 }> = props => {
-  const classes = useStyles()
   const history = useHistory()
 
   const openProject = (p: string) => {
@@ -26,7 +23,7 @@ export const ProjectList: FC<{
   }
 
   return (
-    <List>
+    <List dense>
       {props.projects.map((p: string, i) => (
         <ListItem
           key={`${p}-${i}`}

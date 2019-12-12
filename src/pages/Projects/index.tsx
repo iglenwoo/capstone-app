@@ -81,9 +81,7 @@ export const Projects = () => {
                 <Typography gutterBottom variant="h6">
                   My Projects
                 </Typography>
-                <Box ml={1}>
-                  <ProjectList projects={projects} />
-                </Box>
+                <ProjectList projects={projects} />
               </Box>
             )}
           </CardContent>
