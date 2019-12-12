@@ -20,11 +20,13 @@ import {
 } from '@material-ui/icons'
 import { Id } from './Ids'
 import { IdContext } from './Ids'
+import { useStyles } from './Ids'
 
 export const EditableId: FC<{
   id: Id
   index: number
 }> = props => {
+  const classes = useStyles()
   const { handleRemoveId, handleSaveId } = useContext(IdContext)
   const [onEdit, setOnEdit] = useState(false)
   const [id, setId] = useState<Id>(props.id)
@@ -45,12 +47,13 @@ export const EditableId: FC<{
   }
 
   return (
-    <ListItem>
+    <ListItem dense>
       {onEdit ? (
         <>
-          <ListItemText>
+          <ListItemText className={classes.value}>
             <TextField
-              required
+              variant="outlined"
+              margin="dense"
               fullWidth
               value={id.service}
               onChange={e =>
@@ -61,9 +64,10 @@ export const EditableId: FC<{
               }
             />
           </ListItemText>
-          <ListItemText>
+          <ListItemText className={classes.value}>
             <TextField
-              required
+              variant="outlined"
+              margin="dense"
               fullWidth
               value={id.value}
               onChange={e =>
@@ -77,8 +81,8 @@ export const EditableId: FC<{
         </>
       ) : (
         <>
-          <ListItemText primary={id.service} />
-          <ListItemText primary={id.value} />
+          <ListItemText className={classes.value} primary={id.service} />
+          <ListItemText className={classes.value} primary={id.value} />
         </>
       )}
       <ListItemSecondaryAction>

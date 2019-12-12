@@ -26,10 +26,18 @@ import { EditableId } from './EditableId'
 import { Auth, useAuth } from '../../components/FirebaseAuth/use-auth'
 import { IDS } from '../../constants/db.collections'
 
-const useStyles = makeStyles((theme: Theme) =>
+export const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     card: {
       marginTop: theme.spacing(1),
+    },
+    title: {
+      backgroundColor: theme.palette.grey.A100,
+    },
+    value: {
+      width: '100%',
+      paddingLeft: theme.spacing(1),
+      paddingRight: theme.spacing(2),
     },
   })
 )
@@ -143,9 +151,9 @@ export const Ids: FC<{}> = props => {
             IDs
           </Typography>
           <List>
-            <ListItem>
-              <ListItemText secondary="Service" />
-              <ListItemText secondary="Account" />
+            <ListItem className={classes.title}>
+              <ListItemText primary="Service" />
+              <ListItemText primary="Account" />
               <ListItemSecondaryAction />
             </ListItem>
             {ids.length ? (
@@ -164,13 +172,13 @@ export const Ids: FC<{}> = props => {
                 </ListItem>
               </>
             )}
-            <ListItem>
-              <ListItemText>
+            <ListItem dense>
+              <ListItemText className={classes.value}>
                 <TextField
-                  required
-                  id="standard-required"
-                  label="Service"
-                  placeholder="Service name"
+                  variant="outlined"
+                  margin="dense"
+                  label="Service Name"
+                  placeholder="Gibhub"
                   fullWidth
                   value={newId.service}
                   onChange={e =>
@@ -178,12 +186,12 @@ export const Ids: FC<{}> = props => {
                   }
                 />
               </ListItemText>
-              <ListItemText>
+              <ListItemText className={classes.value}>
                 <TextField
-                  required
-                  id="standard-required"
-                  label="Id"
-                  placeholder="account"
+                  variant="outlined"
+                  margin="dense"
+                  label="Account (ID)"
+                  placeholder="example"
                   fullWidth
                   value={newId.value}
                   onChange={e =>
