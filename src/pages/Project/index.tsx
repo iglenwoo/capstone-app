@@ -84,6 +84,8 @@ const INIT_PROJECT: Project = {
   code: '',
   owner: '',
   members: [],
+  title: '',
+  desc: '',
 }
 
 export const ProjectContext = createContext<{
@@ -97,11 +99,11 @@ export const ProjectContext = createContext<{
 })
 
 export const ProjectPage = () => {
-  const [tabIndex, setTabIndex] = React.useState<number>(0)
   const { firestore }: Auth = useAuth()
   const { code } = useParams()
   const { enqueueSnackbar } = useSnackbar()
   const history = useHistory()
+  const [tabIndex, setTabIndex] = useState<number>(0)
   const [loading, setLoading] = useState<boolean>(true)
   const [project, setProject] = useState<Project>({ ...INIT_PROJECT })
 

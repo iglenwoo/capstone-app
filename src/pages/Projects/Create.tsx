@@ -20,6 +20,7 @@ import { validateProjectCode } from '../../utils'
 import { useSnackbar } from 'notistack'
 import { useEffect } from 'react'
 import { Loading } from '../../components/Loading'
+import { Project } from '../Project/ProjectInfoTab'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -39,14 +40,12 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-interface Project {
-  code: string
-  owner: string
-}
-
 const INIT_PROJECT: Project = {
   code: '',
   owner: '',
+  members: [],
+  title: '',
+  desc: '',
 }
 
 export const Create = () => {
@@ -90,7 +89,6 @@ export const Create = () => {
           transaction.set(projectRef, {
             ...project,
             owner: user.email,
-            members: [],
           })
           transaction.update(userRef, {
             projects: firebase.firestore.FieldValue.arrayUnion(projectRef.id),
