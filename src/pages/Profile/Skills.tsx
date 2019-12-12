@@ -13,7 +13,6 @@ import {
   Typography,
   CardContent,
   Box,
-  Button,
   IconButton,
   TextField,
 } from '@material-ui/core'
@@ -21,6 +20,7 @@ import { AddCircle as AddCircleIcon } from '@material-ui/icons'
 import { Auth, useAuth } from '../../components/FirebaseAuth/use-auth'
 import { SKILLS } from '../../constants/db.collections'
 import { EditableChips } from '../../components/EditableChips'
+import { Loading } from '../../components/Loading'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -32,18 +32,24 @@ const useStyles = makeStyles((theme: Theme) =>
       maxHeight: 36,
       marginLeft: theme.spacing(1),
     },
-    skill: { flex: 1, minWidth: 100, marginRight: theme.spacing(1) },
-    addIcon: {
-      marginRight: theme.spacing(5),
+    skill: {
+      minWidth: 50,
+      marginLeft: theme.spacing(2),
+      marginRight: theme.spacing(2),
+    },
+    action: {
+      marginLeft: theme.spacing(1),
     },
   })
 )
 
 export const Skills: FC = () => {
+  const classes = useStyles()
   const { user, firestore }: Auth = useAuth()
   const [skills, setSkills] = useState<string[]>([])
   const [editingSkills, setEditingSkills] = useState<string[]>([])
   const [editing, setEditing] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [newSkill, setNewSkill] = useState<string>('')
 
   useEffect(() => {
@@ -63,48 +69,43 @@ export const Skills: FC = () => {
       .catch(error => {
         console.log('Error getting document:', error)
       })
+      .finally(() => {
+        setLoading(false)
+      })
   }, [user, firestore])
 
   useEffect(() => {
-    if (editing) {
-      setEditingSkills(skills)
-    }
-  }, [editing, skills])
-
-  const classes = useStyles()
-
-  const handleEditClick = (e: SyntheticEvent) => {
-    setEditing(true)
-  }
-  const handleAddClick = (e: SyntheticEvent) => {
-    if (!newSkill) return
-
-    const newEditingSkills = [...editingSkills, newSkill]
-    setEditingSkills(newEditingSkills)
-    setNewSkill('')
-  }
-  const handleSaveClick = (e: SyntheticEvent) => {
-    if (skills === editingSkills || !user || !user.email) return
-
+    if (!editing || skills === editingSkills || !user || !user.email) return
+    setLoading(true)
     firestore
       .collection(SKILLS)
       .doc(user.email)
       .set({ skills: editingSkills, email: user.email })
       .then(() => {
         setSkills(editingSkills)
-        setEditing(false)
       })
       .catch(error => {
         console.error('Error updating skills:', error)
       })
-  }
-  const handleCancelClick = (e: SyntheticEvent) => {
-    setEditing(false)
+      .finally(() => {
+        setEditing(false)
+        setLoading(false)
+      })
+  }, [editing])
+
+  const handleAddClick = (e: SyntheticEvent) => {
+    if (!newSkill) return
+
+    const newEditingSkills = [...editingSkills, newSkill]
+    setEditingSkills(newEditingSkills)
+    setNewSkill('')
+    setEditing(true)
   }
 
   const handleDeleteClick = (e: SyntheticEvent, skillToDelete: string) => {
     const newSkills = editingSkills.filter(s => s !== skillToDelete)
     setEditingSkills(newSkills)
+    setEditing(true)
   }
 
   return (
@@ -113,27 +114,22 @@ export const Skills: FC = () => {
         <Typography variant="h6" gutterBottom>
           Skills
         </Typography>
-        <EditableChips
-          chips={skills}
-          editingChips={editingSkills}
-          onDelete={handleDeleteClick}
-          editing={editing}
-        />
-        <Box
-          display="flex"
-          justifyContent="flex-end"
-          flexWrap="wrap"
-          alignItems="center"
-          minHeight={49}
-          mt={1}
-          mx={1}
-        >
-          {editing ? (
-            <>
+        {loading ? (
+          <Loading />
+        ) : (
+          <Box display="flex" flexWrap="wrap" alignItems="center">
+            <EditableChips
+              chips={skills}
+              editingChips={editingSkills}
+              onDelete={handleDeleteClick}
+              editing={true}
+            />
+            <Box className={classes.skill}>
               <TextField
+                variant="outlined"
+                margin="dense"
                 label="New skill"
                 placeholder="JavaScript"
-                className={classes.skill}
                 value={newSkill}
                 onChange={e => setNewSkill(e.currentTarget.value)}
               />
@@ -141,39 +137,14 @@ export const Skills: FC = () => {
                 edge="end"
                 aria-label="add"
                 color="primary"
-                className={classes.addIcon}
+                className={classes.action}
                 onClick={handleAddClick}
               >
                 <AddCircleIcon />
               </IconButton>
-              <Button
-                variant="contained"
-                color="default"
-                className={classes.button}
-                onClick={handleCancelClick}
-              >
-                Cancel
-              </Button>
-              <Button
-                variant="contained"
-                color="secondary"
-                className={classes.button}
-                onClick={handleSaveClick}
-              >
-                Save
-              </Button>
-            </>
-          ) : (
-            <Button
-              variant="contained"
-              color="primary"
-              className={classes.button}
-              onClick={handleEditClick}
-            >
-              Edit
-            </Button>
-          )}
-        </Box>
+            </Box>
+          </Box>
+        )}
       </CardContent>
     </Card>
   )
