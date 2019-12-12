@@ -19,7 +19,9 @@ import {
   makeStyles,
   TextField,
   Theme,
+  Tooltip,
   Typography,
+  withStyles,
 } from '@material-ui/core'
 import { AddCircle as AddCircleIcon } from '@material-ui/icons'
 import { EditableId } from './EditableId'
@@ -42,6 +44,16 @@ export const useStyles = makeStyles((theme: Theme) =>
     },
   })
 )
+
+export const HtmlTooltip = withStyles((theme: Theme) => ({
+  tooltip: {
+    backgroundColor: '#f5f5f9',
+    color: 'rgba(0, 0, 0, 0.87)',
+    maxWidth: 350,
+    fontSize: theme.typography.pxToRem(12),
+    border: '1px solid #dadde9',
+  },
+}))(Tooltip)
 
 export const IdContext = createContext<{
   handleSaveId: (index: number, newId: Id) => void
@@ -156,9 +168,26 @@ export const Ids: FC<{}> = props => {
     <IdContext.Provider value={{ handleRemoveId, handleSaveId }}>
       <Card className={classes.card}>
         <CardContent>
-          <Typography variant="h6" gutterBottom>
-            IDs
-          </Typography>
+          <HtmlTooltip
+            placement="right-start"
+            title={
+              <>
+                <Typography color="inherit">IDs:</Typography>
+                <b>Add your service accounts here.</b>
+                <br />
+                This will help you to share them with other team members in a
+                project.
+                <br />
+                <i>
+                  e.g. Github, Slack, LinkedIn, Facebook, Google, Outlook, OSU
+                </i>
+              </>
+            }
+          >
+            <Typography variant="h6" display="inline" gutterBottom>
+              IDs
+            </Typography>
+          </HtmlTooltip>
           {loading ? (
             <Loading />
           ) : (

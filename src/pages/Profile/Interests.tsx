@@ -21,6 +21,7 @@ import { Auth, useAuth } from '../../components/FirebaseAuth/use-auth'
 import { INTERESTS } from '../../constants/db.collections'
 import { EditableChips } from '../../components/EditableChips'
 import { Loading } from '../../components/Loading'
+import { HtmlTooltip } from './Ids'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -113,9 +114,24 @@ export const Interests: FC = () => {
   return (
     <Card className={classes.card}>
       <CardContent>
-        <Typography variant="h6" gutterBottom>
-          Interests
-        </Typography>
+        <HtmlTooltip
+          placement="right-start"
+          title={
+            <>
+              <Typography color="inherit">Interests:</Typography>
+              <b>Add what you are passion/interested about here.</b>
+              <br />
+              This will help you to share them with other team members in a
+              project.
+              <br />
+              <i>e.g. Coffee, Reading, Drawing, Sports</i>
+            </>
+          }
+        >
+          <Typography variant="h6" display="inline" gutterBottom>
+            Interests
+          </Typography>
+        </HtmlTooltip>
         {loading ? (
           <Loading />
         ) : (

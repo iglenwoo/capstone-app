@@ -21,6 +21,7 @@ import { Auth, useAuth } from '../../components/FirebaseAuth/use-auth'
 import { SKILLS } from '../../constants/db.collections'
 import { EditableChips } from '../../components/EditableChips'
 import { Loading } from '../../components/Loading'
+import { HtmlTooltip } from './Ids'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -111,9 +112,24 @@ export const Skills: FC = () => {
   return (
     <Card className={classes.card}>
       <CardContent>
-        <Typography variant="h6" gutterBottom>
-          Skills
-        </Typography>
+        <HtmlTooltip
+          placement="right-start"
+          title={
+            <>
+              <Typography color="inherit">Technical Skills:</Typography>
+              <b>Add your technical skills here.</b>
+              <br />
+              This will help you to share them with other team members in a
+              project.
+              <br />
+              <i>e.g. Java, TypeScript, Backend, PhotoShop, FinalCut</i>
+            </>
+          }
+        >
+          <Typography variant="h6" display="inline" gutterBottom>
+            Technical Skills
+          </Typography>
+        </HtmlTooltip>
         {loading ? (
           <Loading />
         ) : (
