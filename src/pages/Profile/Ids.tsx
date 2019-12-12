@@ -163,7 +163,7 @@ export const Ids: FC<{}> = props => {
             <Loading />
           ) : (
             <List dense>
-              <ListItem className={classes.title}>
+              <ListItem className={classes.title} divider>
                 <ListItemText primary="Service" />
                 <ListItemText primary="Account" />
                 <ListItemSecondaryAction />

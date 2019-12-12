@@ -31,7 +31,8 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     listItem: {
       '&:hover': {
-        backgroundColor: theme.palette.grey['200'],
+        // backgroundColor: theme.palette.grey['200'],
+        borderBottom: '1px solid rgba(0, 0, 0, 0.12)',
       },
     },
   })
