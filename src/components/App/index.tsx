@@ -52,10 +52,10 @@ export function App() {
 
 const ColorLinearProgress = withStyles({
   colorPrimary: {
-    backgroundColor: '#b2dfdb',
+    backgroundColor: '#FFC107',
   },
   barColorPrimary: {
-    backgroundColor: '#01579b',
+    backgroundColor: '#689F38',
   },
 })(LinearProgress)
 

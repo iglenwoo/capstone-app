@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme: Theme) =>
     inputValue: {
       marginLeft: theme.spacing(2),
       marginBottom: theme.spacing(2),
-      color: 'gray',
+      color: theme.palette.grey.A700,
     },
     fieldContainer: {
       display: 'flex',
@@ -57,6 +57,7 @@ export const ProjectInfoTab: FC = () => {
 
   const setTitleAndDesc = () => {
     if (project) {
+      console.log(project)
       if (project.title) setTitle(project.title)
       if (project.desc) setDesc(project.desc)
     }
@@ -101,7 +102,7 @@ export const ProjectInfoTab: FC = () => {
             Project Code: {project.code}
           </Typography>
           <Typography variant="subtitle1" className={classes.inputTitle}>
-            Owner: {project.owner}
+            Owned by {project.owner}
           </Typography>
           <Typography variant="h6">Title:</Typography>
           {editing ? (
@@ -123,6 +124,7 @@ export const ProjectInfoTab: FC = () => {
           {editing ? (
             <TextField
               fullWidth
+              multiline
               margin="dense"
               variant="outlined"
               placeholder="This is an awesome project"
@@ -131,8 +133,14 @@ export const ProjectInfoTab: FC = () => {
               onChange={e => setDesc(e.currentTarget.value)}
             />
           ) : (
-            <Typography variant="h6" className={classes.inputValue}>
-              {project.desc}
+            <Typography variant="body1" className={classes.inputValue}>
+              {project.desc &&
+                project.desc.split('\n').map(s => (
+                  <>
+                    {s}
+                    <br />
+                  </>
+                ))}
             </Typography>
           )}
           <Box className={classes.fieldContainer}>
