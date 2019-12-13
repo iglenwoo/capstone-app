@@ -35,7 +35,9 @@ export const SortedIdChips: FC<{
           title={
             <>
               {g.emails.map((e, j) => (
-                <Typography key={`${e}-${j}`}>{e}</Typography>
+                <Typography
+                  key={`${e}-${j}`}
+                >{`${g.emails[j]}: ${g.values[j]}`}</Typography>
               ))}
             </>
           }

@@ -44,7 +44,9 @@ export interface CountableGroup {
   count: number
   emails: string[]
 }
-export interface IdGroup extends Id, CountableGroup {}
+export interface IdGroup extends Id, CountableGroup {
+  values: string[]
+}
 
 export interface Skills {
   skills: string[]

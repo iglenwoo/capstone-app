@@ -34,11 +34,13 @@ export const addIdHash = (idHash: { [key: string]: IdGroup }, ids: Id[]) => {
     if (idHash[id.service]) {
       idHash[id.service].count += 1
       idHash[id.service].emails = idHash[id.service].emails.concat(id.email)
+      idHash[id.service].values = idHash[id.service].values.concat(id.value)
     } else {
       idHash[id.service] = {
         ...id,
         count: 1,
         emails: [id.email],
+        values: [id.value],
       }
     }
   }
