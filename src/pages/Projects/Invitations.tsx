@@ -10,8 +10,6 @@ import {
   createStyles,
   List,
   ListItem,
-  ListItemIcon,
-  ListItemSecondaryAction,
   ListItemText,
   makeStyles,
   Theme,
@@ -21,7 +19,6 @@ import { PROJECTS, USERS } from '../../constants/db.collections'
 import { ProjectsContext } from './index'
 import { Loading } from '../../components/Loading'
 import { EmptyListItem } from './ProjectList'
-import { NotificationImportant as NotificationImportantIcon } from '@material-ui/icons'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -34,6 +31,9 @@ const useStyles = makeStyles((theme: Theme) =>
         // backgroundColor: theme.palette.grey['200'],
         borderBottom: '1px solid rgba(0, 0, 0, 0.12)',
       },
+    },
+    listItemText: {
+      marginLeft: theme.spacing(2),
     },
   })
 )
@@ -89,13 +89,7 @@ export const Invitations = () => {
     projects.map((p, i) => {
       return (
         <ListItem key={`${p}-${i}`} className={classes.listItem} dense>
-          <ListItemIcon>
-            <NotificationImportantIcon />
-          </ListItemIcon>
           <ListItemText>
-            <Typography>{p}</Typography>
-          </ListItemText>
-          <ListItemSecondaryAction>
             <Button
               variant="contained"
               color="secondary"
@@ -105,7 +99,10 @@ export const Invitations = () => {
             >
               Accept
             </Button>
-          </ListItemSecondaryAction>
+            <Typography display="inline" className={classes.listItemText}>
+              {p}
+            </Typography>
+          </ListItemText>
         </ListItem>
       )
     })
@@ -121,9 +118,9 @@ export const Invitations = () => {
         ) : (
           <Box py={1}>
             <Typography gutterBottom variant="h6">
-              Invitations
+              Invitations to me
             </Typography>
-            <List>{projectsLinks}</List>
+            <List dense>{projectsLinks}</List>
           </Box>
         )}
       </CardContent>
