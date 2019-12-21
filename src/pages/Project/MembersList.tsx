@@ -7,6 +7,7 @@ import {
   Typography,
 } from '@material-ui/core'
 import { Person as PersonIcon } from '@material-ui/icons'
+import { Member } from './model'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -29,7 +30,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export const MembersList: FC<{
   title?: string
-  members: string[]
+  members: Member[]
 }> = props => {
   const classes = useStyles()
 
@@ -41,14 +42,14 @@ export const MembersList: FC<{
         </Box>
       )}
       {props.members.map((m, i) => (
-        <Box key={`${m}-${i}`} ml={2} className={classes.row}>
+        <Box key={`${m.email}-${i}`} ml={2} className={classes.row}>
           <PersonIcon className={classes.icon} />
           <Typography
             display="inline"
             variant="body1"
             className={classes.member}
           >
-            {m}
+            {m.email}
           </Typography>
         </Box>
       ))}

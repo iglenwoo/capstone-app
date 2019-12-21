@@ -10,17 +10,15 @@ import {
   Typography,
 } from '@material-ui/core'
 import * as React from 'react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Auth, useAuth } from '../../components/FirebaseAuth/use-auth'
-import * as firebase from 'firebase/app'
 import 'firebase/firestore'
 import { useHistory } from 'react-router'
 import * as routes from '../../constants/routes'
 import { validateProjectCode } from '../../utils'
 import { useSnackbar } from 'notistack'
-import { useEffect } from 'react'
 import { Loading } from '../../components/Loading'
-import { Project } from '../Project/ProjectInfoTab'
+import { Member, MemberRole, MemberStatus, Project } from '../Project/model'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -42,14 +40,13 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const INIT_PROJECT: Project = {
   code: '',
-  owner: '',
   members: [],
   title: '',
   desc: '',
 }
 
 export const Create = () => {
-  const { user, firestore }: Auth = useAuth()
+  const { user, functions }: Auth = useAuth()
   const history = useHistory()
   const { enqueueSnackbar } = useSnackbar()
   const [project, setProject] = useState<Project>({ ...INIT_PROJECT })
@@ -70,7 +67,7 @@ export const Create = () => {
   }, [project.code])
 
   const handleCreateClick = () => {
-    if (!user) return
+    if (!user || !user.email) return
     if (!validateProjectCode(project.code)) {
       enqueueSnackbar(`Please use alphabet, numbers, '-' or '_'.`, {
         variant: 'error',
@@ -81,27 +78,21 @@ export const Create = () => {
     setCodeError(false)
     setLoading(true)
 
-    const projectRef = firestore.collection('projects').doc(project.code)
-    const userRef = firestore.collection('users').doc(user.uid)
-    firestore
-      .runTransaction(transaction => {
-        return transaction.get(userRef).then(() => {
-          transaction.set(projectRef, {
-            ...project,
-            owner: user.email,
-          })
-          transaction.update(userRef, {
-            projects: firebase.firestore.FieldValue.arrayUnion(projectRef.id),
-          })
-        })
-      })
-      .then(() => {
+    const owner: Member = {
+      email: user.email,
+      role: MemberRole.Owner,
+      status: MemberStatus.Own,
+    }
+
+    const addProject = functions.httpsCallable('addProject')
+    addProject({ ...project, members: [owner] })
+      .then(result => {
         setProject({ ...INIT_PROJECT })
-        history.push(`${routes.PROJECTS}/${projectRef.id}`)
+        history.push(`${routes.PROJECTS}/${result.data.id}`)
       })
       .catch(error => {
-        console.info('Error adding document:', error)
-        alert(error)
+        console.error(error)
+        alert(error.message)
       })
       .finally(() => setLoading(false))
   }

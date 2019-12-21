@@ -12,12 +12,13 @@ import {
   Typography,
 } from '@material-ui/core'
 import { Auth, useAuth } from '../../components/FirebaseAuth/use-auth'
-import { ProjectInfoTab, Project } from './ProjectInfoTab'
+import { ProjectInfoTab } from './ProjectInfoTab'
 import { useAsyncEffect } from '../../utils/use-async-effect'
 import { PROJECTS } from '../../constants/db.collections'
 import { MembersTab } from './MembersTab'
 import { DocumentsTab } from './DocumentsTab'
 import { useSnackbar } from 'notistack'
+import { MemberRole, Project } from './model'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -82,10 +83,10 @@ const tabItems = tabs.map(tab => (
 
 const INIT_PROJECT: Project = {
   code: '',
-  owner: '',
   members: [],
   title: '',
   desc: '',
+  isOwned: false,
 }
 
 export const ProjectContext = createContext<{
@@ -99,7 +100,7 @@ export const ProjectContext = createContext<{
 })
 
 export const ProjectPage = () => {
-  const { firestore }: Auth = useAuth()
+  const { firestore, user }: Auth = useAuth()
   const { code } = useParams()
   const { enqueueSnackbar } = useSnackbar()
   const history = useHistory()
@@ -111,6 +112,20 @@ export const ProjectPage = () => {
     setTabIndex(newIndex)
   }
 
+  const setIsOwnerOf = (project: Project) => {
+    for (const member of project.members) {
+      if (
+        user &&
+        user.email === member.email &&
+        member.role === MemberRole.Owner
+      ) {
+        project.isOwned = true
+        return
+      }
+    }
+    project.isOwned = false
+  }
+
   const reloadProject = async () => {
     try {
       setLoading(true)
@@ -119,6 +134,7 @@ export const ProjectPage = () => {
         .doc(code)
         .get()
       const newProject = doc.data() as Project
+      setIsOwnerOf(newProject)
       setProject({ ...newProject })
 
       setLoading(false)

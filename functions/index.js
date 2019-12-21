@@ -33,3 +33,35 @@ exports.deleteFileList = functions.storage.object().onDelete(async (object) => {
     .collection('projects').doc(project)
     .collection('documents').doc(fileName).delete()
 })
+
+exports.addProject = functions.https.onCall(async (data, context) => {
+  // Message text passed from the client.
+  console.log(data)
+  const { code, members, title, desc } = data
+
+  // Authentication / user information is automatically added to the request.
+  const uid = context.auth.uid;
+  const name = context.auth.token.name || null;
+  const email = context.auth.token.email || null;
+
+  firestore.collection('projects').doc(code)
+  const projectRef = firestore.collection('projects').doc(code)
+  const userRef = firestore.collection('users').doc(uid)
+  return firestore
+    .runTransaction(t => {
+      return t.get(projectRef).then(projectDoc => {
+        if (projectDoc.exists) {
+          throw new functions.https.HttpsError('already-exists', `Project code ${code} already exists`)
+        }
+
+        t.set(projectRef, { code, members, title, desc })
+        t.update(userRef, {
+          projects: admin.firestore.FieldValue.arrayUnion(projectRef.id),
+        })
+
+        return {
+          id: projectRef.id
+        }
+      })
+    })
+});

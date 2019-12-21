@@ -1,4 +1,4 @@
-import { FC, default as React, useContext, useState, useEffect } from 'react'
+import { default as React, FC, useContext, useEffect, useState } from 'react'
 import { ProjectContext } from './index'
 import { IDS, INTERESTS, SKILLS } from '../../constants/db.collections'
 import { useAsyncEffect } from '../../utils/use-async-effect'
@@ -24,6 +24,7 @@ import {
 } from './utils'
 import { SortedSkillChips } from './SortedSkillChips'
 import { Invite } from './Invite'
+import { Member } from './model'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -63,21 +64,16 @@ export interface InterestGroup extends CountableGroup {}
 export const MembersTab: FC = () => {
   const { project } = useContext(ProjectContext)
   const { user, firestore }: Auth = useAuth()
-  const [allMembers, setAllMembers] = useState<string[]>([])
+  const [allMembers, setAllMembers] = useState<Member[]>([])
   const [idGroups, setIdGroups] = useState<IdGroup[]>([])
   const [skillGroups, setSkillGroups] = useState<SkillGroup[]>([])
   const [interestGroups, setInterestGroups] = useState<InterestGroup[]>([])
 
   useEffect(() => {
-    const members: string[] = []
-    if (project.owner) {
-      members.push(project.owner)
-    }
     if (project.members.length > 0) {
-      members.push(...project.members)
+      setAllMembers(project.members)
     }
-    setAllMembers(members)
-  }, [project.owner, project.members])
+  }, [project.members])
 
   const fetchMemberIds = async () => {
     if (allMembers.length <= 0) return
@@ -159,7 +155,7 @@ export const MembersTab: FC = () => {
       <Typography variant="h5" className={classes.project}>
         Project Code: {project.code}
       </Typography>
-      {user && user.email === project.owner && <Invite />}
+      {project.isOwned && <Invite />}
       <MembersList members={allMembers} />
       <Divider className={classes.divider} />
       <Typography variant="h5" className={classes.title}>
