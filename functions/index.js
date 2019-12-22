@@ -34,6 +34,25 @@ exports.deleteFileList = functions.storage.object().onDelete(async (object) => {
     .collection('documents').doc(fileName).delete()
 })
 
+exports.readProject = functions.https.onCall(async (data, context) => {
+  const { code } = data
+  if (!context.auth) {
+    throw new functions.https.HttpsError('failed-precondition', 'The function must be called ' +
+      'while authenticated.');
+  }
+  const email = context.auth.token.email || null;
+
+  return firestore.collection('projects').doc(code).get().then(projectDoc => {
+    const data = projectDoc.data()
+    for (const member of data.members) {
+      if (member.email === email) {
+        return data
+      }
+    }
+    throw new functions.https.HttpsError('permission-denied', 'You cannot access this project.');
+  })
+})
+
 exports.addProject = functions.https.onCall(async (data, context) => {
   // Message text passed from the client.
   console.log(data)
@@ -41,10 +60,7 @@ exports.addProject = functions.https.onCall(async (data, context) => {
 
   // Authentication / user information is automatically added to the request.
   const uid = context.auth.uid;
-  const name = context.auth.token.name || null;
-  const email = context.auth.token.email || null;
 
-  firestore.collection('projects').doc(code)
   const projectRef = firestore.collection('projects').doc(code)
   const userRef = firestore.collection('users').doc(uid)
   return firestore

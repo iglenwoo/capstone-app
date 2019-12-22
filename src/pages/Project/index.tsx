@@ -100,7 +100,7 @@ export const ProjectContext = createContext<{
 })
 
 export const ProjectPage = () => {
-  const { firestore, user }: Auth = useAuth()
+  const { functions, user }: Auth = useAuth()
   const { code } = useParams()
   const { enqueueSnackbar } = useSnackbar()
   const history = useHistory()
@@ -129,11 +129,9 @@ export const ProjectPage = () => {
   const reloadProject = async () => {
     try {
       setLoading(true)
-      const doc = await firestore
-        .collection(PROJECTS)
-        .doc(code)
-        .get()
-      const newProject = doc.data() as Project
+      const readProject = functions.httpsCallable('readProject')
+      const doc = await readProject({ code })
+      const newProject = doc.data as Project
       setIsOwnerOf(newProject)
       setProject({ ...newProject })
 
