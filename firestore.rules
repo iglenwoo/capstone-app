@@ -30,8 +30,8 @@ service cloud.firestore {
     }
 
     match /projects/{projectCode} {
-      allow create: if isSignedIn() && notExisting(projectCode) && isValidProject();
-      allow update, delete: if currentUser().token.email == existingData().owner;
+//      allow create: if isSignedIn() && notExisting(projectCode) && isValidProject();
+      allow update: if isValidUser();
       allow read: if isValidUser();
 
       function existing(code) {
@@ -41,16 +41,18 @@ service cloud.firestore {
         return !existing(code)
       }
 
-      function isValidProject() {
-        return
-          incomingData().code != null &&
-          incomingData().owner != null;
+//      function isValidProject() {
+//        return
+//          incomingData().code != null &&
+//          incomingData().owner != null;
+//      }
+
+      function getMember() {
+        return existingData().members[currentUser().token.email];
       }
 
       function isValidUser() {
-        return
-          currentUser().token.email == existingData().owner ||
-          currentUser().token.email in existingData().members;
+        return isSignedIn() && (getMember().role in ['owner', 'member']);
       }
 
       function projectData() {
@@ -63,9 +65,7 @@ service cloud.firestore {
         allow read: if isAllowedUser();
 
         function isAllowedUser() {
-          return
-            currentUser().token.email == projectData().owner ||
-            currentUser().token.email in projectData().members;
+          return isValidUser();
         }
       }
     }
