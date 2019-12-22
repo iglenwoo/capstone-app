@@ -144,9 +144,10 @@ export const MembersTab: FC = () => {
     }
   }
 
-  useAsyncEffect(fetchMemberIds, [allMembers])
-  useAsyncEffect(fetchMemberSkills, [allMembers])
-  useAsyncEffect(fetchMemberInterests, [allMembers])
+  //TODO: move to functions
+  // useAsyncEffect(fetchMemberIds, [allMembers])
+  // useAsyncEffect(fetchMemberSkills, [allMembers])
+  // useAsyncEffect(fetchMemberInterests, [allMembers])
 
   const classes = useStyles()
 

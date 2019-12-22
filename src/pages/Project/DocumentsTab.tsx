@@ -81,7 +81,8 @@ export const DocumentsTab: FC = () => {
     }
   }
 
-  useAsyncEffect(fetchDocs, [project.code])
+  // TODO: fetching fails when documents folder not exist
+  // useAsyncEffect(fetchDocs, [project.code])
 
   const handleUpload = (files: FileList | null) => {
     if (!files || !files.length) return
