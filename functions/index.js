@@ -44,8 +44,8 @@ exports.readProject = functions.https.onCall(async (data, context) => {
 
   return firestore.collection('projects').doc(code).get().then(projectDoc => {
     const data = projectDoc.data()
-    for (const member of data.members) {
-      if (member.email === email) {
+    for (const memberEmail of Object.keys(data.members)) {
+      if (memberEmail === email) {
         return data
       }
     }

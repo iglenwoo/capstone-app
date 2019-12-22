@@ -24,7 +24,7 @@ import {
 } from './utils'
 import { SortedSkillChips } from './SortedSkillChips'
 import { Invite } from './Invite'
-import { Member } from './model'
+import { Members } from './model'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -64,19 +64,19 @@ export interface InterestGroup extends CountableGroup {}
 export const MembersTab: FC = () => {
   const { project } = useContext(ProjectContext)
   const { user, firestore }: Auth = useAuth()
-  const [allMembers, setAllMembers] = useState<Member[]>([])
+  const [allMembers, setAllMembers] = useState<Members>({})
   const [idGroups, setIdGroups] = useState<IdGroup[]>([])
   const [skillGroups, setSkillGroups] = useState<SkillGroup[]>([])
   const [interestGroups, setInterestGroups] = useState<InterestGroup[]>([])
 
   useEffect(() => {
-    if (project.members.length > 0) {
+    if (Object.keys(project.members).length > 0) {
       setAllMembers(project.members)
     }
   }, [project.members])
 
   const fetchMemberIds = async () => {
-    if (allMembers.length <= 0) return
+    if (Object.keys(allMembers).length <= 0) return
 
     try {
       const idHash: { [key: string]: IdGroup } = {}
@@ -99,7 +99,7 @@ export const MembersTab: FC = () => {
   }
 
   const fetchMemberSkills = async () => {
-    if (allMembers.length <= 0) return
+    if (Object.keys(allMembers).length <= 0) return
 
     try {
       const skillHash: { [key: string]: SkillGroup } = {}
@@ -122,7 +122,7 @@ export const MembersTab: FC = () => {
   }
 
   const fetchMemberInterests = async () => {
-    if (allMembers.length <= 0) return
+    if (Object.keys(allMembers).length <= 0) return
 
     try {
       const interestHash: { [key: string]: InterestGroup } = {}

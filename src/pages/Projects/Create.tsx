@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const INIT_PROJECT: Project = {
   code: '',
-  members: [],
+  members: {},
   title: '',
   desc: '',
 }
@@ -79,13 +79,12 @@ export const Create = () => {
     setLoading(true)
 
     const owner: Member = {
-      email: user.email,
       role: MemberRole.Owner,
       status: MemberStatus.Own,
     }
 
     const addProject = functions.httpsCallable('addProject')
-    addProject({ ...project, members: [owner] })
+    addProject({ ...project, members: { [user.email]: owner } })
       .then(result => {
         setProject({ ...INIT_PROJECT })
         history.push(`${routes.PROJECTS}/${result.data.id}`)

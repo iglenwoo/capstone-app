@@ -50,8 +50,9 @@ export const ProjectInfoTab: FC = () => {
 
   const setTitleAndDesc = useCallback(() => {
     if (project) {
-      for (const member of project.members) {
-        if (member.role === MemberRole.Owner) setOwner(member.email)
+      console.log(project.members)
+      for (const [email, member] of Object.entries(project.members)) {
+        if (member.role === MemberRole.Owner) setOwner(email)
       }
       if (project.title) setTitle(project.title)
       if (project.desc) setDesc(project.desc)

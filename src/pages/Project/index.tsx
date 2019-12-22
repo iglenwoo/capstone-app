@@ -1,4 +1,4 @@
-import React, { useState, createContext } from 'react'
+import React, { createContext, useState } from 'react'
 import { useHistory, useParams } from 'react-router'
 import {
   Card,
@@ -14,7 +14,6 @@ import {
 import { Auth, useAuth } from '../../components/FirebaseAuth/use-auth'
 import { ProjectInfoTab } from './ProjectInfoTab'
 import { useAsyncEffect } from '../../utils/use-async-effect'
-import { PROJECTS } from '../../constants/db.collections'
 import { MembersTab } from './MembersTab'
 import { DocumentsTab } from './DocumentsTab'
 import { useSnackbar } from 'notistack'
@@ -83,7 +82,7 @@ const tabItems = tabs.map(tab => (
 
 const INIT_PROJECT: Project = {
   code: '',
-  members: [],
+  members: {},
   title: '',
   desc: '',
   isOwned: false,
@@ -113,15 +112,14 @@ export const ProjectPage = () => {
   }
 
   const setIsOwnerOf = (project: Project) => {
-    for (const member of project.members) {
-      if (
-        user &&
-        user.email === member.email &&
-        member.role === MemberRole.Owner
-      ) {
-        project.isOwned = true
-        return
-      }
+    if (
+      user &&
+      user.email &&
+      project.members[user.email] &&
+      project.members[user.email].role === MemberRole.Owner
+    ) {
+      project.isOwned = true
+      return
     }
     project.isOwned = false
   }
