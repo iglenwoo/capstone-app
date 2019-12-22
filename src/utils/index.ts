@@ -8,3 +8,11 @@ export const validateProjectCode = (code: string) => {
   const re = /^[a-zA-Z0-9-_]+$/
   return re.test(code)
 }
+
+export const isObjectEmpty = (obj: any) => {
+  return Object.entries(obj).length === 0 && obj.constructor === Object
+}
+
+export const isObjectNotEmpty = (obj: any) => {
+  return !isObjectEmpty(obj)
+}

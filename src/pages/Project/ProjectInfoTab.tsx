@@ -15,6 +15,7 @@ import { useState } from 'react'
 import { Auth, useAuth } from '../../components/FirebaseAuth/use-auth'
 import { PROJECTS } from '../../constants/db.collections'
 import { MemberRole } from './model'
+import { isObjectNotEmpty } from '../../utils'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -49,8 +50,7 @@ export const ProjectInfoTab: FC = () => {
   const [desc, setDesc] = useState<string>('')
 
   const setTitleAndDesc = useCallback(() => {
-    if (project) {
-      console.log(project.members)
+    if (isObjectNotEmpty(project)) {
       for (const [email, member] of Object.entries(project.members)) {
         if (member.role === MemberRole.Owner) setOwner(email)
       }
