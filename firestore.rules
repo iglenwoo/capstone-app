@@ -65,7 +65,7 @@ service cloud.firestore {
         allow read: if isAllowedUser();
 
         function isAllowedUser() {
-          return isValidUser();
+          return isSignedIn() && (projectData().members[currentUser().token.email].role in ['owner', 'member']);
         }
       }
     }
