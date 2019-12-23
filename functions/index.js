@@ -34,6 +34,51 @@ exports.deleteFileList = functions.storage.object().onDelete(async (object) => {
     .collection('documents').doc(fileName).delete()
 })
 
+exports.getMemberIds = functions.https.onCall(async (data, context) => {
+  const { code } = data
+  if (!context.auth) {
+    throw new functions.https.HttpsError('failed-precondition', 'The function must be called ' +
+      'while authenticated.');
+  }
+  const email = context.auth.token.email || null;
+
+  let isMember = false
+  return firestore.collection('projects').doc(code).get().then(projectDoc => {
+    const data = projectDoc.data()
+    const emails = []
+    for (const [memberEmail, member] of Object.entries(data.members)) {
+      if (memberEmail === email) {
+        isMember = true
+        if (member.role === 'member' && member.status === 'invited') {
+          throw new functions.https.HttpsError('permission-denied', 'You have to accept the invitation first.');
+        }
+      }
+
+      if (member.role === 'owner') {
+        emails.push(memberEmail)
+      } else {
+        if (member.status === 'accepted') {
+          emails.push(memberEmail)
+        }
+      }
+    }
+
+    if (!isMember)
+      throw new functions.https.HttpsError('permission-denied', 'You cannot access this project.');
+
+    // return firestore.collection('ids').where('email', 'in', emails).get()
+    console.log(emails)
+    return firestore.collection('ids').where('email', 'in', emails).get().then(res => {
+      const ids = []
+      res.forEach(docSnapshot => {
+        ids.push(docSnapshot.data())
+      })
+      console.log(ids)
+      return ids
+    })
+  })
+})
+
 exports.readProject = functions.https.onCall(async (data, context) => {
   const { code } = data
   if (!context.auth) {

@@ -2,29 +2,25 @@ import * as firebase from 'firebase'
 import { Id } from '../Profile/Ids'
 import {
   IdGroup,
+  IDs,
   InterestGroup,
   Interests,
   SkillGroup,
   Skills,
 } from './MembersTab'
 
-export const parseToIds = (idDoc: firebase.firestore.QuerySnapshot) => {
+export const parseToIds = (idsOfMembers: IDs[]) => {
   let ids: Id[] = []
-  if (!idDoc.empty) {
-    idDoc.forEach(result => {
-      const data = result.data()
-      if (data && data.ids) {
-        const idsProp: Id[] = data.ids
-        idsProp.forEach((id: Id) => {
-          ids.push({
-            ...id,
-            email: data.email,
-            service: id.service.toLowerCase(),
-          })
-        })
-      }
+  idsOfMembers.forEach((idsOfMember: IDs) => {
+    const idsProp: Id[] = idsOfMember.ids
+    idsProp.forEach((id: Id) => {
+      ids.push({
+        ...id,
+        email: idsOfMember.email,
+        service: id.service.toLowerCase(),
+      })
     })
-  }
+  })
 
   return ids
 }

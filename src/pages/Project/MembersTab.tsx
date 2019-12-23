@@ -45,6 +45,11 @@ export interface CountableGroup {
   count: number
   emails: string[]
 }
+
+export interface IDs {
+  ids: Id[]
+  email: string
+}
 export interface IdGroup extends Id, CountableGroup {
   values: string[]
 }
@@ -63,7 +68,7 @@ export interface InterestGroup extends CountableGroup {}
 
 export const MembersTab: FC = () => {
   const { project } = useContext(ProjectContext)
-  const { user, firestore }: Auth = useAuth()
+  const { firestore, functions }: Auth = useAuth()
   const [allMembers, setAllMembers] = useState<Members>({})
   const [idGroups, setIdGroups] = useState<IdGroup[]>([])
   const [skillGroups, setSkillGroups] = useState<SkillGroup[]>([])
@@ -80,13 +85,13 @@ export const MembersTab: FC = () => {
 
     try {
       const idHash: { [key: string]: IdGroup } = {}
-      const idDoc: firebase.firestore.QuerySnapshot = await firestore
-        .collection(IDS)
-        .where('email', 'in', allMembers)
-        .get()
+      const res = await functions.httpsCallable('getMemberIds')({
+        code: project.code,
+      })
+      const idsOfMembers = res.data as IDs[]
 
-      const ids: Id[] = parseToIds(idDoc)
-      addIdHash(idHash, ids)
+      const parsedIds: Id[] = parseToIds(idsOfMembers)
+      addIdHash(idHash, parsedIds)
 
       const groups = Object.values(idHash)
       groups.sort((a, b) => {
@@ -145,7 +150,7 @@ export const MembersTab: FC = () => {
   }
 
   //TODO: move to functions
-  // useAsyncEffect(fetchMemberIds, [allMembers])
+  useAsyncEffect(fetchMemberIds, [allMembers])
   // useAsyncEffect(fetchMemberSkills, [allMembers])
   // useAsyncEffect(fetchMemberInterests, [allMembers])
 
