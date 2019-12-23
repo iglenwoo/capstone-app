@@ -34,8 +34,9 @@ exports.deleteFileList = functions.storage.object().onDelete(async (object) => {
     .collection('documents').doc(fileName).delete()
 })
 
-exports.getMemberIds = functions.https.onCall(async (data, context) => {
-  const { code } = data
+exports.getMemberDetails = functions.https.onCall(async (data, context) => {
+  const { code, target } = data
+  console.log(code, target)
   if (!context.auth) {
     throw new functions.https.HttpsError('failed-precondition', 'The function must be called ' +
       'while authenticated.');
@@ -68,13 +69,13 @@ exports.getMemberIds = functions.https.onCall(async (data, context) => {
 
     // return firestore.collection('ids').where('email', 'in', emails).get()
     console.log(emails)
-    return firestore.collection('ids').where('email', 'in', emails).get().then(res => {
-      const ids = []
-      res.forEach(docSnapshot => {
-        ids.push(docSnapshot.data())
+    return firestore.collection(target).where('email', 'in', emails).get().then(querySnapshot => {
+      const res = []
+      querySnapshot.forEach(docSnapshot => {
+        res.push(docSnapshot.data())
       })
-      console.log(ids)
-      return ids
+      console.log(res)
+      return res
     })
   })
 })

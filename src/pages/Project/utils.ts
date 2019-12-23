@@ -42,22 +42,10 @@ export const addIdHash = (idHash: { [key: string]: IdGroup }, ids: Id[]) => {
   }
 }
 
-export const parseToSkills = (snapshot: firebase.firestore.QuerySnapshot) => {
-  let skillsList: Skills[] = []
-  if (!snapshot.empty) {
-    snapshot.forEach(result => {
-      const data = result.data()
-      if (!data) throw new Error('Data in skills snapshot is empty')
-      if (!data.email) throw new Error('Data.email in skills snapshot is empty')
-      if (!data.skills)
-        throw new Error('Data.skills in skills snapshot is empty')
-      const skills: Skills = data as Skills
-      skills.skills = skills.skills.map(s => s.toLowerCase())
-      skillsList.push(skills)
-    })
-  }
-
-  return skillsList
+export const parseToSkills = (skillsList: Skills[]) => {
+  skillsList.forEach((skills: Skills) => {
+    skills.skills = skills.skills.map(s => s.toLowerCase())
+  })
 }
 
 export const addSkillHash = (

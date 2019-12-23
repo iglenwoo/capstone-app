@@ -85,8 +85,9 @@ export const MembersTab: FC = () => {
 
     try {
       const idHash: { [key: string]: IdGroup } = {}
-      const res = await functions.httpsCallable('getMemberIds')({
+      const res = await functions.httpsCallable('getMemberDetails')({
         code: project.code,
+        target: IDS,
       })
       const idsOfMembers = res.data as IDs[]
 
@@ -108,12 +109,13 @@ export const MembersTab: FC = () => {
 
     try {
       const skillHash: { [key: string]: SkillGroup } = {}
-      const snapshot: firebase.firestore.QuerySnapshot = await firestore
-        .collection(SKILLS)
-        .where('email', 'in', allMembers)
-        .get()
+      const res = await functions.httpsCallable('getMemberDetails')({
+        code: project.code,
+        target: SKILLS,
+      })
+      const skillsList = res.data as Skills[]
 
-      const skillsList: Skills[] = parseToSkills(snapshot)
+      parseToSkills(skillsList)
       addSkillHash(skillHash, skillsList)
 
       const groups = Object.values(skillHash)
@@ -151,7 +153,7 @@ export const MembersTab: FC = () => {
 
   //TODO: move to functions
   useAsyncEffect(fetchMemberIds, [allMembers])
-  // useAsyncEffect(fetchMemberSkills, [allMembers])
+  useAsyncEffect(fetchMemberSkills, [allMembers])
   // useAsyncEffect(fetchMemberInterests, [allMembers])
 
   const classes = useStyles()
