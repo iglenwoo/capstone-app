@@ -14,6 +14,8 @@ import { Loading } from '../../components/Loading'
 import { useState } from 'react'
 import { Auth, useAuth } from '../../components/FirebaseAuth/use-auth'
 import { PROJECTS } from '../../constants/db.collections'
+import { MemberRole } from './model'
+import { isObjectNotEmpty } from '../../utils'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -39,23 +41,19 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export interface Project {
-  code: string
-  owner: string
-  members: string[]
-  title: string
-  desc: string
-}
-
 export const ProjectInfoTab: FC = () => {
   const { user, firestore }: Auth = useAuth()
   const { loading, project, reloadProject } = useContext(ProjectContext)
   const [editing, setEditing] = useState<boolean>(false)
+  const [owner, setOwner] = useState<string>('')
   const [title, setTitle] = useState<string>('')
   const [desc, setDesc] = useState<string>('')
 
   const setTitleAndDesc = useCallback(() => {
-    if (project) {
+    if (isObjectNotEmpty(project)) {
+      for (const [email, member] of Object.entries(project.members)) {
+        if (member.role === MemberRole.Owner) setOwner(email)
+      }
       if (project.title) setTitle(project.title)
       if (project.desc) setDesc(project.desc)
     }
@@ -97,10 +95,7 @@ export const ProjectInfoTab: FC = () => {
         Project Code: {project.code}
       </Typography>
       <Typography variant="subtitle1" className={classes.inputTitle}>
-        Owned by{' '}
-        {`${project.owner} ${
-          user && user.email === project.owner ? '(me)' : ''
-        }`}
+        Owned by {`${owner} ${project.isOwned ? '(me)' : ''}`}
       </Typography>
       {loading ? (
         <Loading />

@@ -9,16 +9,19 @@ import * as firebase from 'firebase/app'
 import 'firebase/auth'
 import 'firebase/firestore'
 import 'firebase/storage'
+import 'firebase/functions'
 import { config } from './config'
 
 // Add your Firebase credentials
 firebase.initializeApp(config)
 const firestore: firebase.firestore.Firestore = firebase.firestore()
 const storage: firebase.storage.Storage = firebase.storage()
+const functions: firebase.functions.Functions = firebase.functions()
 
 export interface Auth {
   firestore: firebase.firestore.Firestore
   storage: firebase.storage.Storage
+  functions: firebase.functions.Functions
   isLoading: boolean
   user: firebase.User | null
   signin: (
@@ -35,6 +38,7 @@ export interface Auth {
 const authContext = createContext<Auth>({
   firestore,
   storage,
+  functions,
   isLoading: true,
   user: null,
   signin: (email: string, password: string, shouldPersist: boolean) =>
@@ -147,6 +151,7 @@ function useProvideAuth(): Auth {
   return {
     firestore,
     storage,
+    functions,
     isLoading,
     user,
     signin,

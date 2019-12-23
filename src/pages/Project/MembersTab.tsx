@@ -1,9 +1,8 @@
-import { FC, default as React, useContext, useState, useEffect } from 'react'
+import { default as React, FC, useContext, useEffect, useState } from 'react'
 import { ProjectContext } from './index'
 import { IDS, INTERESTS, SKILLS } from '../../constants/db.collections'
 import { useAsyncEffect } from '../../utils/use-async-effect'
 import { Auth, useAuth } from '../../components/FirebaseAuth/use-auth'
-import * as firebase from 'firebase/app'
 import { Id } from '../Profile/Ids'
 import {
   createStyles,
@@ -24,6 +23,7 @@ import {
 } from './utils'
 import { SortedSkillChips } from './SortedSkillChips'
 import { Invite } from './Invite'
+import { Members } from './model'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -44,6 +44,11 @@ export interface CountableGroup {
   count: number
   emails: string[]
 }
+
+export interface IDs {
+  ids: Id[]
+  email: string
+}
 export interface IdGroup extends Id, CountableGroup {
   values: string[]
 }
@@ -62,35 +67,31 @@ export interface InterestGroup extends CountableGroup {}
 
 export const MembersTab: FC = () => {
   const { project } = useContext(ProjectContext)
-  const { user, firestore }: Auth = useAuth()
-  const [allMembers, setAllMembers] = useState<string[]>([])
+  const { functions }: Auth = useAuth()
+  const [allMembers, setAllMembers] = useState<Members>({})
   const [idGroups, setIdGroups] = useState<IdGroup[]>([])
   const [skillGroups, setSkillGroups] = useState<SkillGroup[]>([])
   const [interestGroups, setInterestGroups] = useState<InterestGroup[]>([])
 
   useEffect(() => {
-    const members: string[] = []
-    if (project.owner) {
-      members.push(project.owner)
+    if (Object.keys(project.members).length > 0) {
+      setAllMembers(project.members)
     }
-    if (project.members.length > 0) {
-      members.push(...project.members)
-    }
-    setAllMembers(members)
-  }, [project.owner, project.members])
+  }, [project.members])
 
   const fetchMemberIds = async () => {
-    if (allMembers.length <= 0) return
+    if (Object.keys(allMembers).length <= 0) return
 
     try {
       const idHash: { [key: string]: IdGroup } = {}
-      const idDoc: firebase.firestore.QuerySnapshot = await firestore
-        .collection(IDS)
-        .where('email', 'in', allMembers)
-        .get()
+      const res = await functions.httpsCallable('getMemberDetails')({
+        code: project.code,
+        target: IDS,
+      })
+      const idsOfMembers = res.data as IDs[]
 
-      const ids: Id[] = parseToIds(idDoc)
-      addIdHash(idHash, ids)
+      const parsedIds: Id[] = parseToIds(idsOfMembers)
+      addIdHash(idHash, parsedIds)
 
       const groups = Object.values(idHash)
       groups.sort((a, b) => {
@@ -103,16 +104,17 @@ export const MembersTab: FC = () => {
   }
 
   const fetchMemberSkills = async () => {
-    if (allMembers.length <= 0) return
+    if (Object.keys(allMembers).length <= 0) return
 
     try {
       const skillHash: { [key: string]: SkillGroup } = {}
-      const snapshot: firebase.firestore.QuerySnapshot = await firestore
-        .collection(SKILLS)
-        .where('email', 'in', allMembers)
-        .get()
+      const res = await functions.httpsCallable('getMemberDetails')({
+        code: project.code,
+        target: SKILLS,
+      })
+      const skillsList = res.data as Skills[]
 
-      const skillsList: Skills[] = parseToSkills(snapshot)
+      parseToSkills(skillsList)
       addSkillHash(skillHash, skillsList)
 
       const groups = Object.values(skillHash)
@@ -126,16 +128,17 @@ export const MembersTab: FC = () => {
   }
 
   const fetchMemberInterests = async () => {
-    if (allMembers.length <= 0) return
+    if (Object.keys(allMembers).length <= 0) return
 
     try {
       const interestHash: { [key: string]: InterestGroup } = {}
-      const snapshot: firebase.firestore.QuerySnapshot = await firestore
-        .collection(INTERESTS)
-        .where('email', 'in', allMembers)
-        .get()
+      const res = await functions.httpsCallable('getMemberDetails')({
+        code: project.code,
+        target: INTERESTS,
+      })
+      const interestsList = res.data as Interests[]
 
-      const interestsList: Interests[] = parseToInterests(snapshot)
+      parseToInterests(interestsList)
       addInterestHash(interestHash, interestsList)
 
       const groups = Object.values(interestHash)
@@ -148,9 +151,11 @@ export const MembersTab: FC = () => {
     }
   }
 
-  useAsyncEffect(fetchMemberIds, [allMembers])
-  useAsyncEffect(fetchMemberSkills, [allMembers])
-  useAsyncEffect(fetchMemberInterests, [allMembers])
+  useAsyncEffect(async () => {
+    await fetchMemberIds()
+    await fetchMemberSkills()
+    await fetchMemberInterests()
+  }, [allMembers])
 
   const classes = useStyles()
 
@@ -159,7 +164,7 @@ export const MembersTab: FC = () => {
       <Typography variant="h5" className={classes.project}>
         Project Code: {project.code}
       </Typography>
-      {user && user.email === project.owner && <Invite />}
+      {project.isOwned && <Invite />}
       <MembersList members={allMembers} />
       <Divider className={classes.divider} />
       <Typography variant="h5" className={classes.title}>

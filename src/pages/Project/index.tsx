@@ -1,4 +1,4 @@
-import React, { useState, createContext } from 'react'
+import React, { createContext, useState } from 'react'
 import { useHistory, useParams } from 'react-router'
 import {
   Card,
@@ -12,12 +12,12 @@ import {
   Typography,
 } from '@material-ui/core'
 import { Auth, useAuth } from '../../components/FirebaseAuth/use-auth'
-import { ProjectInfoTab, Project } from './ProjectInfoTab'
+import { ProjectInfoTab } from './ProjectInfoTab'
 import { useAsyncEffect } from '../../utils/use-async-effect'
-import { PROJECTS } from '../../constants/db.collections'
 import { MembersTab } from './MembersTab'
 import { DocumentsTab } from './DocumentsTab'
 import { useSnackbar } from 'notistack'
+import { MemberRole, Project } from './model'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -82,10 +82,10 @@ const tabItems = tabs.map(tab => (
 
 const INIT_PROJECT: Project = {
   code: '',
-  owner: '',
-  members: [],
+  members: {},
   title: '',
   desc: '',
+  isOwned: false,
 }
 
 export const ProjectContext = createContext<{
@@ -99,7 +99,7 @@ export const ProjectContext = createContext<{
 })
 
 export const ProjectPage = () => {
-  const { firestore }: Auth = useAuth()
+  const { functions, user }: Auth = useAuth()
   const { code } = useParams()
   const { enqueueSnackbar } = useSnackbar()
   const history = useHistory()
@@ -111,14 +111,26 @@ export const ProjectPage = () => {
     setTabIndex(newIndex)
   }
 
+  const setIsOwnerOf = (project: Project) => {
+    if (
+      user &&
+      user.email &&
+      project.members[user.email] &&
+      project.members[user.email].role === MemberRole.Owner
+    ) {
+      project.isOwned = true
+      return
+    }
+    project.isOwned = false
+  }
+
   const reloadProject = async () => {
     try {
       setLoading(true)
-      const doc = await firestore
-        .collection(PROJECTS)
-        .doc(code)
-        .get()
-      const newProject = doc.data() as Project
+      const readProject = functions.httpsCallable('readProject')
+      const doc = await readProject({ code })
+      const newProject = doc.data as Project
+      setIsOwnerOf(newProject)
       setProject({ ...newProject })
 
       setLoading(false)
