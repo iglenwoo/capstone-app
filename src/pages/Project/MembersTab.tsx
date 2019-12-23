@@ -151,15 +151,10 @@ export const MembersTab: FC = () => {
     }
   }
 
-  const sleep = (m: number) => new Promise(r => setTimeout(r, m))
-
   useAsyncEffect(async () => {
     await fetchMemberIds()
-    await sleep(300)
     await fetchMemberSkills()
-    await sleep(300)
     await fetchMemberInterests()
-    await sleep(100)
   }, [allMembers])
 
   const classes = useStyles()
