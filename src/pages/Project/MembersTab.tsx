@@ -3,7 +3,6 @@ import { ProjectContext } from './index'
 import { IDS, INTERESTS, SKILLS } from '../../constants/db.collections'
 import { useAsyncEffect } from '../../utils/use-async-effect'
 import { Auth, useAuth } from '../../components/FirebaseAuth/use-auth'
-import * as firebase from 'firebase/app'
 import { Id } from '../Profile/Ids'
 import {
   createStyles,
@@ -68,7 +67,7 @@ export interface InterestGroup extends CountableGroup {}
 
 export const MembersTab: FC = () => {
   const { project } = useContext(ProjectContext)
-  const { firestore, functions }: Auth = useAuth()
+  const { functions }: Auth = useAuth()
   const [allMembers, setAllMembers] = useState<Members>({})
   const [idGroups, setIdGroups] = useState<IdGroup[]>([])
   const [skillGroups, setSkillGroups] = useState<SkillGroup[]>([])
@@ -152,10 +151,16 @@ export const MembersTab: FC = () => {
     }
   }
 
-  //TODO: move to functions
-  useAsyncEffect(fetchMemberIds, [allMembers])
-  useAsyncEffect(fetchMemberSkills, [allMembers])
-  useAsyncEffect(fetchMemberInterests, [allMembers])
+  const sleep = (m: number) => new Promise(r => setTimeout(r, m))
+
+  useAsyncEffect(async () => {
+    await fetchMemberIds()
+    await sleep(300)
+    await fetchMemberSkills()
+    await sleep(300)
+    await fetchMemberInterests()
+    await sleep(100)
+  }, [allMembers])
 
   const classes = useStyles()
 

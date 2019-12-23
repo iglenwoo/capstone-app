@@ -127,3 +127,97 @@ exports.addProject = functions.https.onCall(async (data, context) => {
       })
     })
 });
+
+exports.inviteMember = functions.https.onCall(async (data, context) => {
+  console.log(data)
+  const { newMemberEmail, code } = data
+  if (!context.auth) {
+    throw new functions.https.HttpsError('failed-precondition', 'The function must be called ' +
+      'while authenticated.');
+  }
+
+  return firestore
+    .collection('users')
+    .where('email', '==', newMemberEmail)
+    .get()
+    .then(querySnapshot => {
+      if (querySnapshot.size === 0) {
+        throw new functions.https.HttpsError('invalid-argument', `Email ${newMemberEmail} not found`);
+      }
+
+      const projectRef = firestore.collection('projects').doc(code)
+      return firestore
+        .runTransaction(t => {
+          return t.get(projectRef).then(doc => {
+            if (!doc.exists) {
+              throw new functions.https.HttpsError('invalid-argument', `Project code ${code} doesn't exist`);
+            }
+            const project = doc.data()
+            if (newMemberEmail in project.members) {
+              throw new functions.https.HttpsError('already-exists', `Email ${newMemberEmail} has been already invited.`);
+            }
+
+            const fieldPath = new admin.firestore.FieldPath('members', newMemberEmail);
+            t.update(projectRef, fieldPath, { role: 'member', status: 'invited' })
+            return projectRef
+          })
+        })
+    })
+})
+
+exports.getInvitations = functions.https.onCall(async (data, context) => {
+  console.log(data)
+  if (!context.auth) {
+    throw new functions.https.HttpsError('failed-precondition', 'The function must be called ' +
+      'while authenticated.');
+  }
+  const email = context.auth.token.email || null;
+
+  const fieldPath = new admin.firestore.FieldPath('members', email);
+  return firestore.collection('projects').where(fieldPath, '==', { role: 'member', status: 'invited' }).get().then(querySnapshot => {
+    const res = []
+    querySnapshot.forEach(docSnapshot => {
+      res.push(docSnapshot.data())
+    })
+    console.log(res)
+    return res
+  })
+});
+
+exports.acceptInvitation = functions.https.onCall(async (data, context) => {
+  console.log(data)
+  const { code } = data
+  if (!context.auth) {
+    throw new functions.https.HttpsError('failed-precondition', 'The function must be called ' +
+      'while authenticated.');
+  }
+  const uid = context.auth.uid;
+  const email = context.auth.token.email || null;
+
+  const projectRef = firestore.collection('projects').doc(code)
+  const userRef = firestore.collection('users').doc(uid)
+  return firestore
+    .runTransaction(t => {
+      return t.get(projectRef).then(projectDoc => {
+        if (!projectDoc.exists) {
+          throw new functions.https.HttpsError('invalid-argument', `Project code ${code} not found.`)
+        }
+        const data = projectDoc.data()
+        const member = data.members[email]
+        if (!member) {
+          throw new functions.https.HttpsError('invalid-argument', `Email ${email} not invited.`)
+        }
+        if (member.status !== 'invited') {
+          throw new functions.https.HttpsError('invalid-argument', `Email ${email} already accepted.`)
+        }
+
+        const fieldPath = new admin.firestore.FieldPath('members', email);
+        t.update(projectRef, fieldPath, { role: 'member', status: 'accepted' })
+        t.update(userRef, {
+          projects: admin.firestore.FieldValue.arrayUnion(projectRef.id),
+        })
+
+        return projectRef
+      })
+    })
+});

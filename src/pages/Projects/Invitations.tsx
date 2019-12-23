@@ -15,10 +15,14 @@ import {
   Theme,
   Typography,
 } from '@material-ui/core'
-import { PROJECTS, USERS } from '../../constants/db.collections'
+import { IDS, PROJECTS, USERS } from '../../constants/db.collections'
 import { ProjectsContext } from './index'
 import { Loading } from '../../components/Loading'
 import { EmptyListItem } from './ProjectList'
+import { useAsyncEffect } from '../../utils/use-async-effect'
+import { IDs } from '../Project/MembersTab'
+import { Project } from '../Project/model'
+import { useSnackbar } from 'notistack'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -40,49 +44,43 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export const Invitations = () => {
   const classes = useStyles()
-  const { joinedProjects, fetchProjects } = useContext(ProjectsContext)
-  const { user, firestore }: Auth = useAuth()
+  const { fetchProjects } = useContext(ProjectsContext)
+  const { functions }: Auth = useAuth()
+  const { enqueueSnackbar } = useSnackbar()
   const [projects, setProjects] = useState<string[]>([])
   const [loading, setLoading] = useState<boolean>(true)
 
-  useEffect(() => {
+  const fetchInvitations = async () => {
     setLoading(true)
-    if (user === null) return
 
-    firestore
-      .collection(PROJECTS)
-      .where('members', 'array-contains', user.email)
-      .get()
-      .then(querySnapshot => {
-        const newProjects: string[] = []
-        querySnapshot.forEach(doc => {
-          if (!joinedProjects.includes(doc.id)) {
-            newProjects.push(doc.id)
-          }
-        })
+    try {
+      const res = await functions.httpsCallable('getInvitations')()
+      console.log(res)
+      const invitedProjects = res.data.map((project: Project) => {
+        return project.code
+      })
+      setProjects(invitedProjects)
+    } catch (e) {
+      console.log('Error getting invitation document:', e)
+    } finally {
+      setLoading(false)
+    }
+  }
+  useAsyncEffect(fetchInvitations, [])
 
-        setProjects(newProjects)
-        setLoading(false)
-      })
-      .catch(error => {
-        console.log('Error getting document:', error)
-        setLoading(false)
-      })
-  }, [user, firestore, joinedProjects])
+  const handleAcceptClick = async (code: string) => {
+    setLoading(true)
 
-  const handleAcceptClick = (e: SyntheticEvent, code: string) => {
-    if (user === null) return
-
-    firestore
-      .collection(USERS)
-      .doc(user.uid)
-      .update({ projects: firebase.firestore.FieldValue.arrayUnion(code) })
-      .then(() => {
-        fetchProjects()
-      })
-      .catch(error => {
-        console.log(`Error accepting a project ${code}`, error)
-      })
+    try {
+      await functions.httpsCallable('acceptInvitation')({ code })
+      await fetchInvitations()
+      fetchProjects()
+    } catch (e) {
+      enqueueSnackbar(e.message, { variant: 'error' })
+      console.log('Error getting invitation document:', e)
+    } finally {
+      setLoading(false)
+    }
   }
 
   const projectsLinks = projects.length ? (
@@ -93,8 +91,8 @@ export const Invitations = () => {
             <Button
               variant="contained"
               color="secondary"
-              onClick={e => {
-                handleAcceptClick(e, p)
+              onClick={() => {
+                handleAcceptClick(p)
               }}
             >
               Accept
