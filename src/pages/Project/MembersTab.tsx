@@ -133,12 +133,13 @@ export const MembersTab: FC = () => {
 
     try {
       const interestHash: { [key: string]: InterestGroup } = {}
-      const snapshot: firebase.firestore.QuerySnapshot = await firestore
-        .collection(INTERESTS)
-        .where('email', 'in', allMembers)
-        .get()
+      const res = await functions.httpsCallable('getMemberDetails')({
+        code: project.code,
+        target: INTERESTS,
+      })
+      const interestsList = res.data as Interests[]
 
-      const interestsList: Interests[] = parseToInterests(snapshot)
+      parseToInterests(interestsList)
       addInterestHash(interestHash, interestsList)
 
       const groups = Object.values(interestHash)
@@ -154,7 +155,7 @@ export const MembersTab: FC = () => {
   //TODO: move to functions
   useAsyncEffect(fetchMemberIds, [allMembers])
   useAsyncEffect(fetchMemberSkills, [allMembers])
-  // useAsyncEffect(fetchMemberInterests, [allMembers])
+  useAsyncEffect(fetchMemberInterests, [allMembers])
 
   const classes = useStyles()
 

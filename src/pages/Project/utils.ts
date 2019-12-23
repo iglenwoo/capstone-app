@@ -68,24 +68,10 @@ export const addSkillHash = (
   }
 }
 
-export const parseToInterests = (
-  snapshot: firebase.firestore.QuerySnapshot
-) => {
-  let interestsList: Interests[] = []
-  if (!snapshot.empty) {
-    snapshot.forEach(result => {
-      const data = result.data()
-      if (!data) throw new Error('Data in skills snapshot is empty')
-      if (!data.email) throw new Error('Data.email in skills snapshot is empty')
-      if (!data.interests)
-        throw new Error('Data.interests in skills snapshot is empty')
-      const interests: Interests = data as Interests
-      interests.interests = interests.interests.map(i => i.toLowerCase())
-      interestsList.push(interests)
-    })
-  }
-
-  return interestsList
+export const parseToInterests = (interestsList: Interests[]) => {
+  interestsList.forEach((interests: Interests) => {
+    interests.interests = interests.interests.map(i => i.toLowerCase())
+  })
 }
 
 export const addInterestHash = (
