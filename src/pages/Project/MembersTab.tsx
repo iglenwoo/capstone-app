@@ -7,12 +7,15 @@ import { Id } from '../Profile/Ids'
 import {
   createStyles,
   Divider,
+  ExpansionPanel,
+  ExpansionPanelDetails,
+  ExpansionPanelSummary,
   makeStyles,
   Theme,
   Typography,
 } from '@material-ui/core'
+import { ExpandMore as ExpandMoreIcon } from '@material-ui/icons'
 import { MembersList } from './MembersList'
-import { SortedIdChips } from './SortedIdChips'
 import {
   addIdHash,
   addInterestHash,
@@ -21,9 +24,10 @@ import {
   parseToInterests,
   parseToSkills,
 } from './utils'
-import { SortedSkillChips } from './SortedSkillChips'
 import { Invite } from './Invite'
 import { Members } from './model'
+import { SortedIdTable } from './SortedIdTable'
+import { SortedItemTable } from './SortedItemTable'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -31,7 +35,7 @@ const useStyles = makeStyles((theme: Theme) =>
       marginBottom: theme.spacing(2),
     },
     title: {
-      marginTop: theme.spacing(2),
+      // marginTop: theme.spacing(2),
     },
     divider: {
       marginTop: theme.spacing(1),
@@ -167,20 +171,45 @@ export const MembersTab: FC = () => {
       {project.isOwned && <Invite />}
       <MembersList members={allMembers} />
       <Divider className={classes.divider} />
-      <Typography variant="h5" className={classes.title}>
-        Service Accounts
-      </Typography>
-      <SortedIdChips idGroups={idGroups} />
-      <Divider className={classes.divider} />
-      <Typography variant="h5" className={classes.title}>
-        Technical Skills
-      </Typography>
-      <SortedSkillChips groups={skillGroups} />
-      <Divider className={classes.divider} />
-      <Typography variant="h5" className={classes.title}>
-        Interests
-      </Typography>
-      <SortedSkillChips groups={interestGroups} />
+      <ExpansionPanel defaultExpanded>
+        <ExpansionPanelSummary
+          expandIcon={<ExpandMoreIcon />}
+          id="service-accounts"
+        >
+          <Typography variant="h5" className={classes.title}>
+            Service Accounts
+          </Typography>
+        </ExpansionPanelSummary>
+        <ExpansionPanelDetails>
+          <SortedIdTable idGroups={idGroups} />
+        </ExpansionPanelDetails>
+      </ExpansionPanel>
+      <ExpansionPanel defaultExpanded>
+        <ExpansionPanelSummary
+          expandIcon={<ExpandMoreIcon />}
+          id="technical-skills"
+        >
+          <Typography variant="h5" className={classes.title}>
+            Technical Skills
+          </Typography>
+        </ExpansionPanelSummary>
+        <ExpansionPanelDetails>
+          <SortedItemTable groups={skillGroups} itemTitle="Skill" />
+        </ExpansionPanelDetails>
+      </ExpansionPanel>
+      <ExpansionPanel defaultExpanded>
+        <ExpansionPanelSummary
+          expandIcon={<ExpandMoreIcon />}
+          id="technical-skills"
+        >
+          <Typography variant="h5" className={classes.title}>
+            Interests
+          </Typography>
+        </ExpansionPanelSummary>
+        <ExpansionPanelDetails>
+          <SortedItemTable groups={interestGroups} itemTitle="Interest" />
+        </ExpansionPanelDetails>
+      </ExpansionPanel>
     </>
   )
 }
