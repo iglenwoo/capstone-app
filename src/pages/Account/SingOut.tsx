@@ -6,7 +6,6 @@ export const SignOut = () => {
   const { signout } = useAuth()
 
   const onClick = () => {
-    console.log('sign out')
     signout()
   }
 

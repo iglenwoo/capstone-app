@@ -1,6 +1,5 @@
-import React, { SyntheticEvent, useContext, useEffect, useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { Auth, useAuth } from '../../components/FirebaseAuth/use-auth'
-import * as firebase from 'firebase/app'
 import 'firebase/firestore'
 import {
   Box,
@@ -15,12 +14,10 @@ import {
   Theme,
   Typography,
 } from '@material-ui/core'
-import { IDS, PROJECTS, USERS } from '../../constants/db.collections'
 import { ProjectsContext } from './index'
 import { Loading } from '../../components/Loading'
 import { EmptyListItem } from './ProjectList'
 import { useAsyncEffect } from '../../utils/use-async-effect'
-import { IDs } from '../Project/MembersTab'
 import { Project } from '../Project/model'
 import { useSnackbar } from 'notistack'
 
@@ -55,7 +52,6 @@ export const Invitations = () => {
 
     try {
       const res = await functions.httpsCallable('getInvitations')()
-      console.log(res)
       const invitedProjects = res.data.map((project: Project) => {
         return project.code
       })

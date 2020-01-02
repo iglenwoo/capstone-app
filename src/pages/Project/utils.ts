@@ -1,4 +1,3 @@
-import * as firebase from 'firebase'
 import { Id } from '../Profile/Ids'
 import {
   IdGroup,

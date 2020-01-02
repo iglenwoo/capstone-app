@@ -1,4 +1,4 @@
-import React, { SyntheticEvent, useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import {
   Box,
   Button,
@@ -65,7 +65,6 @@ export const Invite = () => {
         code: project.code,
       })
       .then(result => {
-        console.log(result)
         enqueueSnackbar(`${email} is invited`, { variant: 'success' })
         setEmail('')
         reloadProject()
