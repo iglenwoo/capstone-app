@@ -1,11 +1,4 @@
-import {
-  FC,
-  default as React,
-  useState,
-  SyntheticEvent,
-  createContext,
-  useEffect,
-} from 'react'
+import { FC, default as React, useState, createContext, useEffect } from 'react'
 import {
   Card,
   CardContent,
@@ -28,6 +21,7 @@ import { EditableId } from './EditableId'
 import { Auth, useAuth } from '../../components/FirebaseAuth/use-auth'
 import { IDS } from '../../constants/db.collections'
 import { Loading } from '../../components/Loading'
+import { InfoIcon } from './InfoIcon'
 
 export const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -75,7 +69,7 @@ const INIT_ID: Id = {
   email: '',
 }
 
-export const Ids: FC<{}> = props => {
+export const Ids: FC = () => {
   const { user, firestore }: Auth = useAuth()
   const [loading, setLoading] = useState(true)
   const [ids, setIds] = useState<Id[]>([])
@@ -115,7 +109,7 @@ export const Ids: FC<{}> = props => {
     })
   }
 
-  const handleAddId = (e: SyntheticEvent) => {
+  const handleAddId = () => {
     if (!newId.service) {
       alert('Please type a service')
       return
@@ -149,7 +143,7 @@ export const Ids: FC<{}> = props => {
       .collection(IDS)
       .doc(user.email)
       .set({ ids: objs, email: user.email })
-      .then(doc => {
+      .then(() => {
         setIds(newIds)
         cb()
         setNewId({ ...INIT_ID })
@@ -168,24 +162,14 @@ export const Ids: FC<{}> = props => {
     <IdContext.Provider value={{ handleRemoveId, handleSaveId }}>
       <Card className={classes.card}>
         <CardContent>
-          <HtmlTooltip
-            placement="right-start"
-            title={
-              <>
-                <Typography color="inherit">Service Accounts:</Typography>
-                <b>Add your service accounts here.</b>
-                <br />
-                <i>e.g. Github, Slack, LinkedIn, Facebook, Google, OSU, ...</i>
-                <br />
-                This will help you to share them with other team members in a
-                project.
-              </>
-            }
-          >
-            <Typography variant="h6" display="inline" gutterBottom>
-              Service Accounts
-            </Typography>
-          </HtmlTooltip>
+          <Typography variant="h6" display="inline" gutterBottom>
+            Service Accounts
+            <HtmlTooltip placement="right-start" title={renderTitle()}>
+              <Typography display="inline">
+                <InfoIcon />
+              </Typography>
+            </HtmlTooltip>
+          </Typography>
           {loading ? (
             <Loading />
           ) : (
@@ -256,3 +240,14 @@ export const Ids: FC<{}> = props => {
     </IdContext.Provider>
   )
 }
+
+const renderTitle = () => (
+  <>
+    <Typography color="inherit">Service Accounts:</Typography>
+    <b>Add your service accounts here.</b>
+    <br />
+    <i>e.g. Github, Slack, LinkedIn, Facebook, Google, OSU, ...</i>
+    <br />
+    This will help you to share them with other team members in a project.
+  </>
+)

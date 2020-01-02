@@ -22,6 +22,7 @@ import { INTERESTS } from '../../constants/db.collections'
 import { EditableChips } from '../../components/EditableChips'
 import { Loading } from '../../components/Loading'
 import { HtmlTooltip } from './Ids'
+import { InfoIcon } from './InfoIcon'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -114,24 +115,14 @@ export const Interests: FC = () => {
   return (
     <Card className={classes.card}>
       <CardContent>
-        <HtmlTooltip
-          placement="right-start"
-          title={
-            <>
-              <Typography color="inherit">Interests:</Typography>
-              <b>Add what you are passion/interested about here.</b>
-              <br />
-              <i>e.g. Coffee, Reading, Drawing, Sports, ...</i>
-              <br />
-              This will help you to share them with other team members in a
-              project.
-            </>
-          }
-        >
-          <Typography variant="h6" display="inline" gutterBottom>
-            Interests
-          </Typography>
-        </HtmlTooltip>
+        <Typography variant="h6" display="inline" gutterBottom>
+          Interests
+          <HtmlTooltip placement="right-start" title={renderTitle()}>
+            <Typography display="inline">
+              <InfoIcon />
+            </Typography>
+          </HtmlTooltip>
+        </Typography>
         {loading ? (
           <Loading />
         ) : (
@@ -167,3 +158,14 @@ export const Interests: FC = () => {
     </Card>
   )
 }
+
+const renderTitle = () => (
+  <>
+    <Typography color="inherit">Interests:</Typography>
+    <b>Add what you are passion/interested about here.</b>
+    <br />
+    <i>e.g. Coffee, Reading, Drawing, Sports, ...</i>
+    <br />
+    This will help you to share them with other team members in a project.
+  </>
+)

@@ -22,6 +22,7 @@ import { SKILLS } from '../../constants/db.collections'
 import { EditableChips } from '../../components/EditableChips'
 import { Loading } from '../../components/Loading'
 import { HtmlTooltip } from './Ids'
+import { InfoIcon } from './InfoIcon'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -94,7 +95,7 @@ export const Skills: FC = () => {
       })
   }, [editing, editingSkills, firestore, skills, user])
 
-  const handleAddClick = (e: SyntheticEvent) => {
+  const handleAddClick = () => {
     if (!newSkill) return
 
     const newEditingSkills = [...editingSkills, newSkill]
@@ -112,24 +113,14 @@ export const Skills: FC = () => {
   return (
     <Card className={classes.card}>
       <CardContent>
-        <HtmlTooltip
-          placement="right-start"
-          title={
-            <>
-              <Typography color="inherit">Technical Skills:</Typography>
-              <b>Add your technical skills here.</b>
-              <br />
-              <i>e.g. Java, TypeScript, Backend, PhotoShop, FinalCut, ...</i>
-              <br />
-              This will help you to share them with other team members in a
-              project.
-            </>
-          }
-        >
-          <Typography variant="h6" display="inline" gutterBottom>
-            Technical Skills
-          </Typography>
-        </HtmlTooltip>
+        <Typography variant="h6" display="inline" gutterBottom>
+          Technical Skills
+          <HtmlTooltip placement="right-start" title={renderTitle()}>
+            <Typography display="inline">
+              <InfoIcon />
+            </Typography>
+          </HtmlTooltip>
+        </Typography>
         {loading ? (
           <Loading />
         ) : (
@@ -165,3 +156,14 @@ export const Skills: FC = () => {
     </Card>
   )
 }
+
+const renderTitle = () => (
+  <>
+    <Typography color="inherit">Technical Skills:</Typography>
+    <b>Add your technical skills here.</b>
+    <br />
+    <i>e.g. Java, TypeScript, Backend, PhotoShop, FinalCut, ...</i>
+    <br />
+    This will help you to share them with other team members in a project.
+  </>
+)
