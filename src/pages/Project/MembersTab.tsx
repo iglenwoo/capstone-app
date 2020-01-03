@@ -5,8 +5,8 @@ import { useAsyncEffect } from '../../utils/use-async-effect'
 import { Auth, useAuth } from '../../components/FirebaseAuth/use-auth'
 import { Id } from '../Profile/Ids'
 import {
+  Box,
   createStyles,
-  Divider,
   ExpansionPanel,
   ExpansionPanelDetails,
   ExpansionPanelSummary,
@@ -34,11 +34,12 @@ const useStyles = makeStyles((theme: Theme) =>
     project: {
       marginBottom: theme.spacing(2),
     },
-    title: {
-      // marginTop: theme.spacing(2),
+    memberTitle: {
+      marginLeft: theme.spacing(2),
+      marginBottom: theme.spacing(0),
     },
-    divider: {
-      marginTop: theme.spacing(1),
+    title: {
+      marginTop: theme.spacing(0),
     },
   })
 )
@@ -169,8 +170,12 @@ export const MembersTab: FC = () => {
         Project Code: {project.code}
       </Typography>
       {project.isOwned && <Invite />}
-      <MembersList members={allMembers} />
-      <Divider className={classes.divider} />
+      <Typography variant="h6" className={classes.memberTitle}>
+        Current Members
+      </Typography>
+      <Box mb={1}>
+        <MembersList members={allMembers} />
+      </Box>
       <ExpansionPanel defaultExpanded>
         <ExpansionPanelSummary
           expandIcon={<ExpandMoreIcon />}

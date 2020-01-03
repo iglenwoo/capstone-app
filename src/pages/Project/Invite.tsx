@@ -6,6 +6,7 @@ import {
   makeStyles,
   TextField,
   Theme,
+  Typography,
 } from '@material-ui/core'
 import { Auth, useAuth } from '../../components/FirebaseAuth/use-auth'
 import 'firebase/firestore'
@@ -21,6 +22,13 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContext: 'center',
       alignItems: 'top',
       flexWrap: 'wrap',
+    },
+    title: {
+      marginLeft: theme.spacing(2),
+      marginBottom: theme.spacing(0),
+    },
+    label: {
+      backgroundColor: 'white',
     },
     button: {
       minWidth: 150,
@@ -80,10 +88,13 @@ export const Invite = () => {
   // polish: differentiate if members are joined
   return (
     <>
+      <Typography gutterBottom variant="h6" className={classes.title}>
+        Invite Members
+      </Typography>
       {loading || inviting ? (
         <Loading />
       ) : (
-        <Box className={classes.fieldContainer} mb={0}>
+        <Box className={classes.fieldContainer} mb={1}>
           <Box flexGrow={2} mx={1}>
             <TextField
               label="New member email"
@@ -92,6 +103,11 @@ export const Invite = () => {
               margin="dense"
               variant="outlined"
               fullWidth
+              InputLabelProps={{
+                classes: {
+                  root: classes.label,
+                },
+              }}
               value={email}
               onChange={e => setEmail(e.currentTarget.value)}
               error={emailError}

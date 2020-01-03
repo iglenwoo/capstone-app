@@ -55,6 +55,6 @@ export const MembersList: FC<{
       ))}
     </Box>
   ) : (
-    <div>No member...</div>
+    <Box m={1}>No member...</Box>
   )
 }

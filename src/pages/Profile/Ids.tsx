@@ -201,7 +201,7 @@ export const Ids: FC = () => {
                     variant="outlined"
                     margin="dense"
                     label="Service Name"
-                    placeholder="Gibhub"
+                    placeholder="e.g. Github, Slack, Google, Outlook, Facebook, WhatsApp, TikTok"
                     fullWidth
                     value={newId.service}
                     onChange={e =>
