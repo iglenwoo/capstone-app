@@ -31,17 +31,24 @@ export const SignUp: FC = () => {
   const [emailError, setEmailError] = useState<boolean>(true)
   const [password, setPassword] = useState<string>('')
   const [passwordError, setPasswordError] = useState<boolean>(true)
+  const [passwordHelperText, setPasswordHelperText] = useState<string>('')
 
   useEffect(() => {
     setEmailError(!validateEmail(email))
   }, [email])
 
   useEffect(() => {
-    setPasswordError(password.length < 8)
+    if (password.length < 8) {
+      setPasswordError(true)
+      setPasswordHelperText('Password must be at least 8 characters')
+    } else {
+      setPasswordError(false)
+      setPasswordHelperText('')
+    }
   }, [password])
 
-  const onSubmit = (event: SyntheticEvent) => {
-    event.preventDefault()
+  const onSubmit = (e: SyntheticEvent) => {
+    e.preventDefault()
     if (emailError || passwordError) return
 
     signup(email, password)
@@ -53,8 +60,15 @@ export const SignUp: FC = () => {
             .set({
               email: user.email,
             })
-
-          history.push(routes.PROFILE)
+            .then(() => {
+              history.push(routes.PROFILE)
+            })
+            .catch(e => {
+              enqueueSnackbar(e.message, {
+                variant: 'error',
+              })
+              console.log(e)
+            })
         }
       })
       .catch(error => {
@@ -74,39 +88,32 @@ export const SignUp: FC = () => {
         <Typography component="h1" variant="h5">
           Sign up
         </Typography>
-        <form className={classes.form} noValidate onSubmit={e => onSubmit(e)}>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
-                autoFocus
-                value={email}
-                onChange={e => setEmail(e.currentTarget.value)}
-                error={emailError}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
-                value={password}
-                onChange={e => setPassword(e.currentTarget.value)}
-                error={passwordError}
-              />
-            </Grid>
-          </Grid>
+        <form className={classes.form} noValidate onSubmit={onSubmit}>
+          <TextField
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            label="Email Address"
+            type="email"
+            placeholder="example@exmaple.com"
+            autoFocus
+            value={email}
+            onChange={e => setEmail(e.currentTarget.value)}
+            error={emailError}
+          />
+          <TextField
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            label="Password"
+            type="password"
+            value={password}
+            onChange={e => setPassword(e.currentTarget.value)}
+            error={passwordError}
+            helperText={passwordHelperText}
+          />
           <Button
             type="submit"
             fullWidth

@@ -33,6 +33,7 @@ export const SignIn: FC = () => {
   const [emailError, setEmailError] = useState<boolean>(true)
   const [password, setPassword] = useState<string>('')
   const [passwordError, setPasswordError] = useState<boolean>(true)
+  const [passwordHelperText, setPasswordHelperText] = useState<string>('')
   const [shouldPersist, setShouldPersist] = useState<boolean>(false)
 
   const classes = useStyles()
@@ -42,11 +43,17 @@ export const SignIn: FC = () => {
   }, [email])
 
   useEffect(() => {
-    setPasswordError(password.length < 8)
+    if (password.length < 8) {
+      setPasswordError(true)
+      setPasswordHelperText('Password must be at least 8 characters')
+    } else {
+      setPasswordError(false)
+      setPasswordHelperText('')
+    }
   }, [password])
 
-  const onSubmit = (event: SyntheticEvent) => {
-    event.preventDefault()
+  const onSubmit = (e: SyntheticEvent) => {
+    e.preventDefault()
     if (emailError || passwordError) return
 
     const user = signin(email, password, shouldPersist)
@@ -71,21 +78,15 @@ export const SignIn: FC = () => {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        <form
-          className={classes.form}
-          noValidate
-          onSubmit={event => onSubmit(event)}
-        >
+        <form className={classes.form} noValidate onSubmit={onSubmit}>
           <TextField
             variant="outlined"
             margin="normal"
             required
             fullWidth
-            id="email"
-            name="email"
             label="Email Address"
             type="email"
-            autoComplete="email"
+            placeholder="example@exmaple.com"
             autoFocus
             value={email}
             onChange={e => setEmail(e.currentTarget.value)}
@@ -96,14 +97,12 @@ export const SignIn: FC = () => {
             margin="normal"
             required
             fullWidth
-            id="password"
-            name="password"
             label="Password"
             type="password"
-            autoComplete="current-password"
             value={password}
             onChange={e => setPassword(e.currentTarget.value)}
             error={passwordError}
+            helperText={passwordHelperText}
           />
           <FormControlLabel
             control={
