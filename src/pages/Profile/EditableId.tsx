@@ -1,10 +1,4 @@
-import {
-  default as React,
-  FC,
-  SyntheticEvent,
-  useContext,
-  useState,
-} from 'react'
+import { default as React, FC, useContext, useState } from 'react'
 import {
   IconButton,
   ListItem,
@@ -18,9 +12,10 @@ import {
   Cancel as CancelIcon,
   Save as SaveIcon,
 } from '@material-ui/icons'
-import { Id } from './Ids'
+import { Id, serviceOptions } from './Ids'
 import { IdContext } from './Ids'
 import { useStyles } from './Ids'
+import { Autocomplete } from '@material-ui/lab'
 
 export const EditableId: FC<{
   id: Id
@@ -31,18 +26,18 @@ export const EditableId: FC<{
   const [onEdit, setOnEdit] = useState(false)
   const [id, setId] = useState<Id>(props.id)
 
-  const handleCancelClick = (e: SyntheticEvent) => {
+  const handleCancelClick = () => {
     setId(props.id)
     setOnEdit(false)
   }
-  const handleSaveClick = (e: SyntheticEvent) => {
+  const handleSaveClick = () => {
     handleSaveId(props.index, id)
     setOnEdit(false)
   }
-  const handleEditClick = (e: SyntheticEvent) => {
+  const handleEditClick = () => {
     setOnEdit(true)
   }
-  const handleDeleteClick = (e: SyntheticEvent) => {
+  const handleDeleteClick = () => {
     handleRemoveId(props.index)
   }
 
@@ -51,17 +46,34 @@ export const EditableId: FC<{
       {onEdit ? (
         <>
           <ListItemText className={classes.value}>
-            <TextField
-              variant="outlined"
-              margin="dense"
-              fullWidth
+            <Autocomplete
+              freeSolo
+              autoHighlight
+              autoSelect
+              disableOpenOnFocus
+              options={serviceOptions}
               value={id.service}
-              onChange={e =>
+              onChange={(e, newValue) => {
                 setId({
                   ...id,
-                  service: e.currentTarget.value,
+                  service: newValue,
                 })
-              }
+              }}
+              renderInput={params => (
+                <TextField
+                  {...params}
+                  variant="outlined"
+                  margin="dense"
+                  fullWidth
+                  autoFocus
+                  onBlur={e => {
+                    setId({
+                      ...id,
+                      service: e.currentTarget.value,
+                    })
+                  }}
+                />
+              )}
             />
           </ListItemText>
           <ListItemText className={classes.value}>

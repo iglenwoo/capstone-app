@@ -16,6 +16,7 @@ import {
   Typography,
   withStyles,
 } from '@material-ui/core'
+import { Autocomplete } from '@material-ui/lab'
 import { AddCircle as AddCircleIcon } from '@material-ui/icons'
 import { EditableId } from './EditableId'
 import { Auth, useAuth } from '../../components/FirebaseAuth/use-auth'
@@ -197,16 +198,27 @@ export const Ids: FC = () => {
               )}
               <ListItem>
                 <ListItemText className={classes.value}>
-                  <TextField
-                    variant="outlined"
-                    margin="dense"
-                    label="Service Name"
-                    placeholder="e.g. Github, Slack, Google, Outlook, Facebook, WhatsApp, TikTok"
-                    fullWidth
-                    value={newId.service}
-                    onChange={e =>
-                      setNewId({ ...newId, service: e.currentTarget.value })
-                    }
+                  <Autocomplete
+                    freeSolo
+                    autoHighlight
+                    autoSelect
+                    disableOpenOnFocus
+                    options={serviceOptions}
+                    renderInput={params => (
+                      <TextField
+                        {...params}
+                        variant="outlined"
+                        margin="dense"
+                        label="Service Name"
+                        placeholder="Github"
+                        fullWidth
+                        autoFocus
+                        value={newId.service}
+                        onChange={e =>
+                          setNewId({ ...newId, service: e.currentTarget.value })
+                        }
+                      />
+                    )}
                   />
                 </ListItemText>
                 <ListItemText className={classes.value}>
@@ -251,3 +263,22 @@ const renderTitle = () => (
     This will help you to share them with other team members in a project.
   </>
 )
+
+export const serviceOptions = [
+  'Facebook',
+  'Github',
+  'Gitlab',
+  'Gmail',
+  'Instagram',
+  'Line',
+  'LinkedIn',
+  'Outlook',
+  'Skype',
+  'SnapChat',
+  'Telegram',
+  'TikTok',
+  'Trello',
+  'Twitter',
+  'WeChat',
+  'WhatsApp',
+]
