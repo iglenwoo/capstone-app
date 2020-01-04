@@ -99,7 +99,7 @@ export const Interests: FC = () => {
       })
   }, [editing, editingInterests, firestore, interests, user])
 
-  const handleAddClick = () => {
+  const _addInterest = () => {
     if (!newInterest) return
 
     const loweredEditingInterests = editingInterests.map(i => i.toLowerCase())
@@ -114,6 +114,16 @@ export const Interests: FC = () => {
     setEditingInterests(newEditingInterests)
     setNewInterest('')
     setEditing(true)
+  }
+
+  const handleKeyDown = (e: any) => {
+    if (e.key === 'Enter') {
+      _addInterest()
+    }
+  }
+
+  const handleAddClick = () => {
+    _addInterest()
   }
 
   const handleDeleteClick = (e: SyntheticEvent, interestToDelete: string) => {
@@ -151,6 +161,7 @@ export const Interests: FC = () => {
                 placeholder="Software Development"
                 value={newInterest}
                 onChange={e => setNewInterest(e.currentTarget.value)}
+                onKeyPress={handleKeyDown}
               />
               <IconButton
                 edge="end"

@@ -1,6 +1,7 @@
 import {
   default as React,
   FC,
+  KeyboardEvent,
   SyntheticEvent,
   useEffect,
   useState,
@@ -15,6 +16,7 @@ import {
   Box,
   IconButton,
   TextField,
+  FormControl,
 } from '@material-ui/core'
 import { AddCircle as AddCircleIcon } from '@material-ui/icons'
 import { Auth, useAuth } from '../../components/FirebaseAuth/use-auth'
@@ -97,7 +99,7 @@ export const Skills: FC = () => {
       })
   }, [editing, editingSkills, firestore, skills, user])
 
-  const handleAddClick = () => {
+  const _addSkill = () => {
     if (!newSkill) return
 
     const loweredEditingSkills = editingSkills.map(s => s.toLowerCase())
@@ -112,6 +114,16 @@ export const Skills: FC = () => {
     setEditingSkills(newEditingSkills)
     setNewSkill('')
     setEditing(true)
+  }
+
+  const handleKeyDown = (e: any) => {
+    if (e.key === 'Enter') {
+      _addSkill()
+    }
+  }
+
+  const handleAddClick = () => {
+    _addSkill()
   }
 
   const handleDeleteClick = (e: SyntheticEvent, skillToDelete: string) => {
@@ -149,6 +161,7 @@ export const Skills: FC = () => {
                 placeholder="JavaScript"
                 value={newSkill}
                 onChange={e => setNewSkill(e.currentTarget.value)}
+                onKeyPress={handleKeyDown}
               />
               <IconButton
                 edge="end"
