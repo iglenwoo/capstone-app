@@ -1,7 +1,6 @@
 import {
   default as React,
   FC,
-  KeyboardEvent,
   SyntheticEvent,
   useEffect,
   useState,
@@ -16,7 +15,6 @@ import {
   Box,
   IconButton,
   TextField,
-  FormControl,
 } from '@material-ui/core'
 import { AddCircle as AddCircleIcon } from '@material-ui/icons'
 import { Auth, useAuth } from '../../components/FirebaseAuth/use-auth'
@@ -26,6 +24,7 @@ import { Loading } from '../../components/Loading'
 import { HtmlTooltip } from './Ids'
 import { InfoIcon } from './InfoIcon'
 import { useSnackbar } from 'notistack'
+import { Autocomplete } from '@material-ui/lab'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -37,10 +36,11 @@ const useStyles = makeStyles((theme: Theme) =>
       maxHeight: 36,
       marginLeft: theme.spacing(1),
     },
-    skill: {
-      minWidth: 50,
-      marginLeft: theme.spacing(2),
-      marginRight: theme.spacing(2),
+    autocomplete: {
+      display: 'inline',
+    },
+    input: {
+      minWidth: 200,
     },
     action: {
       marginLeft: theme.spacing(1),
@@ -153,15 +153,29 @@ export const Skills: FC = () => {
               onDelete={handleDeleteClick}
               editing={true}
             />
-            <Box className={classes.skill}>
-              <TextField
-                variant="outlined"
-                margin="dense"
-                label="New skill"
-                placeholder="JavaScript"
+            <Box mx={2}>
+              <Autocomplete
+                freeSolo
+                autoHighlight
+                autoSelect
+                disableOpenOnFocus
+                className={classes.autocomplete}
+                options={skillOptions}
                 value={newSkill}
-                onChange={e => setNewSkill(e.currentTarget.value)}
-                onKeyPress={handleKeyDown}
+                onChange={(e, newValue) => {
+                  setNewSkill(newValue)
+                }}
+                renderInput={params => (
+                  <TextField
+                    {...params}
+                    variant="outlined"
+                    margin="dense"
+                    label="New skill"
+                    placeholder="JavaScript"
+                    className={classes.input}
+                    onKeyPress={handleKeyDown}
+                  />
+                )}
               />
               <IconButton
                 edge="end"
@@ -190,3 +204,49 @@ const renderTitle = () => (
     This will help you to share them with other team members in a project.
   </>
 )
+
+export const skillOptions = [
+  'HTML',
+  'JavaScript',
+  'TypeScript',
+  'Node',
+  'Express',
+  'React',
+  'Angular',
+  'Vue',
+  'C',
+  'C++',
+  'STL',
+  'Java',
+  'Spring',
+  'Spring Boot',
+  'C#',
+  'ASP.NET',
+  'ASP.NET Core',
+  'DirectX',
+  'OpenGL',
+  'OpenCV',
+  'SQL',
+  'MySQL',
+  'MariaDB',
+  'Oracle',
+  'MS SQL',
+  'DB2',
+  'PostgreSQL',
+  'NoSQL',
+  'MongoDB',
+  'Couchbase',
+  'Redis',
+  'Memcached',
+  'DynamoDB',
+  'Elasticsearch',
+  'Cassandra',
+  'HBase',
+  'Hadoop',
+  'Bigtable',
+  'Spark',
+  'Kafka',
+  'AWS',
+  'Azure',
+  'GCP',
+]
