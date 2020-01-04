@@ -11,7 +11,7 @@ export const EditableChips: FC<{
     <>
       {props.editing
         ? props.editingChips.map((s, i) => (
-            <Box display="inline" ml={1} key={`${s}-${i}`}>
+            <Box display="inline" ml={1} mt={1} key={`${s}-${i}`}>
               <Chip
                 label={s}
                 onDelete={e => {
@@ -21,7 +21,7 @@ export const EditableChips: FC<{
             </Box>
           ))
         : props.chips.map((c, i) => (
-            <Box display="inline" ml={1} key={`${c}-${i}`}>
+            <Box display="inline" ml={1} mt={1} key={`${c}-${i}`}>
               {props.editing ? (
                 <Chip
                   label={c}
