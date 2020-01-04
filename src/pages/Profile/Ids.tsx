@@ -51,7 +51,7 @@ export const HtmlTooltip = withStyles((theme: Theme) => ({
 }))(Tooltip)
 
 export const IdContext = createContext<{
-  handleSaveId: (index: number, newId: Id) => void
+  handleSaveId: (index: number, newId: Id, cb: () => void) => void
   handleRemoveId: (index: number) => void
 }>({
   handleSaveId: () => {},
@@ -103,27 +103,54 @@ export const Ids: FC = () => {
       setIds(newIds)
     })
   }
-  const handleSaveId = (index: number, newId: Id) => {
+
+  const isIdEmpty = (_newId: Id) => {
+    if (!_newId.service) {
+      alert('Please type a service')
+      return true
+    }
+    if (!_newId.value) {
+      alert('Please type an account value')
+      return true
+    }
+
+    return false
+  }
+
+  const handleSaveId = (index: number, newId: Id, cb: () => void) => {
+    if (isIdEmpty(newId)) return
+
+    let duplicated = false
+    ids.forEach((id, i) => {
+      if (index !== i && id.service === newId.service) {
+        duplicated = true
+      }
+    })
+
+    if (duplicated) {
+      alert(
+        `Service "${newId.service}" already exists.\nMultiple account for a service is not supported at this moment.`
+      )
+      return false
+    }
+
     const newIds = ids.map((id, i) => (index === i ? newId : id))
     setNewIds(newIds, () => {
       setIds(newIds)
+      cb()
     })
   }
 
-  const handleAddId = () => {
-    if (!newId.service) {
-      alert('Please type a service')
-      return
-    }
-    if (!newId.value) {
-      alert('Please type an account value')
-      return
-    }
+  const _addId = () => {
+    if (isIdEmpty(newId)) return
+
     if (
       ids.some(id => id.service.toLowerCase() === newId.service.toLowerCase())
     ) {
-      alert(`Service [${newId.service}] already exists`)
-      return
+      alert(
+        `Service "${newId.service}" already exists.\nMultiple account for a service is not supported at this moment.`
+      )
+      return false
     }
 
     const newIds = [...ids, newId]
@@ -131,6 +158,16 @@ export const Ids: FC = () => {
       setIds(newIds)
       setNewId({ ...INIT_ID })
     })
+  }
+
+  const handleEnterToSave = (e: any) => {
+    if (e.key === 'Enter') {
+      _addId()
+    }
+  }
+
+  const handleAddId = () => {
+    _addId()
   }
 
   const setNewIds = (newIds: Id[], cb: () => void) => {
@@ -204,6 +241,12 @@ export const Ids: FC = () => {
                     autoSelect
                     disableOpenOnFocus
                     options={serviceOptions}
+                    value={newId.service}
+                    onChange={(e, newValue) => {
+                      if (newValue) {
+                        setNewId({ ...newId, service: newValue })
+                      }
+                    }}
                     renderInput={params => (
                       <TextField
                         {...params}
@@ -213,10 +256,9 @@ export const Ids: FC = () => {
                         placeholder="Github"
                         fullWidth
                         autoFocus
-                        value={newId.service}
-                        onChange={e =>
+                        onBlur={e => {
                           setNewId({ ...newId, service: e.currentTarget.value })
-                        }
+                        }}
                       />
                     )}
                   />
@@ -232,6 +274,7 @@ export const Ids: FC = () => {
                     onChange={e =>
                       setNewId({ ...newId, value: e.currentTarget.value })
                     }
+                    onKeyPress={handleEnterToSave}
                   />
                 </ListItemText>
                 <ListItemSecondaryAction>

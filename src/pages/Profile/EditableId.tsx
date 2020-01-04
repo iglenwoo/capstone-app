@@ -30,9 +30,21 @@ export const EditableId: FC<{
     setId(props.id)
     setOnEdit(false)
   }
+
+  const _saveId = () => {
+    if (props.id.service !== id.service || props.id.value !== id.value) {
+      handleSaveId(props.index, id, () => {
+        setOnEdit(false)
+      })
+    }
+  }
+  const handleEnterToSave = (e: any) => {
+    if (e.key === 'Enter') {
+      _saveId()
+    }
+  }
   const handleSaveClick = () => {
-    handleSaveId(props.index, id)
-    setOnEdit(false)
+    _saveId()
   }
   const handleEditClick = () => {
     setOnEdit(true)
@@ -54,10 +66,12 @@ export const EditableId: FC<{
               options={serviceOptions}
               value={id.service}
               onChange={(e, newValue) => {
-                setId({
-                  ...id,
-                  service: newValue,
-                })
+                if (newValue) {
+                  setId({
+                    ...id,
+                    service: newValue,
+                  })
+                }
               }}
               renderInput={params => (
                 <TextField
@@ -88,6 +102,7 @@ export const EditableId: FC<{
                   value: e.currentTarget.value,
                 })
               }
+              onKeyPress={handleEnterToSave}
             />
           </ListItemText>
         </>
