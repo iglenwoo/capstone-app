@@ -16,29 +16,56 @@ import Copyright from '../../components/Copyright'
 import { AlertDialog } from '../../components/Dialog/AlertDialog'
 import { useStyles } from '../../theme'
 import { useSnackbar } from 'notistack'
+import { SyntheticEvent } from 'react'
+import { useEffect } from 'react'
+import { validateEmail } from '../../utils'
+import { useHistory } from 'react-router'
+import * as routes from '../../constants/routes'
 
 export const PasswordForget: FC = () => {
+  const classes = useStyles()
   const auth: Auth = useAuth()
   const { enqueueSnackbar } = useSnackbar()
+  const history = useHistory()
 
   const [email, setEmail] = useState('')
+  const [emailError, setEmailError] = useState<boolean>(true)
+  const [emailHelperText, setEmailHelperText] = useState<string>('')
   const [error, setError] = useState()
   const [showDialog, setShowDialog] = useState<boolean>(false)
 
-  const classes = useStyles()
+  useEffect(() => {
+    if (validateEmail(email)) {
+      setEmailHelperText('')
+      setEmailError(false)
+    } else {
+      setEmailHelperText('Please enter a valid email.')
+      setEmailError(true)
+    }
+  }, [email])
 
-  const onSubmit = (event: any) => {
+  const onSubmit = (e: SyntheticEvent) => {
+    e.preventDefault()
+    if (emailError) return
+
     auth
       .sendPasswordResetEmail(email)
       .then(() => {
-        enqueueSnackbar('Password reset succeeded', { variant: 'success' })
+        enqueueSnackbar(
+          "We've sent a password reset link!  You will be redirected to Sign In page in 5 seconds...",
+          {
+            variant: 'success',
+          }
+        )
+        setEmail('')
+        setTimeout(() => {
+          history.push(routes.SIGN_IN)
+        }, 5000)
       })
       .catch(error => {
         setError(error.message)
         setShowDialog(true)
       })
-
-    event.preventDefault()
   }
 
   const onDialogClose = () => {
@@ -67,13 +94,12 @@ export const PasswordForget: FC = () => {
             margin="normal"
             required
             fullWidth
-            id="email"
             label="Email Address"
-            name="email"
-            autoComplete="email"
             autoFocus
             value={email}
             onChange={e => setEmail(e.currentTarget.value)}
+            error={emailError}
+            helperText={emailHelperText}
           />
           <Button
             type="submit"
@@ -81,6 +107,7 @@ export const PasswordForget: FC = () => {
             variant="contained"
             color="primary"
             className={classes.submit}
+            disabled={emailError}
           >
             Reset My Password
           </Button>
