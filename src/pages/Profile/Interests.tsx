@@ -23,6 +23,7 @@ import { EditableChips } from '../../components/EditableChips'
 import { Loading } from '../../components/Loading'
 import { HtmlTooltip } from './Ids'
 import { InfoIcon } from './InfoIcon'
+import { useSnackbar } from 'notistack'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -48,6 +49,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export const Interests: FC = () => {
   const classes = useStyles()
+  const { enqueueSnackbar } = useSnackbar()
   const { user, firestore }: Auth = useAuth()
   const [interests, setInterests] = useState<string[]>([])
   const [editingInterests, setEditingInterests] = useState<string[]>([])
@@ -99,6 +101,14 @@ export const Interests: FC = () => {
 
   const handleAddClick = () => {
     if (!newInterest) return
+
+    const loweredEditingInterests = editingInterests.map(i => i.toLowerCase())
+    if (loweredEditingInterests.includes(newInterest.toLowerCase())) {
+      enqueueSnackbar(`Interest "${newInterest}" already exists.`, {
+        variant: 'error',
+      })
+      return
+    }
 
     const newEditingInterests = [...editingInterests, newInterest]
     setEditingInterests(newEditingInterests)

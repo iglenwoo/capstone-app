@@ -23,6 +23,7 @@ import { EditableChips } from '../../components/EditableChips'
 import { Loading } from '../../components/Loading'
 import { HtmlTooltip } from './Ids'
 import { InfoIcon } from './InfoIcon'
+import { useSnackbar } from 'notistack'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -47,6 +48,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export const Skills: FC = () => {
   const classes = useStyles()
+  const { enqueueSnackbar } = useSnackbar()
   const { user, firestore }: Auth = useAuth()
   const [skills, setSkills] = useState<string[]>([])
   const [editingSkills, setEditingSkills] = useState<string[]>([])
@@ -97,6 +99,14 @@ export const Skills: FC = () => {
 
   const handleAddClick = () => {
     if (!newSkill) return
+
+    const loweredEditingSkills = editingSkills.map(s => s.toLowerCase())
+    if (loweredEditingSkills.includes(newSkill.toLowerCase())) {
+      enqueueSnackbar(`Skill "${newSkill}" already exists.`, {
+        variant: 'error',
+      })
+      return
+    }
 
     const newEditingSkills = [...editingSkills, newSkill]
     setEditingSkills(newEditingSkills)
