@@ -96,7 +96,10 @@ const PrivateRoute = (props: PrivateRouteProps) => {
       render={routeProps => {
         if (isLoading) return <ColorLinearProgress />
         return user ? (
-          path && path in [routes.SIGN_IN, routes.SIGN_UP, routes.LANDING] ? (
+          path &&
+          [routes.SIGN_IN, routes.SIGN_UP, routes.LANDING].includes(
+            path as string
+          ) ? (
             <Redirect
               to={{
                 pathname: routes.PROJECTS,
