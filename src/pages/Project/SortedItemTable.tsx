@@ -64,7 +64,7 @@ const EmailTable: FC<{ group: CountableGroup }> = props => {
   const classes = useStyles()
   return (
     <TableContainer>
-      <Table size="small">
+      <Table size="small" padding="none">
         <TableBody>
           {props.group.emails.map((email, i) => (
             <TableRow key={`${email}-${i}`}>
