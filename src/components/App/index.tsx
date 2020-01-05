@@ -43,6 +43,7 @@ export function App() {
               component={ProjectPage}
             />
             <PrivateRoute exact path={routes.ACCOUNT} component={Account} />
+            <Route render={() => <Redirect to={routes.SIGN_IN} />} />
           </Switch>
         </ThemeProvider>
       </div>
