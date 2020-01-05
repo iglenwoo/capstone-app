@@ -157,11 +157,9 @@ export const Skills: FC = () => {
               <Autocomplete
                 freeSolo
                 autoHighlight
-                autoSelect
                 disableOpenOnFocus
                 className={classes.autocomplete}
                 options={skillOptions}
-                value={newSkill}
                 onChange={(e, newValue) => {
                   setNewSkill(newValue)
                 }}
@@ -174,6 +172,11 @@ export const Skills: FC = () => {
                     placeholder="JavaScript"
                     className={classes.input}
                     onKeyPress={handleKeyDown}
+                    value={newSkill}
+                    onChange={e => {
+                      setNewSkill(e.currentTarget.value)
+                    }}
+                    onBlur={e => setNewSkill(e.currentTarget.value)}
                   />
                 )}
               />
@@ -206,47 +209,81 @@ const renderTitle = () => (
 )
 
 export const skillOptions = [
-  'HTML',
-  'JavaScript',
-  'TypeScript',
-  'Node',
-  'Express',
-  'React',
+  'ASP.NET Core',
+  'ASP.NET',
+  'AWS',
   'Angular',
-  'Vue',
+  'Assembly',
+  'Azure',
+  'Bigtable',
+  'C#',
   'C',
   'C++',
-  'STL',
-  'Java',
-  'Spring',
-  'Spring Boot',
-  'C#',
-  'ASP.NET',
-  'ASP.NET Core',
-  'DirectX',
-  'OpenGL',
-  'OpenCV',
-  'SQL',
-  'MySQL',
-  'MariaDB',
-  'Oracle',
-  'MS SQL',
-  'DB2',
-  'PostgreSQL',
-  'NoSQL',
-  'MongoDB',
+  'CSS',
+  'CVS',
+  'Cassandra',
+  'CircleCI',
+  'Clojure',
+  'Cobol',
   'Couchbase',
-  'Redis',
-  'Memcached',
+  'DB2',
+  'Dart',
+  'Deployment',
+  'DirectX',
+  'Docker',
   'DynamoDB',
   'Elasticsearch',
-  'Cassandra',
-  'HBase',
-  'Hadoop',
-  'Bigtable',
-  'Spark',
-  'Kafka',
-  'AWS',
-  'Azure',
+  'Elixir',
+  'Express',
+  'Fortran',
   'GCP',
+  'Git',
+  'Go',
+  'Groovy',
+  'HBase',
+  'HTML',
+  'Hack',
+  'Hadoop',
+  'Haskell',
+  'Java',
+  'JavaScript',
+  'Jenkins',
+  'Kafka',
+  'Kotlin',
+  'Kubernetes',
+  'Linux',
+  'MATLAB',
+  'MS SQL',
+  'MariaDB',
+  'Memcached',
+  'Mercurial',
+  'MongoDB',
+  'MySQL',
+  'NoSQL',
+  'Node',
+  'ObjectC',
+  'OpenCV',
+  'OpenGL',
+  'Oracle',
+  'PHP',
+  'PostgreSQL',
+  'PowerShell',
+  'R',
+  'React',
+  'Redis',
+  'Rua',
+  'Ruby',
+  'Rust',
+  'SQL',
+  'STL',
+  'SVN',
+  'Scala',
+  'Spark',
+  'Spring Boot',
+  'Spring',
+  'Swift',
+  'Tex',
+  'Travis CI',
+  'TypeScript',
+  'Vue',
 ]
