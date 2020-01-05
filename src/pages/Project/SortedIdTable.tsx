@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import React, { FC, useState } from 'react'
 import { IdGroup } from './MembersTab'
 import {
   createStyles,
@@ -9,8 +9,11 @@ import {
   TableCell,
   TableRow,
   TableBody,
-  Button,
+  IconButton,
+  Box,
+  Tooltip,
 } from '@material-ui/core'
+import { FileCopy as FileCopyIcon } from '@material-ui/icons'
 import TableContainer from '@material-ui/core/TableContainer'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -20,6 +23,10 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     title: {
       backgroundColor: theme.palette.grey['100'],
+    },
+    idCell: {
+      textAlign: 'center',
+      width: '50%',
     },
   })
 )
@@ -61,36 +68,41 @@ export const SortedIdTable: FC<{
 }
 
 const IdsTable: FC<{ group: IdGroup }> = props => {
+  const INIT_COPY_MESSAGE = 'Copy to Clipboard'
+  const [copyMessage, setCopyMessage] = useState(INIT_COPY_MESSAGE)
   const handleCopyClick = (value: string) => {
     navigator.clipboard.writeText(value)
+    setCopyMessage(`"${value}" copied!`)
   }
 
   const classes = useStyles()
   return (
     <TableContainer>
-      <Table size="small">
+      <Table size="small" padding="none">
         <TableHead>
           <TableRow className={classes.title}>
-            <TableCell className={classes.cell}>Member email</TableCell>
-            <TableCell className={classes.cell} colSpan={2}>
-              Service ID
-            </TableCell>
+            <TableCell className={classes.idCell}>Member email</TableCell>
+            <TableCell className={classes.idCell}>Service ID</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {props.group.emails.map((email, i) => (
             <TableRow key={`${email}-${i}`}>
-              <TableCell className={classes.cell}>{email}</TableCell>
-              <TableCell align="right">{props.group.values[i]}</TableCell>
-              <TableCell>
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  size="small"
-                  onClick={() => handleCopyClick(props.group.values[i])}
-                >
-                  Copy to Clipboard
-                </Button>
+              <TableCell className={classes.idCell}>{email}</TableCell>
+              <TableCell className={classes.idCell}>
+                {props.group.values[i]}
+                <Box component="span" ml={1}>
+                  <Tooltip title={copyMessage}>
+                    <IconButton
+                      color="primary"
+                      size="small"
+                      onClick={() => handleCopyClick(props.group.values[i])}
+                      onMouseLeave={() => setCopyMessage(INIT_COPY_MESSAGE)}
+                    >
+                      <FileCopyIcon />
+                    </IconButton>
+                  </Tooltip>
+                </Box>
               </TableCell>
             </TableRow>
           ))}
