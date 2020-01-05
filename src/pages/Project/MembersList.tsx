@@ -1,29 +1,27 @@
-import React, { FC } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 import {
-  Box,
   createStyles,
   makeStyles,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
   Theme,
   Typography,
+  TypographyProps,
 } from '@material-ui/core'
-import { Person as PersonIcon } from '@material-ui/icons'
-import { Members } from './model'
+import { Members, MemberStatus } from './model'
+import { useAuth } from '../../components/FirebaseAuth/use-auth'
+import TableContainer from '@material-ui/core/TableContainer'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
-      display: 'flex',
-    },
-    row: {
+    cell: {
       textAlign: 'center',
     },
-    icon: {
-      display: 'inline',
-      position: 'relative',
-      verticalAlign: 'center',
-    },
-    member: {
-      verticalAlign: 'center',
+    title: {
+      backgroundColor: theme.palette.grey['100'],
     },
   })
 )
@@ -33,28 +31,67 @@ export const MembersList: FC<{
   members: Members
 }> = props => {
   const classes = useStyles()
+  const { user } = useAuth()
+  const [myEmail, setMyEmail] = useState('')
 
-  return Object.keys(props.members).length ? (
-    <Box m={1} className={classes.root}>
-      {props.title && (
-        <Box mx={1}>
-          <Typography variant="h4">{props.title}</Typography>
-        </Box>
-      )}
-      {Object.keys(props.members).map((email, i) => (
-        <Box key={`${email}-${i}`} ml={2} className={classes.row}>
-          <PersonIcon className={classes.icon} />
-          <Typography
-            display="inline"
-            variant="body1"
-            className={classes.member}
-          >
-            {email}
-          </Typography>
-        </Box>
-      ))}
-    </Box>
-  ) : (
-    <Box m={1}>No member...</Box>
+  useEffect(() => {
+    if (user && user.email) {
+      setMyEmail(user.email)
+    }
+  }, [user])
+
+  const getStatusColor = (status: MemberStatus) => {
+    let color: TypographyProps['color'] = 'inherit'
+    switch (status) {
+      case MemberStatus.Accepted:
+        color = 'primary'
+        break
+      case MemberStatus.Invited:
+        color = 'secondary'
+        break
+      case MemberStatus.Own:
+        break
+      default:
+    }
+    return color
+  }
+
+  return (
+    <TableContainer>
+      <Table size="small">
+        <TableHead>
+          <TableRow className={classes.title}>
+            <TableCell className={classes.cell}>Role</TableCell>
+            <TableCell className={classes.cell}>Email</TableCell>
+            <TableCell className={classes.cell}>Status</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {Object.keys(props.members).map((email, i) => (
+            <TableRow key={`${email}-${i}`}>
+              <TableCell className={classes.cell}>
+                {props.members[email].role}
+              </TableCell>
+              <TableCell className={classes.cell}>
+                {email === myEmail ? `${email} (me)` : email}
+              </TableCell>
+              <TableCell className={classes.cell}>
+                <Typography
+                  variant="body2"
+                  color={getStatusColor(props.members[email].status)}
+                >
+                  {props.members[email].status}
+                </Typography>
+              </TableCell>
+            </TableRow>
+          ))}
+          {Object.keys(props.members).length === 0 && (
+            <TableRow>
+              <TableCell>No Member...</TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+    </TableContainer>
   )
 }
