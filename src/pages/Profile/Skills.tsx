@@ -157,7 +157,6 @@ export const Skills: FC = () => {
               <Autocomplete
                 freeSolo
                 autoHighlight
-                disableOpenOnFocus
                 className={classes.autocomplete}
                 options={skillOptions}
                 onChange={(e, newValue) => {

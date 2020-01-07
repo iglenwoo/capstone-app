@@ -239,7 +239,6 @@ export const Ids: FC = () => {
                     freeSolo
                     autoHighlight
                     autoSelect
-                    disableOpenOnFocus
                     options={serviceOptions}
                     value={newId.service}
                     onChange={(e, newValue) => {
@@ -255,7 +254,6 @@ export const Ids: FC = () => {
                         label="Service Name"
                         placeholder="Github"
                         fullWidth
-                        autoFocus
                         onBlur={e => {
                           setNewId({ ...newId, service: e.currentTarget.value })
                         }}
