@@ -15,6 +15,7 @@ import {
 } from '@material-ui/core'
 import { FileCopy as FileCopyIcon } from '@material-ui/icons'
 import TableContainer from '@material-ui/core/TableContainer'
+import { Loading } from '../../components/Loading'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -33,8 +34,13 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export const SortedIdTable: FC<{
   idGroups: IdGroup[]
+  loading: boolean
 }> = props => {
   const classes = useStyles()
+
+  if (props.loading) {
+    return <Loading />
+  }
 
   return (
     <TableContainer>
@@ -58,7 +64,9 @@ export const SortedIdTable: FC<{
           ))}
           {props.idGroups.length === 0 && (
             <TableRow>
-              <TableCell>No Data...</TableCell>
+              <TableCell className={classes.cell} colSpan={3}>
+                No Data...
+              </TableCell>
             </TableRow>
           )}
         </TableBody>

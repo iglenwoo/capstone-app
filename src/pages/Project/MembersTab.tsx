@@ -77,6 +77,9 @@ export const MembersTab: FC = () => {
   const [idGroups, setIdGroups] = useState<IdGroup[]>([])
   const [skillGroups, setSkillGroups] = useState<SkillGroup[]>([])
   const [interestGroups, setInterestGroups] = useState<InterestGroup[]>([])
+  const [isIdsLoading, setIsIdsLoading] = useState<boolean>(true)
+  const [isSkillsLoading, setIsSkillsLoading] = useState<boolean>(true)
+  const [isInterestsLoading, setIsInterestsLoading] = useState<boolean>(true)
 
   useEffect(() => {
     if (Object.keys(project.members).length > 0) {
@@ -105,6 +108,8 @@ export const MembersTab: FC = () => {
       setIdGroups(groups)
     } catch (e) {
       console.log('Error getting document:', e)
+    } finally {
+      setIsIdsLoading(false)
     }
   }
 
@@ -129,6 +134,8 @@ export const MembersTab: FC = () => {
       setSkillGroups(groups)
     } catch (e) {
       console.log('Error getting document:', e)
+    } finally {
+      setIsSkillsLoading(false)
     }
   }
 
@@ -153,6 +160,8 @@ export const MembersTab: FC = () => {
       setInterestGroups(groups)
     } catch (e) {
       console.log('Error getting document:', e)
+    } finally {
+      setIsInterestsLoading(false)
     }
   }
 
@@ -186,7 +195,7 @@ export const MembersTab: FC = () => {
           </Typography>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
-          <SortedIdTable idGroups={idGroups} />
+          <SortedIdTable idGroups={idGroups} loading={isIdsLoading} />
         </ExpansionPanelDetails>
       </ExpansionPanel>
       <ExpansionPanel defaultExpanded>
@@ -199,7 +208,11 @@ export const MembersTab: FC = () => {
           </Typography>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
-          <SortedItemTable groups={skillGroups} itemTitle="Skill" />
+          <SortedItemTable
+            groups={skillGroups}
+            loading={isSkillsLoading}
+            itemTitle="Skill"
+          />
         </ExpansionPanelDetails>
       </ExpansionPanel>
       <ExpansionPanel defaultExpanded>
@@ -212,7 +225,11 @@ export const MembersTab: FC = () => {
           </Typography>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
-          <SortedItemTable groups={interestGroups} itemTitle="Interest" />
+          <SortedItemTable
+            groups={interestGroups}
+            loading={isInterestsLoading}
+            itemTitle="Interest"
+          />
         </ExpansionPanelDetails>
       </ExpansionPanel>
     </>

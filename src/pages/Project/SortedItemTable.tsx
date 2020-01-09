@@ -11,6 +11,7 @@ import {
   TableBody,
 } from '@material-ui/core'
 import TableContainer from '@material-ui/core/TableContainer'
+import { Loading } from '../../components/Loading'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -26,8 +27,13 @@ const useStyles = makeStyles((theme: Theme) =>
 export const SortedItemTable: FC<{
   groups: CountableGroup[]
   itemTitle: string
+  loading: boolean
 }> = props => {
   const classes = useStyles()
+
+  if (props.loading) {
+    return <Loading />
+  }
 
   return (
     <TableContainer>
@@ -51,7 +57,9 @@ export const SortedItemTable: FC<{
           ))}
           {props.groups.length === 0 && (
             <TableRow>
-              <TableCell>No Data...</TableCell>
+              <TableCell className={classes.cell} colSpan={3}>
+                No Data...
+              </TableCell>
             </TableRow>
           )}
         </TableBody>
