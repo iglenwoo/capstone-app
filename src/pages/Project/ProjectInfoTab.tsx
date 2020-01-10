@@ -22,6 +22,9 @@ const useStyles = makeStyles((theme: Theme) =>
     inputTitle: {
       marginBottom: theme.spacing(2),
     },
+    owner: {
+      marginBottom: theme.spacing(1),
+    },
     inputValue: {
       marginLeft: theme.spacing(2),
       marginBottom: theme.spacing(2),
@@ -45,7 +48,8 @@ export const ProjectInfoTab: FC = () => {
   const { user, firestore }: Auth = useAuth()
   const { loading, project, reloadProject } = useContext(ProjectContext)
   const [editing, setEditing] = useState<boolean>(false)
-  const [owner, setOwner] = useState<string>('')
+  const [ownerName, setOwnerName] = useState<string>('')
+  const [ownerEmail, setOwnerEmail] = useState<string>('')
   const [title, setTitle] = useState<string>('')
   const [desc, setDesc] = useState<string>('')
 
@@ -53,7 +57,8 @@ export const ProjectInfoTab: FC = () => {
     if (isObjectNotEmpty(project)) {
       for (const [email, member] of Object.entries(project.members)) {
         if (member.role === MemberRole.Owner)
-          setOwner(`${member.firstName} ${member.lastName}, ${email}`)
+          setOwnerName(`${member.firstName} ${member.lastName}`)
+        setOwnerEmail(email)
       }
       if (project.title) setTitle(project.title)
       if (project.desc) setDesc(project.desc)
@@ -92,16 +97,19 @@ export const ProjectInfoTab: FC = () => {
 
   return (
     <>
-      <Typography variant="h5" className={classes.inputTitle}>
-        Project Code: {project.code}
-      </Typography>
-      <Typography variant="subtitle1" className={classes.inputTitle}>
-        Owned by {`${owner} ${project.isOwned ? '(me)' : ''}`}
-      </Typography>
       {loading ? (
         <Loading />
       ) : (
         <>
+          <Typography variant="h5" className={classes.inputTitle}>
+            Project Code: {project.code}
+          </Typography>
+          <Typography variant="subtitle1" className={classes.owner}>
+            Owner name: {`${ownerName} ${project.isOwned ? '(me)' : ''}`}
+          </Typography>
+          <Typography variant="subtitle1" className={classes.owner}>
+            Owner account: {ownerEmail}
+          </Typography>
           <Typography variant="h6">Title:</Typography>
           {editing ? (
             <TextField
