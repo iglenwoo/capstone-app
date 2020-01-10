@@ -89,14 +89,16 @@ const IdsTable: FC<{ group: IdGroup }> = props => {
       <Table size="small" padding="none">
         <TableHead>
           <TableRow className={classes.title}>
-            <TableCell className={classes.idCell}>Member email</TableCell>
+            <TableCell className={classes.idCell}>Name</TableCell>
             <TableCell className={classes.idCell}>Service ID</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {props.group.emails.map((email, i) => (
             <TableRow key={`${email}-${i}`}>
-              <TableCell className={classes.idCell}>{email}</TableCell>
+              <TableCell
+                className={classes.idCell}
+              >{`${props.group.firstNames[i]} ${props.group.lastNames[i]}`}</TableCell>
               <TableCell className={classes.idCell}>
                 {props.group.values[i]}
                 <Box component="span" ml={1}>

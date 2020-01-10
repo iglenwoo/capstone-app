@@ -76,7 +76,9 @@ const EmailTable: FC<{ group: CountableGroup }> = props => {
         <TableBody>
           {props.group.emails.map((email, i) => (
             <TableRow key={`${email}-${i}`}>
-              <TableCell className={classes.cell}>{email}</TableCell>
+              <TableCell
+                className={classes.cell}
+              >{`${props.group.firstNames[i]} ${props.group.lastNames[i]}`}</TableCell>
             </TableRow>
           ))}
         </TableBody>

@@ -10,6 +10,7 @@ import {
   Theme,
   Typography,
 } from '@material-ui/core'
+import { Account } from './Account'
 import { Ids } from './Ids'
 import { Skills } from './Skills'
 import { Interests } from './Interests'
@@ -40,6 +41,7 @@ export const Profile: FC = () => {
           </Typography>
         </Box>
       </Paper>
+      <Account />
       <Ids />
       <Skills />
       <Interests />

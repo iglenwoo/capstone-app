@@ -144,6 +144,8 @@ exports.inviteMember = functions.https.onCall(async (data, context) => {
       if (querySnapshot.size === 0) {
         throw new functions.https.HttpsError('invalid-argument', `Email ${newMemberEmail} not found`);
       }
+      const doc = querySnapshot.docs[0]
+      const user = doc.data()
 
       const projectRef = firestore.collection('projects').doc(code)
       return firestore
@@ -158,7 +160,7 @@ exports.inviteMember = functions.https.onCall(async (data, context) => {
             }
 
             const fieldPath = new admin.firestore.FieldPath('members', newMemberEmail);
-            t.update(projectRef, fieldPath, { role: 'member', status: 'invited' })
+            t.update(projectRef, fieldPath, { role: 'member', status: 'invited', firstName: user.firstName, lastName: user.lastName })
             return projectRef
           })
         })
@@ -173,8 +175,11 @@ exports.getInvitations = functions.https.onCall(async (data, context) => {
   }
   const email = context.auth.token.email || null;
 
-  const fieldPath = new admin.firestore.FieldPath('members', email);
-  return firestore.collection('projects').where(fieldPath, '==', { role: 'member', status: 'invited' }).get().then(querySnapshot => {
+  const statusPath = new admin.firestore.FieldPath('members', email, 'status');
+  const rolePath = new admin.firestore.FieldPath('members', email, 'role');
+  return firestore.collection('projects')
+    .where(statusPath, '==', 'invited')
+    .where(rolePath, '==', 'member').get().then(querySnapshot => {
     const res = []
     querySnapshot.forEach(docSnapshot => {
       res.push(docSnapshot.data())
@@ -196,28 +201,33 @@ exports.acceptInvitation = functions.https.onCall(async (data, context) => {
 
   const projectRef = firestore.collection('projects').doc(code)
   const userRef = firestore.collection('users').doc(uid)
-  return firestore
-    .runTransaction(t => {
-      return t.get(projectRef).then(projectDoc => {
-        if (!projectDoc.exists) {
-          throw new functions.https.HttpsError('invalid-argument', `Project code ${code} not found.`)
-        }
-        const data = projectDoc.data()
-        const member = data.members[email]
-        if (!member) {
-          throw new functions.https.HttpsError('invalid-argument', `Email ${email} not invited.`)
-        }
-        if (member.status !== 'invited') {
-          throw new functions.https.HttpsError('invalid-argument', `Email ${email} already accepted.`)
-        }
+  return userRef.get().then(userDoc => {
+    const data = userDoc.data()
+    const { firstName, lastName } = data
 
-        const fieldPath = new admin.firestore.FieldPath('members', email);
-        t.update(projectRef, fieldPath, { role: 'member', status: 'accepted' })
-        t.update(userRef, {
-          projects: admin.firestore.FieldValue.arrayUnion(projectRef.id),
+    return firestore
+      .runTransaction(t => {
+        return t.get(projectRef).then(projectDoc => {
+          if (!projectDoc.exists) {
+            throw new functions.https.HttpsError('invalid-argument', `Project code ${code} not found.`)
+          }
+          const data = projectDoc.data()
+          const member = data.members[email]
+          if (!member) {
+            throw new functions.https.HttpsError('invalid-argument', `Email ${email} not invited.`)
+          }
+          if (member.status !== 'invited') {
+            throw new functions.https.HttpsError('invalid-argument', `Email ${email} already accepted.`)
+          }
+
+          const fieldPath = new admin.firestore.FieldPath('members', email);
+          t.update(projectRef, fieldPath, { role: 'member', status: 'accepted', firstName, lastName })
+          t.update(userRef, {
+            projects: admin.firestore.FieldValue.arrayUnion(projectRef.id),
+          })
+
+          return projectRef
         })
-
-        return projectRef
       })
-    })
+  })
 });

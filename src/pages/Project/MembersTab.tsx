@@ -48,6 +48,8 @@ export interface CountableGroup {
   name?: string // todo: refactor to have this value
   count: number
   emails: string[]
+  firstNames: string[]
+  lastNames: string[]
 }
 
 export interface IDs {
@@ -99,7 +101,7 @@ export const MembersTab: FC = () => {
       const idsOfMembers = res.data as IDs[]
 
       const parsedIds: Id[] = parseToIds(idsOfMembers)
-      addIdHash(idHash, parsedIds)
+      addIdHash(idHash, parsedIds, allMembers)
 
       const groups = Object.values(idHash)
       groups.sort((a, b) => {
@@ -125,7 +127,7 @@ export const MembersTab: FC = () => {
       const skillsList = res.data as Skills[]
 
       parseToSkills(skillsList)
-      addSkillHash(skillHash, skillsList)
+      addSkillHash(skillHash, skillsList, allMembers)
 
       const groups = Object.values(skillHash)
       groups.sort((a, b) => {
@@ -151,7 +153,7 @@ export const MembersTab: FC = () => {
       const interestsList = res.data as Interests[]
 
       parseToInterests(interestsList)
-      addInterestHash(interestHash, interestsList)
+      addInterestHash(interestHash, interestsList, allMembers)
 
       const groups = Object.values(interestHash)
       groups.sort((a, b) => {

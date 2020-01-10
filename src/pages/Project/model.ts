@@ -13,6 +13,8 @@ export interface Members {
 export interface Member {
   role: MemberRole
   status: MemberStatus
+  firstName: string
+  lastName: string
 }
 
 export interface Project {

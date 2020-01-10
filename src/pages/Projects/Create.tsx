@@ -19,6 +19,8 @@ import { validateProjectCode } from '../../utils'
 import { useSnackbar } from 'notistack'
 import { Loading } from '../../components/Loading'
 import { Member, MemberRole, MemberStatus, Project } from '../Project/model'
+import { useContext } from 'react'
+import { ProjectsContext } from './index'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -48,6 +50,7 @@ const INIT_PROJECT: Project = {
 export const Create = () => {
   const { user, functions }: Auth = useAuth()
   const history = useHistory()
+  const { firstName, lastName } = useContext(ProjectsContext)
   const { enqueueSnackbar } = useSnackbar()
   const [project, setProject] = useState<Project>({ ...INIT_PROJECT })
   const [codeError, setCodeError] = useState<boolean>(false)
@@ -81,6 +84,8 @@ export const Create = () => {
     const owner: Member = {
       role: MemberRole.Owner,
       status: MemberStatus.Own,
+      firstName,
+      lastName,
     }
 
     const addProject = functions.httpsCallable('addProject')

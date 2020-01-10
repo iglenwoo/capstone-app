@@ -25,15 +25,19 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 export const ProjectsContext = createContext<{
-  joinedProjects: string[]
   fetchProjects: () => void
+  firstName: string
+  lastName: string
 }>({
-  joinedProjects: [],
   fetchProjects: () => {},
+  firstName: '',
+  lastName: '',
 })
 
 export const Projects = () => {
   const { user, firestore }: Auth = useAuth()
+  const [firstName, setFirstName] = useState<string>('')
+  const [lastName, setLastName] = useState<string>('')
   const [projects, setProjects] = useState<string[]>([])
   const [loading, setLoading] = useState<boolean>(true)
 
@@ -47,8 +51,11 @@ export const Projects = () => {
       .get()
       .then(doc => {
         const data = doc.data()
-        if (data && data.projects) {
-          setProjects(data.projects)
+        if (data) {
+          const { firstName, lastName, projects } = data
+          if (firstName) setFirstName(firstName)
+          if (lastName) setLastName(lastName)
+          if (projects) setProjects(projects)
         }
         setLoading(false)
       })
@@ -67,9 +74,7 @@ export const Projects = () => {
   const classes = useStyles()
 
   return (
-    <ProjectsContext.Provider
-      value={{ joinedProjects: projects, fetchProjects }}
-    >
+    <ProjectsContext.Provider value={{ fetchProjects, firstName, lastName }}>
       <Container component="main" maxWidth="lg">
         <Create />
         <Card className={classes.card}>

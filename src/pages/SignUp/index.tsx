@@ -20,18 +20,45 @@ import { useStyles } from '../../theme'
 import { useAuth } from '../../components/FirebaseAuth/use-auth'
 import * as routes from '../../constants/routes'
 import { useEffect } from 'react'
-import { validateEmail } from '../../utils'
+import { validateEmail, validateName } from '../../utils'
 import { useSnackbar } from 'notistack'
 
 export const SignUp: FC = () => {
   const { firestore, signup } = useAuth()
   const history = useHistory()
   const { enqueueSnackbar } = useSnackbar()
+  const [firstName, setFirstName] = useState<string>('')
+  const [firstNameError, setFirstNameError] = useState<boolean>(true)
+  const [firstNameHelperText, setFirstNameHelperText] = useState<string>('')
+  const [lastName, setLastName] = useState<string>('')
+  const [lastNameError, setLastNameError] = useState<boolean>(true)
+  const [lastNameHelperText, setLastNameHelperText] = useState<string>('')
   const [email, setEmail] = useState<string>('')
   const [emailError, setEmailError] = useState<boolean>(true)
+
   const [password, setPassword] = useState<string>('')
   const [passwordError, setPasswordError] = useState<boolean>(true)
   const [passwordHelperText, setPasswordHelperText] = useState<string>('')
+
+  useEffect(() => {
+    if (validateName(firstName)) {
+      setFirstNameError(false)
+      setFirstNameHelperText('')
+    } else {
+      setFirstNameError(true)
+      setFirstNameHelperText('Alphabet only')
+    }
+  }, [firstName])
+
+  useEffect(() => {
+    if (validateName(lastName)) {
+      setLastNameError(false)
+      setLastNameHelperText('')
+    } else {
+      setLastNameError(true)
+      setLastNameHelperText('Alphabet only')
+    }
+  }, [lastName])
 
   useEffect(() => {
     setEmailError(!validateEmail(email))
@@ -49,7 +76,7 @@ export const SignUp: FC = () => {
 
   const onSubmit = (e: SyntheticEvent) => {
     e.preventDefault()
-    if (emailError || passwordError) return
+    if (firstNameError || lastNameError || emailError || passwordError) return
 
     signup(email, password)
       .then(user => {
@@ -59,6 +86,8 @@ export const SignUp: FC = () => {
             .doc(user.uid)
             .set({
               email: user.email,
+              firstName,
+              lastName,
             })
             .then(() => {
               history.push(routes.PROFILE)
@@ -89,6 +118,35 @@ export const SignUp: FC = () => {
           Sign up
         </Typography>
         <form className={classes.form} noValidate onSubmit={onSubmit}>
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                label="First Name"
+                autoFocus
+                value={firstName}
+                onChange={e => setFirstName(e.currentTarget.value.trim())}
+                error={firstNameError}
+                helperText={firstNameHelperText}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                label="Last Name"
+                value={lastName}
+                onChange={e => setLastName(e.currentTarget.value.trim())}
+                error={lastNameError}
+                helperText={lastNameHelperText}
+              />
+            </Grid>
+          </Grid>
           <TextField
             variant="outlined"
             margin="normal"
@@ -97,7 +155,6 @@ export const SignUp: FC = () => {
             label="Email Address"
             type="email"
             placeholder="example@exmaple.com"
-            autoFocus
             value={email}
             onChange={e => setEmail(e.currentTarget.value)}
             error={emailError}

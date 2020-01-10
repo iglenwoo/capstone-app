@@ -1,4 +1,15 @@
-import { validateProjectCode } from './index'
+import { validateName, validateProjectCode } from './index'
+
+it('test valid first or last names', () => {
+  const validNames = ['a', 'aa', 'A', 'Aa', 'aA']
+  for (const name of validNames) {
+    expect(validateName(name)).toBe(true)
+  }
+})
+
+it('test invalid first or last names', () => {
+  const invalidNames = ['', '_', '-', '']
+})
 
 it('test valid project codes', () => {
   const validCodes = [
