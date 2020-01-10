@@ -20,6 +20,8 @@ import { EmptyListItem } from './ProjectList'
 import { useAsyncEffect } from '../../utils/use-async-effect'
 import { Project } from '../Project/model'
 import { useSnackbar } from 'notistack'
+import * as routes from '../../constants/routes'
+import { useHistory } from 'react-router'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -41,6 +43,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export const Invitations = () => {
   const classes = useStyles()
+  const history = useHistory()
   const { fetchProjects } = useContext(ProjectsContext)
   const { functions }: Auth = useAuth()
   const { enqueueSnackbar } = useSnackbar()
@@ -69,8 +72,7 @@ export const Invitations = () => {
 
     try {
       await functions.httpsCallable('acceptInvitation')({ code })
-      await fetchInvitations()
-      fetchProjects()
+      history.push(`${routes.PROJECTS}/${code}`)
     } catch (e) {
       enqueueSnackbar(e.message, { variant: 'error' })
       console.log('Error getting invitation document:', e)
